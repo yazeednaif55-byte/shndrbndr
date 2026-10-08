@@ -45,7 +45,7 @@
         <!-- Top Header Navigation -->
         <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg animate-pulse-slow">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-green-500 to-teal-600 flex items-center justify-center text-white shadow-lg animate-pulse-slow">
                     <i class="fa-solid fa-bag-shopping text-base"></i>
                 </div>
                 <div>
@@ -73,14 +73,16 @@
             
             <!-- VIEW 1: HOME / SHOP -->
             <div id="view-home" class="p-4 space-y-4">
-                <!-- Banner Slider / Hero Card -->
-                <div class="relative rounded-3xl bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white p-6 shadow-xl overflow-hidden">
+                <!-- National Day & Special Offers Banner Slider -->
+                <div class="relative rounded-3xl bg-gradient-to-r from-emerald-700 via-green-600 to-teal-800 text-white p-6 shadow-xl overflow-hidden">
                     <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-spin-slow"></div>
                     <div class="relative z-10 space-y-2">
-                        <span class="bg-white/25 px-3 py-1 rounded-full text-[10px] font-bold backdrop-blur-md">قسم الأكل، البطاطس، الباستا والمناديل</span>
-                        <h2 class="text-xl font-black">أكل لذيذ، وجبات ساخنة، ومناديل بأسعار مميزة</h2>
-                        <p class="text-xs text-white/90">استخدم الأكواد التجريبية <span class="bg-black/30 px-1.5 py-0.5 rounded font-mono font-bold text-amber-300">VIP50</span> أو <span class="bg-black/30 px-1.5 py-0.5 rounded font-mono font-bold text-amber-300">PRO100</span> لزيادة رصيدك!</p>
-                        <button onclick="openWalletModal()" class="mt-2 px-4 py-2 bg-white text-slate-900 rounded-xl font-bold text-xs shadow-lg hover:bg-slate-100 transition">شحن الرصيد الآن</button>
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-extrabold backdrop-blur-md flex items-center gap-1.5 w-max">
+                            <i class="fa-solid fa-flag text-amber-300"></i> عروض اليوم الوطني المجيد 
+                        </span>
+                        <h2 class="text-xl font-black">خصومات وعروض كبرى على الوجبات، البطاطس، الباستا والمناديل!</h2>
+                        <p class="text-xs text-emerald-100">استمتع بتخفيضات تصل إلى 50% على أقسام المتجر المختلفة لفترة محدودة.</p>
+                        <button onclick="openWalletModal()" class="mt-2 px-4 py-2 bg-white text-emerald-900 rounded-xl font-bold text-xs shadow-lg hover:bg-emerald-50 transition">شحن المحفظة الآن</button>
                     </div>
                 </div>
 
@@ -88,10 +90,11 @@
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
-                        <input type="text" id="app-search" oninput="filterProducts()" placeholder="ابحث عن بطاطس، باستا، بيتزا، مناديل..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-sm">
+                        <input type="text" id="app-search" oninput="filterProducts()" placeholder="ابحث عن بطاطس، باستا، بيتزا، مناديل..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
                     </div>
                     <select id="cat-select" onchange="filterProducts()" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none shadow-sm">
                         <option value="all">الكل</option>
+                        <option value="offers"> عروض اليوم الوطني</option>
                         <option value="food"> أكل ووجبات</option>
                         <option value="sweets"> حلويات ومقرمشات</option>
                         <option value="tissues"> مناديل وعناية</option>
@@ -108,7 +111,7 @@
 
             <!-- VIEW 2: FAVORITES -->
             <div id="view-favorites" class="p-4 space-y-4 hidden">
-                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-heart text-pink-500"></i> المنتجات المفضلة</h2>
+                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-heart text-rose-500"></i> المنتجات المفضلة</h2>
                 <div id="favorites-container" class="space-y-3">
                     <!-- Dynamic Favorites -->
                 </div>
@@ -117,7 +120,7 @@
             <!-- VIEW 3: CHECKOUT & ORDERS -->
             <div id="view-orders" class="p-4 space-y-4 hidden">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-500"></i> سلة الطلبات وإرسال الطلب</h2>
+                    <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-600"></i> سلة الطلبات وإرسال الطلب</h2>
                     <button onclick="clearOrders()" class="text-[11px] text-rose-500 font-bold hover:underline">مسح السلة</button>
                 </div>
 
@@ -129,7 +132,7 @@
                     </div>
                     <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center font-black text-sm">
                         <span>الإجمالي الكلي:</span>
-                        <span id="cart-total-price" class="text-pink-500">0.00 $</span>
+                        <span id="cart-total-price" class="text-emerald-600">0.00 $</span>
                     </div>
                 </div>
 
@@ -141,30 +144,28 @@
                     </div>
 
                     <form id="order-form" onsubmit="submitOrderToWeb3Forms(event)" class="space-y-3">
-                        <!-- Web3Forms Access Key -->
                         <input type="hidden" name="access_key" value="0c1ab218-9ed9-46ac-bb2c-a3998dd553a8">
                         <input type="hidden" name="subject" value="طلب جديد من متجر التطبيق الذكي">
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
-                            <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم الجوال أو التواصل:</label>
-                            <input type="tel" name="phone" id="user-phone" placeholder="05xxxxxxxx" required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <input type="tel" name="phone" id="user-phone" placeholder="05xxxxxxxx" required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل:</label>
-                            <input type="text" name="address" id="user-address" placeholder="المدينة، الحي، الشارع، رقم العمارة..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <input type="text" name="address" id="user-address" placeholder="المدينة، الحي، الشارع، رقم العمارة..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
 
-                        <!-- Hidden Products Data to be sent -->
                         <input type="hidden" name="products_details" id="hidden-products-data">
                         <input type="hidden" name="total_amount" id="hidden-total-data">
 
-                        <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-pink-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ
                         </button>
                     </form>
@@ -174,7 +175,7 @@
             <!-- VIEW 4: PROFILE & SETTINGS -->
             <div id="view-profile" class="p-4 space-y-4 hidden">
                 <div class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-lg">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-500 to-violet-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-bounce-slow">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-bounce-slow">
                         <i class="fa-solid fa-user-astronaut"></i>
                     </div>
                     <div>
@@ -182,11 +183,10 @@
                         <p class="text-xs text-slate-500">مستخدم نشط</p>
                     </div>
                     <div class="pt-2">
-                        <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
+                        <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
                     </div>
                 </div>
 
-                <!-- Settings Options -->
                 <div class="glass-panel rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
                     <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
                         <span>الوضع الليلي / المظلم</span>
@@ -205,9 +205,9 @@
 
         </main>
 
-        <!-- Bottom Navigation Bar (Mobile App Style) -->
+        <!-- Bottom Navigation Bar -->
         <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-2 py-2.5 flex justify-around items-center z-40 shadow-2xl">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-pink-500 flex-1 py-1 transition transform hover:scale-105">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-emerald-600 flex-1 py-1 transition transform hover:scale-105">
                 <i class="fa-solid fa-store text-base"></i>
                 <span class="text-[10px] font-bold">المتجر</span>
             </button>
@@ -217,7 +217,7 @@
             </button>
             <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105 relative">
                 <i class="fa-solid fa-cart-shopping text-base"></i>
-                <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-pink-500 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
+                <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-emerald-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
                 <span class="text-[10px] font-bold">السلة والطلب</span>
             </button>
             <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105">
@@ -228,24 +228,50 @@
 
     </div>
 
+    <!-- Product Details Modal (Multi-Image Support) -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 id="modal-product-title" class="font-black text-sm">تفاصيل المنتج</h3>
+                <button onclick="closeProductModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <!-- Main Gallery Image -->
+            <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
+                <img id="modal-main-img" src="" class="w-full h-full object-cover transition-all duration-300">
+                <span id="modal-discount-tag" class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[10px] font-black hidden">خصم خاص</span>
+            </div>
+
+            <!-- Thumbnail Slider for Multi-Images -->
+            <div id="modal-thumbs" class="flex gap-2 overflow-x-auto pb-1">
+                <!-- Dynamic Thumbs -->
+            </div>
+
+            <p id="modal-product-desc" class="text-xs text-slate-500 dark:text-slate-400">وصف تفصيلي للمنتج ومواصفاته الكاملة.</p>
+            
+            <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                <div>
+                    <span class="text-[10px] text-slate-400 block">السعر:</span>
+                    <span id="modal-product-price" class="font-black text-base text-emerald-600">0.00 $</span>
+                </div>
+                <button id="modal-add-btn" onclick="" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-500/20">إضافة للسلة</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Wallet / Gift Code Modal -->
     <div id="wallet-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl animate-pulse-slow">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-sm text-emerald-600 flex items-center gap-1.5">
                     <i class="fa-solid fa-gift"></i> شحن رصيد التطبيق
                 </h3>
                 <button onclick="closeWalletModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-xs text-slate-500">أدخل كود الهدية لشحن حسابك فوراً:</p>
-            <input type="text" id="gift-input" placeholder="مثال: VIP50" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 uppercase font-mono text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <p class="text-xs text-slate-500">أدخل كود الهدية أو كود اليوم الوطني لشحن حسابك فوراً:</p>
+            <input type="text" id="gift-input" placeholder="أدخل الكود هنا..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 uppercase font-mono text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500">
             
-            <div class="flex gap-2">
-                <button onclick="fillCode('VIP50')" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-mono font-bold hover:bg-slate-200">VIP50 (+$50)</button>
-                <button onclick="fillCode('PRO100')" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-mono font-bold hover:bg-slate-200">PRO100 (+$100)</button>
-            </div>
-
-            <button onclick="redeemWalletCode()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 hover:from-emerald-600 hover:to-teal-700 transition">تأكيد وشحن الرصيد</button>
+            <button onclick="redeemWalletCode()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700 transition">تأكيد وشحن الرصيد</button>
         </div>
     </div>
 
@@ -261,39 +287,155 @@
             balance: 150.00,
             favorites: [],
             cart: [],
-            user: {
-                name: '',
-                phone: '',
-                address: ''
-            }
+            user: { name: '', phone: '', address: '' }
         };
 
-        // All Products List
+        // Complete Products List with Multiple Images and National Day Offers
         const products = [
-            { id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, cat: "food", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80" },
-            { id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, cat: "food", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80" },
-            { id: 3, name: "وجبة دجاج مقرمش (تشكن)", price: 11.00, cat: "food", img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop&q=80" },
-            { id: 4, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, cat: "food", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80" },
-            { id: 5, name: "ساندوتش شاورما دجاج صاروخ", price: 6.00, cat: "food", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400&auto=format&fit=crop&q=80" },
-            { id: 6, name: "باستا إيطالية بالصلصة البيضاء", price: 10.50, cat: "food", img: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&auto=format&fit=crop&q=80" },
-            { id: 7, name: "علبة شوكولاتة بلجيكية فاخرة", price: 18.00, cat: "sweets", img: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80" },
-            { id: 8, name: "دونتس محشي شوكولاتة وتوت", price: 3.50, cat: "sweets", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80" },
-            { id: 9, name: "آيس كريم فانيليا وشوكولاتة بارد", price: 5.00, cat: "sweets", img: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&auto=format&fit=crop&q=80" },
-            { id: 10, name: "ميني كيكة جبن (تشيز كيك)", price: 7.25, cat: "sweets", img: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&auto=format&fit=crop&q=80" },
-            { id: 11, name: "كرواسون فرنسي طازج بالزبدة", price: 3.00, cat: "sweets", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&auto=format&fit=crop&q=80" },
-            { id: 12, name: "كرتون مناديل وجه ناعمة (10 حبات)", price: 8.50, cat: "tissues", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80" },
-            { id: 13, name: "مناديل مبللة معطرة للاستخدام اليومي", price: 3.00, cat: "tissues", img: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&auto=format&fit=crop&q=80" },
-            { id: 14, name: "رول مناديل مطبخ عملاقة وممتصة", price: 6.00, cat: "tissues", img: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80" },
-            { id: 15, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, cat: "electronics", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80" },
-            { id: 16, name: "ساعة رياضية ذكية متطورة", price: 79.99, cat: "electronics", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80" },
-            { id: 17, name: "بطاقة شحن ألعاب رقمية 50$", price: 50.00, cat: "gaming", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&auto=format&fit=crop&q=80" },
-            { id: 18, name: "لوحة مفاتيح ميكانيكية للألعاب", price: 65.50, cat: "gaming", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80" }
+            { 
+                id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, oldPrice: 18.00, cat: "food", isOffer: true,
+                desc: "بيتزا إيطالية طازجة بصلصة الطماطم الطبيعية وجبنة الموتزاريلا الفاخرة مع شرائح الببروني المقرمشة.",
+                images: [
+                    "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, oldPrice: 14.00, cat: "food", isOffer: true,
+                desc: "قطعة لحم غقاري مشوية على الفحم مع شريحة جبن شيدر ذائبة وخس طازج وصلصة خاصة.",
+                images: [
+                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 3, name: "وجبة دجاج مقرمش (تشكن)", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
+                desc: "قطع دجاج مقرمشة ومتبلة بالتوابل السرية، تقدم مع البطاطس الساخنة والصلصة الخاصة.",
+                images: [
+                    "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 4, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
+                desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
+                images: [
+                    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 5, name: "ساندوتش شاورما دجاج صاروخ", price: 6.00, oldPrice: 9.00, cat: "food", isOffer: false,
+                desc: "شاورما دجاج بخلطة الثومية الخاصة والمخلل داخل خبز الصاج المقرمش.",
+                images: [
+                    "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 6, name: "باستا إيطالية بالصلصة البيضاء", price: 10.50, oldPrice: 14.00, cat: "food", isOffer: true,
+                desc: "مكرونة بيني مع صوص الكريمة البيضاء الغنية وجبن البارميزان.",
+                images: [
+                    "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1621996346565-e3d5d6281296?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 7, name: "علبة شوكولاتة بلجيكية فاخرة", price: 18.00, oldPrice: 25.00, cat: "sweets", isOffer: true,
+                desc: "تشكيلة فاخرة من أجود أنواع الشوكولاتة البلجيكية المحشوة بالمكسرات والكراميل.",
+                images: [
+                    "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 8, name: "دونتس محشي شوكولاتة وتوت", price: 3.50, oldPrice: 5.00, cat: "sweets", isOffer: false,
+                desc: "حبة دونتس طرية وهشة مغطاة بالشوكولاتة اللذيذة.",
+                images: [
+                    "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 9, name: "آيس كريم فانيليا وشوكولاتة بارد", price: 5.00, oldPrice: 7.50, cat: "sweets", isOffer: false,
+                desc: "آيس كريم منعش بنكهات متعددة يناسب أيام الصيف.",
+                images: [
+                    "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 10, name: "ميني كيكة جبن (تشيز كيك)", price: 7.25, oldPrice: 10.00, cat: "sweets", isOffer: false,
+                desc: "تشيز كيك ناعم ولذيذ بصوص التوت البري الطازج.",
+                images: [
+                    "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 11, name: "كرواسون فرنسي طازج بالزبدة", price: 3.00, oldPrice: 4.50, cat: "sweets", isOffer: false,
+                desc: "مخبوزات فرنسية هشة ومقرمشة محضرة بالزبدة الطازجة.",
+                images: [
+                    "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 12, name: "كرتون مناديل وجه ناعمة (10 حبات)", price: 8.50, oldPrice: 12.00, cat: "tissues", isOffer: true,
+                desc: "مناديل وجه مزدوجة الطبقات ناعمة للغاية ولطيفة على البشرة.",
+                images: [
+                    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 13, name: "مناديل مبللة معطرة للاستخدام اليومي", price: 3.00, oldPrice: 5.00, cat: "tissues", isOffer: false,
+                desc: "مناديل مبللة معقمة ومعطرة برائحة خفيفة ومنعشة.",
+                images: [
+                    "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 14, name: "رول مناديل مطبخ عملاقة وممتصة", price: 6.00, oldPrice: 8.50, cat: "tissues", isOffer: false,
+                desc: "مناشف ورقية للمطبخ عالية الامتصاص ومتينة.",
+                images: [
+                    "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 15, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
+                desc: "سماعات أذن لاسلكية بتقنية عزل الضوضاء وصوت نقي عالي الدقة.",
+                images: [
+                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 16, name: "ساعة رياضية ذكية متطورة", price: 79.99, oldPrice: 119.99, cat: "electronics", isOffer: true,
+                desc: "تتبع معدل ضربات القلب والنشاط الرياضي اليومي مع شاشة ملونة بالكامل.",
+                images: [
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 17, name: "بطاقة شحن ألعاب رقمية 50$", price: 50.00, oldPrice: 50.00, cat: "gaming", isOffer: false,
+                desc: "بطاقة رقمية لشحن رصيد الألعاب واستمتع بالشتريات والمحتوى الحصري.",
+                images: [
+                    "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&auto=format&fit=crop&q=80"
+                ]
+            },
+            { 
+                id: 18, name: "لوحة مفاتيح ميكانيكية للألعاب", price: 65.50, oldPrice: 89.99, cat: "gaming", isOffer: true,
+                desc: "لوحة مفاتيح ميكانيكية بإضاءة RGB خلفية واستجابة فائقة السرعة.",
+                images: [
+                    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80",
+                    "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&auto=format&fit=crop&q=80"
+                ]
+            }
         ];
 
+        // Secret Gift / Promo Codes
         const giftCodes = { 
             "VIP50": 50, 
             "PRO100": 100, 
             "MEGA250": 250,
+            "ILOVESAUDI": 1000,
             "SHNDRBNDR_LOVE": 1000 
         };
         const usedCodesSet = new Set();
@@ -303,7 +445,6 @@
             if (saved) {
                 appData = JSON.parse(saved);
             }
-            // Populate user form inputs if saved
             if (appData.user) {
                 document.getElementById('user-name').value = appData.user.name || '';
                 document.getElementById('user-phone').value = appData.user.phone || '';
@@ -322,7 +463,6 @@
             localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
         }
 
-        // Save input user data automatically as they type
         function saveUserDataInput() {
             appData.user.name = document.getElementById('user-name').value;
             appData.user.phone = document.getElementById('user-phone').value;
@@ -335,17 +475,15 @@
             saveState();
         }
 
-        // Tab Switching Logic
         function switchTab(tabId) {
             ['home', 'favorites', 'orders', 'profile'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition";
             });
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-pink-500 flex-1 py-1 transition";
+            document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-emerald-600 flex-1 py-1 transition";
         }
 
-        // Render Products List
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
@@ -353,7 +491,7 @@
             const cat = document.getElementById('cat-select').value;
 
             const filtered = products.filter(p => {
-                const matchesCat = cat === 'all' || p.cat === cat;
+                const matchesCat = cat === 'all' || (cat === 'offers' ? p.isOffer : p.cat === cat);
                 const matchesSearch = p.name.toLowerCase().includes(query);
                 return matchesCat && matchesSearch;
             });
@@ -368,17 +506,21 @@
                 const card = document.createElement('div');
                 card.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition";
                 card.innerHTML = `
-                    <div>
+                    <div onclick="openProductModal(${p.id})" class="cursor-pointer">
                         <div class="relative rounded-xl overflow-hidden mb-2 bg-slate-100 dark:bg-slate-800 aspect-video">
-                            <img src="${p.img}" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
-                            <button onclick="toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow hover:scale-110 transition">
+                            <img src="${p.images[0]}" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9px] font-black shadow">عرض خاص</span>' : ''}
+                            <button onclick="event.stopPropagation(); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow hover:scale-110 transition">
                                 <i class="fa-solid fa-heart"></i>
                             </button>
                         </div>
                         <h3 class="font-bold text-xs line-clamp-1 mb-1">${p.name}</h3>
-                        <span class="font-black text-sm text-pink-500">${p.price.toFixed(2)} $</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-black text-sm text-emerald-600">${p.price.toFixed(2)} $</span>
+                            ${p.oldPrice > p.price ? `<span class="text-[10px] text-slate-400 line-through">${p.oldPrice.toFixed(2)}$</span>` : ''}
+                        </div>
                     </div>
-                    <button onclick="addToCart(${p.id})" class="mt-3 w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-pink-500 dark:hover:bg-pink-600 text-white font-bold text-[11px] rounded-xl transition shadow flex items-center justify-center gap-1">
+                    <button onclick="addToCart(${p.id})" class="mt-3 w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold text-[11px] rounded-xl transition shadow flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus text-xs"></i> إضافة للسلة
                     </button>
                 `;
@@ -390,7 +532,53 @@
             renderProducts();
         }
 
-        // Favorite Toggle
+        // Product Details & Multi-Image Gallery Modal
+        function openProductModal(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('modal-product-title').innerText = p.name;
+            document.getElementById('modal-main-img').src = p.images[0];
+            document.getElementById('modal-product-desc').innerText = p.desc;
+            document.getElementById('modal-product-price').innerText = p.price.toFixed(2) + ' $';
+            
+            const discountTag = document.getElementById('modal-discount-tag');
+            if (p.isOffer) {
+                discountTag.classList.remove('hidden');
+            } else {
+                discountTag.classList.add('hidden');
+            }
+
+            const thumbsContainer = document.getElementById('modal-thumbs');
+            thumbsContainer.innerHTML = '';
+            p.images.forEach((imgSrc, idx) => {
+                const thumb = document.createElement('img');
+                thumb.src = imgSrc;
+                thumb.className = `w-14 h-14 rounded-xl object-cover cursor-pointer border-2 ${idx === 0 ? 'border-emerald-600' : 'border-transparent'} hover:opacity-80 transition`;
+                thumb.onclick = () => {
+                    document.getElementById('modal-main-img').src = imgSrc;
+                    Array.from(thumbsContainer.children).forEach(t => t.classList.remove('border-emerald-600'));
+                    thumb.classList.add('border-emerald-600');
+                };
+                thumbsContainer.appendChild(thumb);
+            });
+
+            document.getElementById('modal-add-btn').onclick = () => {
+                addToCart(p.id);
+                closeProductModal();
+            };
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
         function toggleFavorite(id) {
             const index = appData.favorites.indexOf(id);
             if (index > -1) {
@@ -418,15 +606,15 @@
                 const div = document.createElement('div');
                 div.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between";
                 div.innerHTML = `
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                        <img src="${p.img}" class="w-12 h-12 rounded-xl object-cover">
+                    <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="openProductModal(${p.id})">
+                        <img src="${p.images[0]}" class="w-12 h-12 rounded-xl object-cover">
                         <div>
                             <h4 class="font-bold text-xs">${p.name}</h4>
-                            <span class="text-xs text-pink-500 font-bold">${p.price.toFixed(2)} $</span>
+                            <span class="text-xs text-emerald-600 font-bold">${p.price.toFixed(2)} $</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-pink-500 text-white rounded-xl text-[10px] font-bold">شراء</button>
+                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-[10px] font-bold">شراء</button>
                         <button onclick="toggleFavorite(${p.id})" class="text-rose-500 p-2 text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
@@ -434,7 +622,6 @@
             });
         }
 
-        // Cart Management
         function addToCart(id) {
             const p = products.find(item => item.id === id);
             appData.cart.push(p);
@@ -488,12 +675,12 @@
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl text-xs";
                 div.innerHTML = `
-                    <div class="flex items-center space-x-2 space-x-reverse">
-                        <img src="${item.img}" class="w-8 h-8 rounded-lg object-cover">
+                    <div class="flex items-center space-x-2 space-x-reverse cursor-pointer" onclick="openProductModal(${item.id})">
+                        <img src="${item.images[0]}" class="w-8 h-8 rounded-lg object-cover">
                         <span class="font-bold line-clamp-1">${item.name}</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="font-bold text-pink-500">${item.price.toFixed(2)} $</span>
+                        <span class="font-bold text-emerald-600">${item.price.toFixed(2)} $</span>
                         <button onclick="removeFromCart(${index})" class="text-rose-500 text-xs hover:scale-110"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 `;
@@ -505,7 +692,6 @@
             hiddenTotalData.value = total.toFixed(2) + ' $';
         }
 
-        // Submit Order to Web3Forms and Deduct Wallet Balance
         function submitOrderToWeb3Forms(event) {
             event.preventDefault();
             if (appData.cart.length === 0) {
@@ -535,7 +721,6 @@
             .then(async (response) => {
                 const json = await response.json();
                 if (response.status === 200) {
-                    // Deduct balance
                     appData.balance -= totalCost;
                     updateWalletUI();
 
@@ -556,7 +741,6 @@
             });
         }
 
-        // Wallet & Gift Code Modals
         function openWalletModal() {
             document.getElementById('wallet-modal').classList.remove('hidden');
             document.getElementById('wallet-modal').classList.add('flex');
@@ -565,11 +749,10 @@
             document.getElementById('wallet-modal').classList.add('hidden');
             document.getElementById('wallet-modal').classList.remove('flex');
         }
-        function fillCode(code) {
-            document.getElementById('gift-input').value = code;
-        }
+
         function redeemWalletCode() {
-            const code = document.getElementById('gift-input').value.trim().toUpperCase();
+            const codeInput = document.getElementById('gift-input');
+            const code = codeInput.value.trim().toUpperCase();
             if (giftCodes.hasOwnProperty(code) && !usedCodesSet.has(code)) {
                 const amount = giftCodes[code];
                 appData.balance += amount;
@@ -578,7 +761,7 @@
                 updateWalletUI();
                 closeWalletModal();
                 showToast(`تم شحن المحفظة بنجاح +$${amount}`, 'success');
-                document.getElementById('gift-input').value = '';
+                codeInput.value = '';
             } else {
                 showToast('الكود غير صالح أو تم استخدامه مسبقاً', 'error');
             }
@@ -595,14 +778,12 @@
             }
         }
 
-        // Dark Mode
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
         }
 
-        // Toast Feedback
         function showToast(text, type = 'success') {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
