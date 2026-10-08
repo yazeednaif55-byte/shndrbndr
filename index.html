@@ -1,1347 +1,623 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="docTitle">متجر المنتجات الشامل الأكبر</title>
-  
-  <!-- الأيقونة المحدثة عبر الرابط الجديد -->
-  <link rel="icon" href="https://ibb.co/jvzpgQS4">
-  <link rel="apple-touch-icon" href="https://ibb.co/jvzpgQS4">
-  <link rel="apple-touch-icon" sizes="152x152" href="https://ibb.co/jvzpgQS4">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://ibb.co/jvzpgQS4">
-  <link rel="apple-touch-icon" sizes="167x167" href="https://ibb.co/jvzpgQS4">
-
-  <style>
-    :root {
-      --bg-color: #f2f2f7;
-      --card-bg: #ffffff;
-      --text-color: #1c1c1e;
-      --subtext-color: #8e8e93;
-      --btn-bg: #34c759;
-      --btn-text: #ffffff;
-      --icon-bg: #ffffff;
-      --border-color: #e5e5ea;
-      --base-font-size: 16px;
-    }
-
-    body.dark-mode {
-      --bg-color: #000000;
-      --card-bg: #1c1c1e;
-      --text-color: #ffffff;
-      --subtext-color: #a1a1a6;
-      --icon-bg: #2c2c2e;
-      --border-color: #38383a;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-size: var(--base-font-size);
-      margin: 0;
-      padding: 20px;
-      padding-top: 70px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .money-btn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background-color: var(--icon-bg);
-      font-size: 18px;
-      font-weight: bold;
-      color: #34c759;
-      padding: 10px 16px;
-      border-radius: 50px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 999;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    html[dir="ltr"] .money-btn {
-      right: auto;
-      left: 15px;
-    }
-
-    .money-btn:active {
-      transform: scale(0.9);
-    }
-
-    .settings-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background-color: var(--icon-bg);
-      font-size: 22px;
-      padding: 10px 14px;
-      border-radius: 50px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      cursor: pointer;
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border-color);
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    html[dir="ltr"] .settings-btn {
-      left: auto;
-      right: 15px;
-    }
-
-    .settings-btn:active {
-      transform: scale(0.9) rotate(45deg);
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      width: 100%;
-      max-width: 350px;
-      padding: 20px;
-      border-radius: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      text-align: center;
-      box-sizing: border-box;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-      animation: fadeInCard 0.5s ease-out forwards;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-
-    @keyframes fadeInCard {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card h2 {
-      margin-top: 0;
-      color: var(--text-color);
-      font-size: 1.35em;
-    }
-
-    .card p {
-      color: var(--subtext-color);
-      font-size: 0.95em;
-      margin-bottom: 10px;
-    }
-
-    .card .price-tag {
-      display: block;
-      font-size: 1.1em;
-      font-weight: bold;
-      color: #34c759;
-      margin-bottom: 15px;
-    }
-
-    .buy-btn {
-      background-color: var(--btn-bg);
-      color: var(--btn-text);
-      border: none;
-      width: 100%;
-      padding: 14px 0;
-      font-size: 1.1em;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
-      -webkit-appearance: none;
-      outline: none;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .buy-btn:disabled {
-      background-color: #c7c7cc !important;
-      box-shadow: none !important;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    .buy-btn:active:not(:disabled) {
-      transform: scale(0.95);
-      background-color: #2eaf4e;
-    }
-
-    .modal-page {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(5px);
-      z-index: 10000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      box-sizing: border-box;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .modal-page.active {
-      display: flex;
-      opacity: 1;
-    }
-
-    .modal-content {
-      background-color: var(--bg-color);
-      width: 100%;
-      max-width: 350px;
-      border-radius: 20px;
-      padding: 25px 20px;
-      box-sizing: border-box;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      max-height: 90vh;
-      overflow-y: auto;
-      transform: scale(0.8);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .modal-page.active .modal-content {
-      transform: scale(1);
-    }
-
-    .modal-header {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .modal-header h1 {
-      margin: 0;
-      font-size: 1.4em;
-      color: var(--text-color);
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.1em;
-      color: #007aff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .close-btn:active {
-      opacity: 0.5;
-    }
-
-    .earn-box {
-      background-color: var(--card-bg);
-      width: 100%;
-      padding: 20px;
-      border-radius: 18px;
-      text-align: center;
-      box-sizing: border-box;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
-    }
-
-    .earn-btn {
-      background-color: #007aff;
-      color: #ffffff;
-      border: none;
-      width: 100%;
-      padding: 14px 0;
-      font-size: 1.1em;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      margin-top: 15px;
-    }
-
-    .earn-btn:active:not(:disabled) {
-      transform: scale(0.95);
-    }
-
-    .earn-btn:disabled {
-      background-color: #c7c7cc;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    .snake-section {
-      background-color: var(--card-bg);
-      width: 100%;
-      padding: 15px;
-      border-radius: 18px;
-      text-align: center;
-      box-sizing: border-box;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
-      position: relative;
-    }
-
-    .snake-header-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .badge-container {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .badge-new {
-      background-color: #ff3b30;
-      color: #ffffff;
-      font-size: 0.75em;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(255, 59, 48, 0.3);
-      animation: pulseBadge 1.5s infinite;
-    }
-
-    @keyframes pulseBadge {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-
-    .start-top-btn {
-      background-color: #34c759;
-      color: white;
-      border: none;
-      padding: 4px 12px;
-      font-size: 0.85em;
-      font-weight: bold;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3);
-      transition: transform 0.2s;
-    }
-
-    .start-top-btn:active {
-      transform: scale(0.9);
-    }
-
-    #snakeCanvas {
-      background-color: #111;
-      border-radius: 12px;
-      margin-top: 5px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .snake-controls {
-      display: grid;
-      grid-template-columns: repeat(3, 48px);
-      grid-template-rows: repeat(2, 48px);
-      gap: 6px;
-      justify-content: center;
-      margin: 10px auto 0 auto;
-      direction: ltr !important;
-    }
-
-    .snake-btn {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      font-size: 1.3em;
-      font-weight: bold;
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-    }
-
-    .snake-btn:active {
-      transform: scale(0.85);
-      background-color: #007aff;
-      color: white;
-      box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);
-    }
-
-    .btn-up { grid-column: 2; grid-row: 1; }
-    .btn-left { grid-column: 1; grid-row: 2; }
-    .btn-down { grid-column: 2; grid-row: 2; }
-    .btn-right { grid-column: 3; grid-row: 2; }
-
-    .code-box {
-      background-color: var(--card-bg);
-      width: 100%;
-      padding: 20px;
-      border-radius: 18px;
-      text-align: center;
-      box-sizing: border-box;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .code-input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-size: 1em;
-      text-align: center;
-      box-sizing: border-box;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .code-input:focus {
-      border-color: #ff9500;
-    }
-
-    .code-btn {
-      background-color: #ff9500;
-      color: #ffffff;
-      border: none;
-      width: 100%;
-      padding: 12px 0;
-      font-size: 1em;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 10px;
-      box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .code-btn:active {
-      transform: scale(0.95);
-    }
-
-    .settings-section-title {
-      width: 100%;
-      font-size: 0.85em;
-      color: var(--subtext-color);
-      margin: 15px 5px 5px 5px;
-      text-transform: uppercase;
-    }
-
-    .settings-group {
-      width: 100%;
-      background-color: var(--card-bg);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      margin-bottom: 10px;
-    }
-
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      font-size: 1em;
-      color: var(--text-color);
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .setting-row:active {
-      background-color: rgba(0,0,0,0.03);
-    }
-
-    .setting-row:last-child {
-      border-bottom: none;
-    }
-
-    .setting-row.selected::after {
-      content: "✓";
-      color: #007aff;
-      font-weight: bold;
-      font-size: 1.1em;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 26px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .3s ease;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: #34c759;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
-
-    .reset-btn {
-      color: #ff3b30;
-      font-weight: bold;
-      text-align: center;
-      justify-content: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر الذكي المتكامل - Ultimate Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Cairo & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 10s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
+        .dark .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
+        .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.2); }
+        @media(min-width: 768px) {
+            .app-shell { max-width: 100%; box-shadow: none; }
+        }
+        .pulse-glow { box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+    </style>
 </head>
-<body>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- زر الرصيد -->
-  <div class="money-btn" onclick="openMoneyModal()" title="زيادة الرصيد">
-    💵 <span id="userMoneyDisplay">0</span>
-  </div>
+    <div class="app-shell flex flex-col bg-slate-50 dark:bg-slate-900 relative overflow-x-hidden">
 
-  <button class="settings-btn" onclick="openSettings()" title="الإعدادات">
-    ⚙️
-  </button>
+        <!-- Top Header Navigation -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg animate-pulse-slow">
+                    <i class="fa-solid fa-bag-shopping text-base"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-sm text-slate-900 dark:text-white">المتجر الذكي المتكامل</h1>
+                    <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping"></span> متصل وجاهز للطلب
+                    </p>
+                </div>
+            </div>
 
-  <!-- نافذة الرصيد -->
-  <div class="modal-page" id="moneyModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 id="lblMoneyModalTitle">💵 بنك الرصيد</h1>
-        <button class="close-btn" onclick="closeMoneyModal()">إغلاق</button>
-      </div>
-      
-      <div class="earn-box">
-        <h2 id="lblEarnTitle" style="margin-top:0; font-size: 1.2em;">زيادة الفلوس</h2>
-        <p id="lblEarnDesc" style="color: var(--subtext-color); font-size: 0.9em; margin-bottom:0;">اضغط للحصول على مجاني للحساب</p>
-        <button class="earn-btn" id="claimMoneyBtn" onclick="claimReward()">احصل على المكافأة</button>
-      </div>
+            <!-- Quick App Actions -->
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-110 transition">
+                    <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <button onclick="openWalletModal()" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center space-x-1.5 space-x-reverse text-emerald-700 dark:text-emerald-300 font-bold text-xs hover:scale-105 transition">
+                    <i class="fa-solid fa-wallet text-xs"></i>
+                    <span id="wallet-balance">0.00 $</span>
+                </button>
+            </div>
+        </header>
 
-      <!-- لعبة الثعبان -->
-      <div class="snake-section">
-        <div class="snake-header-bar">
-          <div class="badge-container">
-            <span class="badge-new">جديد🔥</span>
-            <button class="start-top-btn" onclick="startSnakeGame()" id="btnSnakeStart">ابدأ ▶️</button>
-          </div>
-          <h2 style="margin:0; font-size: 1em; color: var(--text-color);" id="snakeTitle">🐍 ثعبان الفلوس</h2>
-        </div>
-        <p style="color: var(--subtext-color); font-size: 0.85em; margin: 2px 0 8px 0;" id="snakeDesc">كل 💵 تأكلها تعطيك +20$</p>
-        
-        <canvas id="snakeCanvas" width="240" height="200"></canvas>
-        
-        <div class="snake-controls">
-          <button class="snake-btn btn-up" onclick="changeDir('UP')">⬆️</button>
-          <button class="snake-btn btn-left" onclick="changeDir('LEFT')">⬅️</button>
-          <button class="snake-btn btn-down" onclick="changeDir('DOWN')">⬇️</button>
-          <button class="snake-btn btn-right" onclick="changeDir('RIGHT')">➡️</button>
-        </div>
-      </div>
+        <!-- Main Dynamic Content Views -->
+        <main class="flex-1 pb-28 overflow-y-auto">
+            
+            <!-- VIEW 1: HOME / SHOP -->
+            <div id="view-home" class="p-4 space-y-4">
+                <!-- Banner Slider / Hero Card -->
+                <div class="relative rounded-3xl bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white p-6 shadow-xl overflow-hidden">
+                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-spin-slow"></div>
+                    <div class="relative z-10 space-y-2">
+                        <span class="bg-white/25 px-3 py-1 rounded-full text-[10px] font-bold backdrop-blur-md">قسم الأكل، البطاطس، الباستا والمناديل</span>
+                        <h2 class="text-xl font-black">أكل لذيذ، وجبات ساخنة، ومناديل بأسعار مميزة</h2>
+                        <p class="text-xs text-white/90">استخدم الأكواد التجريبية <span class="bg-black/30 px-1.5 py-0.5 rounded font-mono font-bold text-amber-300">VIP50</span> أو <span class="bg-black/30 px-1.5 py-0.5 rounded font-mono font-bold text-amber-300">PRO100</span> لزيادة رصيدك!</p>
+                        <button onclick="openWalletModal()" class="mt-2 px-4 py-2 bg-white text-slate-900 rounded-xl font-bold text-xs shadow-lg hover:bg-slate-100 transition">شحن الرصيد الآن</button>
+                    </div>
+                </div>
 
-      <div class="code-box">
-        <h2 id="lblCodeTitle" style="margin-top:0; font-size: 1.1em;">🎟️ تفعيل كود الهدية</h2>
-        <input type="text" id="promoCodeInput" class="code-input" placeholder="أدخل الكود هنا...">
-        <button class="code-btn" id="lblCodeBtn" onclick="redeemCode()">تفعيل الكود</button>
-      </div>
+                <!-- Search & Filter Bar -->
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
+                        <input type="text" id="app-search" oninput="filterProducts()" placeholder="ابحث عن بطاطس، باستا، بيتزا، مناديل..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-sm">
+                    </div>
+                    <select id="cat-select" onchange="filterProducts()" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none shadow-sm">
+                        <option value="all">الكل</option>
+                        <option value="food"> أكل ووجبات</option>
+                        <option value="sweets"> حلويات ومقرمشات</option>
+                        <option value="tissues"> مناديل وعناية</option>
+                        <option value="electronics"> إلكترونيات</option>
+                        <option value="gaming"> ألعاب</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-container" class="grid grid-cols-2 gap-3">
+                    <!-- Dynamic Items -->
+                </div>
+            </div>
+
+            <!-- VIEW 2: FAVORITES -->
+            <div id="view-favorites" class="p-4 space-y-4 hidden">
+                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-heart text-pink-500"></i> المنتجات المفضلة</h2>
+                <div id="favorites-container" class="space-y-3">
+                    <!-- Dynamic Favorites -->
+                </div>
+            </div>
+
+            <!-- VIEW 3: CHECKOUT & ORDERS (Web3Forms Integration) -->
+            <div id="view-orders" class="p-4 space-y-4 hidden">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-500"></i> سلة الطلبات وإرسال الطلب</h2>
+                    <button onclick="clearOrders()" class="text-[11px] text-rose-500 font-bold hover:underline">مسح السلة</button>
+                </div>
+
+                <!-- Cart Summary Box -->
+                <div id="cart-summary-box" class="glass-panel p-4 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-md">
+                    <h3 class="font-bold text-xs text-slate-600 dark:text-slate-300">المنتجات المختارة في السلة:</h3>
+                    <div id="cart-items-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                        <!-- Cart Items -->
+                    </div>
+                    <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center font-black text-sm">
+                        <span>الإجمالي الكلي:</span>
+                        <span id="cart-total-price" class="text-pink-500">0.00 $</span>
+                    </div>
+                </div>
+
+                <!-- Web3Forms Order Form with GPS Location -->
+                <div class="glass-panel p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
+                    <div class="flex items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>إرسال الطلب عبر Web3Forms (تتبع سماح للموقع)</span>
+                    </div>
+
+                    <form id="order-form" onsubmit="submitOrderToWeb3Forms(event)" class="space-y-3">
+                        <!-- Web3Forms Access Key -->
+                        <input type="hidden" name="access_key" value="0c1ab218-9ed9-46ac-bb2c-a3998dd553a8">
+                        <input type="hidden" name="subject" value="طلب جديد من متجر التطبيق الذكي - مع تحديد الموقع">
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
+                            <input type="text" name="name" id="order-customer-name" value="يزيد بن نايف" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم الجوال أو التواصل:</label>
+                            <input type="tel" name="phone" placeholder="05xxxxxxxx" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+
+                        <!-- GPS Location Tracking -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[11px] font-bold text-slate-500">موقع التوصيل (GPS):</label>
+                                <button type="button" onclick="getGPSLocation()" class="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold hover:bg-indigo-100 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي الآن
+                                </button>
+                            </div>
+                            <input type="text" name="location_gps" id="gps-input" placeholder="اضغط على زر تحديد موقعي..." readonly required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-mono text-slate-500">
+                        </div>
+
+                        <!-- Hidden Products Data to be sent -->
+                        <input type="hidden" name="products_details" id="hidden-products-data">
+                        <input type="hidden" name="total_amount" id="hidden-total-data">
+
+                        <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-pink-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن وتأكيد التوصيل
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- VIEW 4: PROFILE & SETTINGS -->
+            <div id="view-profile" class="p-4 space-y-4 hidden">
+                <div class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-lg">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-500 to-violet-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-bounce-slow">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div>
+                        <h3 id="profile-name" class="font-bold text-base">يزيد بن نايف</h3>
+                        <p id="profile-email" class="text-xs text-slate-500">yazeed@store.app</p>
+                    </div>
+                    <div class="pt-2">
+                        <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
+                    </div>
+                </div>
+
+                <!-- Settings Options -->
+                <div class="glass-panel rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
+                        <span>الوضع الليلي / المظلم</span>
+                        <button onclick="toggleDarkMode()" class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-lg">تبديل</button>
+                    </div>
+                    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
+                        <span>إشعارات الطلبات والتوصيل</span>
+                        <span class="text-emerald-500"><i class="fa-solid fa-check-circle"></i> مفعلة</span>
+                    </div>
+                    <button onclick="clearUserData()" class="w-full p-4 text-right text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 flex items-center justify-between transition">
+                        <span>إعادة ضبط المتجر ومسح البيانات</span>
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation Bar (Mobile App Style) -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-2 py-2.5 flex justify-around items-center z-40 shadow-2xl">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-pink-500 flex-1 py-1 transition transform hover:scale-105">
+                <i class="fa-solid fa-store text-base"></i>
+                <span class="text-[10px] font-bold">المتجر</span>
+            </button>
+            <button onclick="switchTab('favorites')" id="nav-favorites" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105">
+                <i class="fa-solid fa-heart text-base"></i>
+                <span class="text-[10px] font-bold">المفضلة</span>
+            </button>
+            <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105 relative">
+                <i class="fa-solid fa-cart-shopping text-base"></i>
+                <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-pink-500 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
+                <span class="text-[10px] font-bold">السلة والطلب</span>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105">
+                <i class="fa-solid fa-gear text-base"></i>
+                <span class="text-[10px] font-bold">الإعدادات</span>
+            </button>
+        </nav>
+
     </div>
-  </div>
 
-  <!-- صفحة الإعدادات -->
-  <div class="modal-page" id="settingsPage">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 id="lblSettings">الإعدادات</h1>
-        <button class="close-btn" id="lblClose" onclick="closeSettings()">إغلاق</button>
-      </div>
+    <!-- Wallet / Gift Code Modal -->
+    <div id="wallet-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl animate-pulse-slow">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm text-emerald-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-gift"></i> شحن رصيد التطبيق
+                </h3>
+                <button onclick="closeWalletModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500">أدخل كود الهدية لشحن حسابك فوراً:</p>
+            <input type="text" id="gift-input" placeholder="مثال: VIP50" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 uppercase font-mono text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            
+            <div class="flex gap-2">
+                <button onclick="fillCode('VIP50')" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-mono font-bold hover:bg-slate-200">VIP50 (+$50)</button>
+                <button onclick="fillCode('PRO100')" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-mono font-bold hover:bg-slate-200">PRO100 (+$100)</button>
+            </div>
 
-      <div class="settings-section-title" id="secAppearance">المظهر والنمط</div>
-      <div class="settings-group">
-        <div class="setting-row selected" id="optLight" onclick="setTheme('light')">
-          <span id="lblLight">☀️ فاتح (أبيض)</span>
+            <button onclick="redeemWalletCode()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 hover:from-emerald-600 hover:to-teal-700 transition">تأكيد وشحن الرصيد</button>
         </div>
-        <div class="setting-row" id="optDark" onclick="setTheme('dark')">
-          <span id="lblDark">🌙 داكن (أسود)</span>
-        </div>
-      </div>
-
-      <div class="settings-section-title" id="secFontSize">حجم النصوص</div>
-      <div class="settings-group">
-        <div class="setting-row" id="fontSmall" onclick="setFontSize('small')">
-          <span id="lblFontSmall">صغير</span>
-        </div>
-        <div class="setting-row selected" id="fontMedium" onclick="setFontSize('medium')">
-          <span id="lblFontMedium">متوسط</span>
-        </div>
-        <div class="setting-row" id="fontLarge" onclick="setFontSize('large')">
-          <span id="lblFontLarge">كبير</span>
-        </div>
-      </div>
-
-      <div class="settings-section-title" id="secGeneral">التفضيلات العامة</div>
-      <div class="settings-group">
-        <div class="setting-row">
-          <span id="lblNotifications">🔔 الإشعارات والتحذيرات</span>
-          <label class="switch">
-            <input type="checkbox" checked id="notifToggle" onchange="toggleNotifications()">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="setting-row" id="langRow" onclick="toggleLanguage()">
-          <span id="lblLanguage">🌐 اللغة / Language</span>
-          <span style="color: var(--subtext-color);" id="currentLangText">العربية</span>
-        </div>
-      </div>
-
-      <div class="settings-section-title" id="secSystem">النظام</div>
-      <div class="settings-group">
-        <div class="setting-row reset-btn" onclick="resetSettings()">
-          <span id="lblReset">🔄 إعادة ضبط الإعدادات</span>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- قائمة المنتجات الـ 26 -->
-  <div class="card" id="card-ps" data-price="100">
-    <h2 class="c-title">🎮 بلايستيشن / سوني</h2>
-    <p class="c-desc">شراء أجهزة وبطاقات سوني</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 space-x-reverse text-xs border border-slate-800">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-text">تمت العملية بنجاح</span>
+    </div>
 
-  <div class="card" id="card-xbox" data-price="400">
-    <h2 class="c-title">🕹️ إكس بوكس</h2>
-    <p class="c-desc">شراء بطاقات وااشتراكات Game Pass</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+    <script>
+        // App State Data
+        let appData = {
+            balance: 150.00,
+            favorites: [],
+            cart: []
+        };
 
-  <div class="card" id="card-nintendo" data-price="400">
-    <h2 class="c-title">🔴 نينتندو سويتش</h2>
-    <p class="c-desc">شراء ألعاب وأجهزة نينتندو</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+        // All Products List (Full Food, Tissues, Sweets, Electronics, Gaming)
+        const products = [
+            // الأكل والوجبات والبطاطس والباستا
+            { id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, cat: "food", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80" },
+            { id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, cat: "food", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80" },
+            { id: 3, name: "وجبة دجاج مقرمش (تشكن)", price: 11.00, cat: "food", img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop&q=80" },
+            { id: 4, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, cat: "food", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80" },
+            { id: 5, name: "ساندوتش شاورما دجاج صاروخ", price: 6.00, cat: "food", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400&auto=format&fit=crop&q=80" },
+            { id: 6, name: "باستا إيطالية بالصلصة البيضاء", price: 10.50, cat: "food", img: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&auto=format&fit=crop&q=80" },
 
-  <div class="card" id="card-pc" data-price="10000">
-    <h2 class="c-title">🖥️ كمبيوتر ألعاب (PC)</h2>
-    <p class="c-desc">شراء تجميعات كمبيوتر وقطع تجميع</p>
-    <span class="price-tag">$10,000</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+            // الحلويات والمقرمشات
+            { id: 7, name: "علبة شوكولاتة بلجيكية فاخرة", price: 18.00, cat: "sweets", img: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80" },
+            { id: 8, name: "دونتس محشي شوكولاتة وتوت", price: 3.50, cat: "sweets", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80" },
+            { id: 9, name: "آيس كريم فانيليا وشوكولاتة بارد", price: 5.00, cat: "sweets", img: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&auto=format&fit=crop&q=80" },
+            { id: 10, name: "ميني كيكة جبن (تشيز كيك)", price: 7.25, cat: "sweets", img: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&auto=format&fit=crop&q=80" },
+            { id: 11, name: "كرواسون فرنسي طازج بالزبدة", price: 3.00, cat: "sweets", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&auto=format&fit=crop&q=80" },
 
-  <div class="card" id="card-iphone" data-price="900">
-    <h2 class="c-title">📱 آيفون</h2>
-    <p class="c-desc">شراء أحدث أجهزة آبل آيفون</p>
-    <span class="price-tag">$900</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+            // المناديل والعناية الشخصية
+            { id: 12, name: "كرتون مناديل وجه ناعمة (10 حبات)", price: 8.50, cat: "tissues", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80" },
+            { id: 13, name: "مناديل مبللة معطرة للاستخدام اليومي", price: 3.00, cat: "tissues", img: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&auto=format&fit=crop&q=80" },
+            { id: 14, name: "رول مناديل مطبخ عملاقة وممتصة", price: 6.00, cat: "tissues", img: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80" },
 
-  <div class="card" id="card-samsung" data-price="900">
-    <h2 class="c-title">📲 سامسونج جالاكسي</h2>
-    <p class="c-desc">شراء أجهزة سامسونج الذكية</p>
-    <span class="price-tag">$900</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+            // الإلكترونيات والألعاب
+            { id: 15, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, cat: "electronics", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80" },
+            { id: 16, name: "ساعة رياضية ذكية متطورة", price: 79.99, cat: "electronics", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80" },
+            { id: 17, name: "بطاقة شحن ألعاب رقمية 50$", price: 50.00, cat: "gaming", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&auto=format&fit=crop&q=80" },
+            { id: 18, name: "لوحة مفاتيح ميكانيكية للألعاب", price: 65.50, cat: "gaming", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80" }
+        ];
 
-  <div class="card" id="card-airpods" data-price="400">
-    <h2 class="c-title">🎧 سماعات إيربودز</h2>
-    <p class="c-desc">شراء سماعات لاسلكية عالية الجودة</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+        const giftCodes = { "VIP50": 50, "PRO100": 100, "MEGA250": 250 };
+        const usedCodesSet = new Set();
 
-  <div class="card" id="card-watch" data-price="400">
-    <h2 class="c-title">⌚ ساعة ذكية</h2>
-    <p class="c-desc">شراء ساعة ذكية رياضية</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
+        window.onload = function() {
+            const saved = localStorage.getItem('ultimate_store_state');
+            if (saved) {
+                appData = JSON.parse(saved);
+            }
+            updateWalletUI();
+            renderProducts();
+            renderFavorites();
+            renderCart();
+        };
 
-  <div class="card" id="card-laptop" data-price="10000">
-    <h2 class="c-title">💻 لابتوب محمول</h2>
-    <p class="c-desc">شراء جهاز كمبيوتر محمول للعمل والألعاب</p>
-    <span class="price-tag">$10,000</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-mouse" data-price="100">
-    <h2 class="c-title">🖱️ ماوس كمبيوتر</h2>
-    <p class="c-desc">شراء ماوس احترافي للألعاب والعمل</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-keyboard" data-price="100">
-    <h2 class="c-title">⌨️ كيبورد ميكانيكي</h2>
-    <p class="c-desc">شراء كيبورد ألعاب سريع</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-case" data-price="100">
-    <h2 class="c-title">📱 كفر جوال</h2>
-    <p class="c-desc">شراء كفر حماية ضد الصدمات</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-charger" data-price="100">
-    <h2 class="c-title">⚡ شاحن وكيبل</h2>
-    <p class="c-desc">شراء شاحن سريع وكيبل معتمد</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-powerbank" data-price="400">
-    <h2 class="c-title">🔋 بنك طاقة (شاحن متنقل)</h2>
-    <p class="c-desc">شراء شاحن سفري بسعة كبيرة</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-tv" data-price="900">
-    <h2 class="c-title">📺 شاشة تلفزيون ذكية</h2>
-    <p class="c-desc">شاشة 4K ذكية للمنزل</p>
-    <span class="price-tag">$900</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-remote" data-price="100">
-    <h2 class="c-title">📻 ريموت كنترول</h2>
-    <p class="c-desc">شراء ريموت تحكم للتلفزيون والأجهزة</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-vacuum" data-price="900">
-    <h2 class="c-title">💨 مكنسة ذكية</h2>
-    <p class="c-desc">شراء مكنسة روبوت أوتوماتيكية</p>
-    <span class="price-tag">$900</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-water" data-price="100">
-    <h2 class="c-title">💧 مياه فجر</h2>
-    <p class="c-desc">شراء كراتين مياه فجر</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-cup" data-price="100">
-    <h2 class="c-title">☕ كوب قهوة حراري</h2>
-    <p class="c-desc">شراء كوب حافظ للحرارة والبرودة</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-tissues" data-price="100">
-    <h2 class="c-title">🧻 مناديل</h2>
-    <p class="c-desc">شراء شدة مناديل ناعمة فاخرة</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-perfume" data-price="400">
-    <h2 class="c-title">✨ عطور فاخرة</h2>
-    <p class="c-desc">شراء عطورات رجالية ونسائية</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-glasses" data-price="400">
-    <h2 class="c-title">👓 نظارات شمسية</h2>
-    <p class="c-desc">شراء نظارات ماركات عالمية</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-sportswear" data-price="400">
-    <h2 class="c-title">👕 ملابس رياضية</h2>
-    <p class="c-desc">شراء طقم رياضي مريح</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-shoes" data-price="400">
-    <h2 class="c-title">👟 أحذية رياضية</h2>
-    <p class="c-desc">شراء شوز رياضي مريح للمشي</p>
-    <span class="price-tag">$400</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-books" data-price="100">
-    <h2 class="c-title">📚 كتب ورقية</h2>
-    <p class="c-desc">شراء أفضل الكتب والروايات الأكثر مبيعاً</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <div class="card" id="card-toys" data-price="100">
-    <h2 class="c-title">🧸 دميات وألعاب</h2>
-    <p class="c-desc">شراء دمى وألعاب محشوة للأطفال</p>
-    <span class="price-tag">$100</span>
-    <button class="buy-btn" onclick="shareProduct(this)">شراء</button>
-  </div>
-
-  <script>
-    let currentLang = 'ar';
-
-    const rewardLevels = [
-      { reward: 100, label: "100", cooldown: 60 },
-      { reward: 500, label: "500", cooldown: 180 },
-      { reward: 900, label: "900", cooldown: 300 },
-      { reward: 10000, label: "10,000", cooldown: 600 },
-      { reward: 1000000, label: "1,000,000", cooldown: 1800 },
-      { reward: 1000000000000, label: "1,000,000,000,000 (ترليون)", cooldown: 3600 },
-      { reward: 999999999999999, label: "Google 🌐 (لا نهائي!)", cooldown: 86400 }
-    ];
-
-    const validPromoCodes = {
-      "456A-5Y89": 1000000,
-      "2026": 5000000,
-      "HELLO2026": 50000000
-    };
-
-    let userMoney = parseInt(localStorage.getItem('userMoney')) || 0;
-    let levelIndex = parseInt(localStorage.getItem('levelIndex')) || 0;
-    let nextAvailableTime = parseInt(localStorage.getItem('nextAvailableTime')) || 0;
-
-    let usedCodes = JSON.parse(localStorage.getItem('usedCodes')) || [];
-
-    const translations = {
-      ar: {
-        lblSettings: "الإعدادات",
-        lblClose: "إغلاق",
-        secAppearance: "المظهر والنمط",
-        lblLight: "☀️ فاتح (أبيض)",
-        lblDark: "🌙 داكن (أسود)",
-        secFontSize: "حجم النصوص",
-        lblFontSmall: "صغير",
-        lblFontMedium: "متوسط",
-        lblFontLarge: "كبير",
-        secGeneral: "التفضيلات العامة",
-        lblNotifications: "🔔 الإشعارات والتحذيرات",
-        lblLanguage: "🌐 اللغة / Language",
-        currentLangText: "العربية",
-        secSystem: "النظام",
-        lblReset: "🔄 إعادة ضبط الإعدادات",
-        buyBtn: "شراء",
-        lockedBtn: "رصيد غير كافي",
-        lblMoneyModalTitle: "💵 بنك الرصيد",
-        lblEarnTitle: "زيادة الفلوس",
-        lblEarnDesc: "اضغط للحصول على مجاني للحساب",
-        lblCodeTitle: "🎟️ تفعيل كود الهدية",
-        lblCodeBtn: "تفعيل الكود",
-        codePlaceholder: "أدخل الكود هنا...",
-        claimReady: "احصل على $",
-        waitPrefix: "انتظر ",
-        resetMsg: "تمت إعادة ضبط الإعدادات إلى الوضع الافتراضي.",
-        codeSuccess: "مبروك! تم تفعيل الكود بنجاح وإضافة $",
-        codeAlreadyUsed: "لقد قمت باستخدام هذا الكود من قبل!",
-        codeInvalid: "الكود غير صحيح! حاول مرة أخرى.",
-        cards: {
-          "card-ps": { title: "🎮 بلايستيشن / سوني", desc: "شراء أجهزة وبطاقات سوني" },
-          "card-xbox": { title: "🕹️ إكس بوكس", desc: "شراء بطاقات وااشتراكات Game Pass" },
-          "card-nintendo": { title: "🔴 نينتندو سويتش", desc: "شراء ألعاب وأجهزة نينتندو" },
-          "card-pc": { title: "🖥️ كمبيوتر ألعاب (PC)", desc: "شراء تجميعات كمبيوتر وقطع تجميع" },
-          "card-iphone": { title: "📱 آيفون", desc: "شراء أحدث أجهزة آبل آيفون" },
-          "card-samsung": { title: "📲 سامسونج جالاكسي", desc: "شراء أجهزة سامسونج الذكية" },
-          "card-airpods": { title: "🎧 سماعات إيربودز", desc: "شراء سماعات لاسلكية عالية الجودة" },
-          "card-watch": { title: "⌚ ساعة ذكية", desc: "شراء ساعة ذكية رياضية" },
-          "card-laptop": { title: "💻 لابتوب محمول", desc: "شراء جهاز كمبيوتر محمول للعمل والألعاب" },
-          "card-mouse": { title: "🖱️ ماوس كمبيوتر", desc: "شراء ماوس احترافي للألعاب والعمل" },
-          "card-keyboard": { title: "⌨️ كيبورد ميكانيكي", desc: "شراء كيبورد ألعاب سريع" },
-          "card-case": { title: "📱 كفر جوال", desc: "شراء كفر حماية ضد الصدمات" },
-          "card-charger": { title: "⚡ شاحن وكيبل", desc: "شراء شاحن سريع وكيبل معتمد" },
-          "card-powerbank": { title: "🔋 بنك طاقة (شاحن متنقل)", desc: "شراء شاحن سفري بسعة كبيرة" },
-          "card-tv": { title: "📺 شاشة تلفزيون ذكية", desc: "شاشة 4K ذكية للمنزل" },
-          "card-remote": { title: "📻 ريموت كنترول", desc: "شراء ريموت تحكم للتلفزيون والأجهزة" },
-          "card-vacuum": { title: "💨 مكنسة ذكية", desc: "شراء مكنسة روبوت أوتوماتيكية" },
-          "card-water": { title: "💧 مياه فجر", desc: "شراء كراتين مياه فجر" },
-          "card-cup": { title: "☕ كوب قهوة حراري", desc: "شراء كوب حافظ للحرارة والبرودة" },
-          "card-tissues": { title: "🧻 مناديل", desc: "شراء شدة مناديل ناعمة فاخرة" },
-          "card-perfume": { title: "✨ عطور فاخرة", desc: "شراء عطورات رجالية ونسائية" },
-          "card-glasses": { title: "👓 نظارات شمسية", desc: "شراء نظارات ماركات عالمية" },
-          "card-sportswear": { title: "👕 ملابس رياضية", desc: "شراء طقم رياضي مريح" },
-          "card-shoes": { title: "👟 أحذية رياضية", desc: "شراء شوز رياضي مريح للمشي" },
-          "card-books": { title: "📚 كتب ورقية", desc: "شراء أفضل الكتب والروايات الأكثر مبيعاً" },
-          "card-toys": { title: "🧸 دميات وألعاب", desc: "شراء دمى وألعاب محشوة للأطفال" }
-        }
-      },
-      en: {
-        lblSettings: "Settings",
-        lblClose: "Close",
-        secAppearance: "Appearance & Style",
-        lblLight: "☀️ Light Mode",
-        lblDark: "🌙 Dark Mode",
-        secFontSize: "Text Size",
-        lblFontSmall: "Small",
-        lblFontMedium: "Medium",
-        lblFontLarge: "Large",
-        secGeneral: "General Preferences",
-        lblNotifications: "🔔 Notifications",
-        lblLanguage: "🌐 Language / اللغة",
-        currentLangText: "English",
-        secSystem: "System",
-        lblReset: "🔄 Reset All Settings",
-        buyBtn: "Buy",
-        lockedBtn: "Insufficient Cash",
-        lblMoneyModalTitle: "💵 Cash Bank",
-        lblEarnTitle: "Free Cash",
-        lblEarnDesc: "Click to get free rewards for account",
-        lblCodeTitle: "🎟️ Redeem Promo Code",
-        lblCodeBtn: "Redeem Code",
-        codePlaceholder: "Enter code here...",
-        claimReady: "Claim $",
-        waitPrefix: "Wait ",
-        resetMsg: "Settings restored to default.",
-        codeSuccess: "Congratulations! Code activated successfully (+$",
-        codeAlreadyUsed: "You have already used this promo code!",
-        codeInvalid: "Invalid promo code! Please try again.",
-        cards: {
-          "card-ps": { title: "🎮 PlayStation / Sony", desc: "Buy PlayStation consoles and gift cards" },
-          "card-xbox": { title: "🕹️ Xbox", desc: "Buy Xbox cards and Game Pass subscriptions" },
-          "card-nintendo": { title: "🔴 Nintendo Switch", desc: "Buy Nintendo games and consoles" },
-          "card-pc": { title: "🖥️ Gaming PC", desc: "Buy PC builds and hardware components" },
-          "card-iphone": { title: "📱 iPhone", desc: "Buy the latest Apple iPhones" },
-          "card-samsung": { title: "📲 Samsung Galaxy", desc: "Buy Samsung smartphones" },
-          "card-airpods": { title: "🎧 AirPods / Earbuds", desc: "Buy high-quality wireless earbuds" },
-          "card-watch": { title: "⌚ Smart Watch", desc: "Buy fitness and sports smartwatches" },
-          "card-laptop": { title: "💻 Laptop", desc: "Buy laptops for work and gaming" },
-          "card-mouse": { title: "🖱️ Gaming Mouse", desc: "Buy professional gaming and work mice" },
-          "card-keyboard": { title: "⌨️ Mechanical Keyboard", desc: "Buy fast mechanical keyboards" },
-          "card-case": { title: "📱 Phone Case", desc: "Buy shockproof protective cases" },
-          "card-charger": { title: "⚡ Charger & Cable", desc: "Buy fast chargers and certified cables" },
-          "card-powerbank": { title: "🔋 Power Bank", desc: "Buy high-capacity portable chargers" },
-          "card-tv": { title: "📺 Smart TV", desc: "Buy 4K Smart TVs for your home" },
-          "card-remote": { title: "📻 Remote Control", desc: "Buy TV and device remote controls" },
-          "card-vacuum": { title: "💨 Robot Vacuum", desc: "Buy automatic robot vacuum cleaners" },
-          "card-water": { title: "💧 Fajr Water", desc: "Buy Fajr water cartons" },
-          "card-cup": { title: "☕ Thermal Coffee Mug", desc: "Buy heat-insulated coffee mugs" },
-          "card-tissues": { title: "🧻 Tissues", desc: "Buy premium soft tissue packs" },
-          "card-perfume": { title: "✨ Luxury Perfumes", desc: "Buy luxury men & women perfumes" },
-          "card-glasses": { title: "👓 Sunglasses", desc: "Buy world brand sunglasses" },
-          "card-sportswear": { title: "👕 Sportswear", desc: "Buy comfortable activewear" },
-          "card-shoes": { title: "👟 Sports Shoes", desc: "Buy comfortable walking/running shoes" },
-          "card-books": { title: "📚 Books", desc: "Buy best-selling books and novels" },
-          "card-toys": { title: "🧸 Plush Toys & Dolls", desc: "Buy dolls and plush toys for kids" }
-        }
-      }
-    };
-
-    function openMoneyModal() {
-      document.getElementById('moneyModal').classList.add('active');
-      drawSnakeStatic();
-    }
-
-    function closeMoneyModal() {
-      document.getElementById('moneyModal').classList.remove('active');
-      stopSnakeGame();
-    }
-
-    function claimReward() {
-      const now = Math.floor(Date.now() / 1000);
-      if (now < nextAvailableTime) return;
-
-      const currentReward = rewardLevels[levelIndex].reward;
-      const cooldown = rewardLevels[levelIndex].cooldown;
-
-      userMoney += currentReward;
-      localStorage.setItem('userMoney', userMoney);
-
-      nextAvailableTime = now + cooldown;
-      localStorage.setItem('nextAvailableTime', nextAvailableTime);
-
-      if (levelIndex < rewardLevels.length - 1) {
-        levelIndex++;
-        localStorage.setItem('levelIndex', levelIndex);
-      }
-
-      updateMoneyDisplay();
-      checkTimer();
-    }
-
-    function redeemCode() {
-      const input = document.getElementById('promoCodeInput');
-      const val = input.value.trim().toUpperCase();
-
-      if (validPromoCodes.hasOwnProperty(val)) {
-        if (usedCodes.includes(val)) {
-          alert(translations[currentLang].codeAlreadyUsed);
-          return;
+        function saveState() {
+            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
         }
 
-        const bonus = validPromoCodes[val];
-        userMoney += bonus;
-        usedCodes.push(val);
-
-        localStorage.setItem('userMoney', userMoney);
-        localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
-
-        updateMoneyDisplay();
-        alert(translations[currentLang].codeSuccess + bonus.toLocaleString() + ") 🎉");
-        input.value = "";
-      } else {
-        alert(translations[currentLang].codeInvalid);
-      }
-    }
-
-    function checkTimer() {
-      const claimBtn = document.getElementById('claimMoneyBtn');
-      const now = Math.floor(Date.now() / 1000);
-      const timeLeft = nextAvailableTime - now;
-
-      if (timeLeft <= 0) {
-        claimBtn.disabled = false;
-        claimBtn.innerText = `${translations[currentLang].claimReady}${rewardLevels[levelIndex].label}`;
-      } else {
-        claimBtn.disabled = true;
-        claimBtn.innerText = `${translations[currentLang].waitPrefix}${formatTime(timeLeft)}`;
-      }
-    }
-
-    function formatTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-      
-      if (h > 0) {
-        return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-      }
-      return `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-
-    function updateMoneyDisplay() {
-      if (userMoney >= 999999999999999) {
-        document.getElementById('userMoneyDisplay').innerText = "Google 🌐";
-      } else {
-        document.getElementById('userMoneyDisplay').innerText = userMoney.toLocaleString();
-      }
-
-      document.querySelectorAll('.card').forEach(card => {
-        const price = parseInt(card.getAttribute('data-price'));
-        const btn = card.querySelector('.buy-btn');
-
-        if (userMoney >= price) {
-          btn.disabled = false;
-          btn.innerText = translations[currentLang].buyBtn;
-        } else {
-          btn.disabled = true;
-          btn.innerText = translations[currentLang].lockedBtn;
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            ['home', 'favorites', 'orders', 'profile'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition";
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-pink-500 flex-1 py-1 transition";
         }
-      });
-    }
 
-    // إرسال تفاصيل الشراء عبر Web3Forms
-    async function shareProduct(btnElement) {
-      const card = btnElement.closest('.card');
-      const price = parseInt(card.getAttribute('data-price'));
+        // Render Products List
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            const query = document.getElementById('app-search').value.toLowerCase();
+            const cat = document.getElementById('cat-select').value;
 
-      if (userMoney < price) return;
+            const filtered = products.filter(p => {
+                const matchesCat = cat === 'all' || p.cat === cat;
+                const matchesSearch = p.name.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
 
-      userMoney -= price;
-      localStorage.setItem('userMoney', userMoney);
-      updateMoneyDisplay();
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-12 text-xs text-slate-400 font-bold">لا توجد منتجات مطابقة للبحث</div>`;
+                return;
+            }
 
-      const title = card.querySelector('.c-title').innerText;
-      const desc = card.querySelector('.c-desc').innerText;
-
-      const formData = {
-        access_key: "39628a78-be10-489c-a10e-1a4ae158695d",
-        subject: "طلب شراء جديد من المتجر",
-        message: `تم شراء المنتج التالي:\nالمنتج: ${title}\nالتفاصيل: ${desc}\nالسعر: $${price}`
-      };
-
-      try {
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(formData)
-        });
-
-        if (response.status === 200) {
-          alert(currentLang === 'ar' ? `تم شراء ${title} بنجاح وتم إرسال الطلب!` : `Successfully purchased ${title} and sent order!`);
-        } else {
-          alert(currentLang === 'ar' ? "حدث خطأ أثناء إرسال الطلب." : "Error sending order.");
+            filtered.forEach(p => {
+                const isFav = appData.favorites.includes(p.id);
+                const card = document.createElement('div');
+                card.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative rounded-xl overflow-hidden mb-2 bg-slate-100 dark:bg-slate-800 aspect-video">
+                            <img src="${p.img}" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                            <button onclick="toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow hover:scale-110 transition">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-xs line-clamp-1 mb-1">${p.name}</h3>
+                        <span class="font-black text-sm text-pink-500">${p.price.toFixed(2)} $</span>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="mt-3 w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-pink-500 dark:hover:bg-pink-600 text-white font-bold text-[11px] rounded-xl transition shadow flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-cart-plus text-xs"></i> إضافة للسلة
+                    </button>
+                `;
+                container.appendChild(card);
+            });
         }
-      } catch (error) {
-        console.error('Web3Forms Error:', error);
-        alert(currentLang === 'ar' ? `تم شراء ${title} بنجاح! (تعذر إرسال الإشعار)` : `Successfully purchased ${title}! (Failed to send notice)`);
-      }
-    }
 
-    /* ---------------- لعبة الثعبان ---------------- */
-    const canvas = document.getElementById('snakeCanvas');
-    const ctx = canvas.getContext('2d');
-    const grid = 16;
-    let snakeInterval = null;
-    let snake = [{x: 8, y: 5}, {x: 7, y: 5}];
-    let dir = 'RIGHT';
-    let nextDir = 'RIGHT';
-    let food = {x: 3, y: 5};
-    let isSnakeRunning = false;
-
-    function drawSnakeStatic() {
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#34c759";
-      snake.forEach(part => ctx.fillRect(part.x * grid, part.y * grid, grid-1, grid-1));
-      ctx.font = "14px sans-serif";
-      ctx.fillText("💵", food.x * grid, food.y * grid + 12);
-    }
-
-    function startSnakeGame() {
-      if (isSnakeRunning) {
-        stopSnakeGame();
-      }
-      snake = [{x: 8, y: 5}, {x: 7, y: 5}];
-      dir = 'RIGHT';
-      nextDir = 'RIGHT';
-      spawnFood();
-      isSnakeRunning = true;
-      document.getElementById('btnSnakeStart').innerText = "إعادة 🔄";
-      if (snakeInterval) clearInterval(snakeInterval);
-      
-      snakeInterval = setInterval(updateSnake, 200);
-    }
-
-    function stopSnakeGame() {
-      isSnakeRunning = false;
-      if (snakeInterval) clearInterval(snakeInterval);
-      document.getElementById('btnSnakeStart').innerText = "ابدأ ▶️";
-    }
-
-    function spawnFood() {
-      food.x = Math.floor(Math.random() * (canvas.width / grid));
-      food.y = Math.floor(Math.random() * (canvas.height / grid));
-    }
-
-    function changeDir(newDir) {
-      if (!isSnakeRunning) startSnakeGame();
-      if (newDir === 'LEFT' && dir !== 'RIGHT') nextDir = 'LEFT';
-      if (newDir === 'UP' && dir !== 'DOWN') nextDir = 'UP';
-      if (newDir === 'RIGHT' && dir !== 'LEFT') nextDir = 'RIGHT';
-      if (newDir === 'DOWN' && dir !== 'UP') nextDir = 'DOWN';
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp') changeDir('UP');
-      if (e.key === 'ArrowDown') changeDir('DOWN');
-      if (e.key === 'ArrowLeft') changeDir('LEFT');
-      if (e.key === 'ArrowRight') changeDir('RIGHT');
-    });
-
-    function updateSnake() {
-      dir = nextDir;
-      let head = {x: snake[0].x, y: snake[0].y};
-      if (dir === 'LEFT') head.x--;
-      if (dir === 'UP') head.y--;
-      if (dir === 'RIGHT') head.x++;
-      if (dir === 'DOWN') head.y++;
-
-      if (head.x < 0 || head.x >= canvas.width / grid || head.y < 0 || head.y >= canvas.height / grid || snake.some(p => p.x === head.x && p.y === head.y)) {
-        stopSnakeGame();
-        alert(currentLang === 'ar' ? "انتهت اللعبة! حاول مرة أخرى." : "Game Over! Try again.");
-        return;
-      }
-
-      snake.unshift(head);
-
-      if (head.x === food.x && head.y === food.y) {
-        userMoney += 20;
-        localStorage.setItem('userMoney', userMoney);
-        updateMoneyDisplay();
-        spawnFood();
-      } else {
-        snake.pop();
-      }
-
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#34c759";
-      snake.forEach(part => ctx.fillRect(part.x * grid, part.y * grid, grid-1, grid-1));
-
-      ctx.font = "14px sans-serif";
-      ctx.fillText("💵", food.x * grid, food.y * grid + 12);
-    }
-    /* ---------------------------------------------------- */
-
-    function openSettings() {
-      document.getElementById('settingsPage').classList.add('active');
-    }
-
-    function closeSettings() {
-      document.getElementById('settingsPage').classList.remove('active');
-    }
-
-    function setTheme(mode) {
-      const optLight = document.getElementById('optLight');
-      const optDark = document.getElementById('optDark');
-
-      if (mode === 'dark') {
-        document.body.classList.add('dark-mode');
-        optDark.classList.add('selected');
-        optLight.classList.remove('selected');
-      } else {
-        document.body.classList.remove('dark-mode');
-        optLight.classList.add('selected');
-        optDark.classList.remove('selected');
-      }
-      localStorage.setItem('theme', mode);
-    }
-
-    function setFontSize(size) {
-      const small = document.getElementById('fontSmall');
-      const medium = document.getElementById('fontMedium');
-      const large = document.getElementById('fontLarge');
-
-      small.classList.remove('selected');
-      medium.classList.remove('selected');
-      large.classList.remove('selected');
-
-      if (size === 'small') {
-        document.documentElement.style.setProperty('--base-font-size', '14px');
-        small.classList.add('selected');
-      } else if (size === 'large') {
-        document.documentElement.style.setProperty('--base-font-size', '18px');
-        large.classList.add('selected');
-      } else {
-        document.documentElement.style.setProperty('--base-font-size', '16px');
-        medium.classList.add('selected');
-      }
-      localStorage.setItem('fontSize', size);
-    }
-
-    function toggleLanguage() {
-      currentLang = (currentLang === 'ar') ? 'en' : 'ar';
-      applyLanguage(currentLang);
-      localStorage.setItem('lang', currentLang);
-    }
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      const t = translations[lang];
-
-      document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-
-      document.getElementById('lblSettings').innerText = t.lblSettings;
-      document.getElementById('lblClose').innerText = t.lblClose;
-      document.getElementById('secAppearance').innerText = t.secAppearance;
-      document.getElementById('lblLight').innerText = t.lblLight;
-      document.getElementById('lblDark').innerText = t.lblDark;
-      document.getElementById('secFontSize').innerText = t.secFontSize;
-      document.getElementById('lblFontSmall').innerText = t.lblFontSmall;
-      document.getElementById('lblFontMedium').innerText = t.lblFontMedium;
-      document.getElementById('lblFontLarge').innerText = t.lblFontLarge;
-      document.getElementById('secGeneral').innerText = t.secGeneral;
-      document.getElementById('lblNotifications').innerText = t.lblNotifications;
-      document.getElementById('lblLanguage').innerText = t.lblLanguage;
-      document.getElementById('currentLangText').innerText = t.currentLangText;
-      document.getElementById('secSystem').innerText = t.secSystem;
-      document.getElementById('lblReset').innerText = t.lblReset;
-
-      document.getElementById('lblMoneyModalTitle').innerText = t.lblMoneyModalTitle;
-      document.getElementById('lblEarnTitle').innerText = t.lblEarnTitle;
-      document.getElementById('lblEarnDesc').innerText = t.lblEarnDesc;
-
-      document.getElementById('lblCodeTitle').innerText = t.lblCodeTitle;
-      document.getElementById('lblCodeBtn').innerText = t.lblCodeBtn;
-      document.getElementById('promoCodeInput').placeholder = t.codePlaceholder;
-
-      Object.keys(t.cards).forEach(cardId => {
-        const cardElement = document.getElementById(cardId);
-        if (cardElement) {
-          cardElement.querySelector('.c-title').innerText = t.cards[cardId].title;
-          cardElement.querySelector('.c-desc').innerText = t.cards[cardId].desc;
+        function filterProducts() {
+            renderProducts();
         }
-      });
 
-      updateMoneyDisplay();
-      checkTimer();
-    }
+        // Favorite Toggle
+        function toggleFavorite(id) {
+            const index = appData.favorites.indexOf(id);
+            if (index > -1) {
+                appData.favorites.splice(index, 1);
+                showToast('تمت الإزالة من المفضلة', 'info');
+            } else {
+                appData.favorites.push(id);
+                showToast('تمت الإضافة للمفضلة', 'success');
+            }
+            saveState();
+            renderProducts();
+            renderFavorites();
+        }
 
-    function toggleNotifications() {
-      const isChecked = document.getElementById('notifToggle').checked;
-      localStorage.setItem('notifications', isChecked);
-    }
+        function renderFavorites() {
+            const container = document.getElementById('favorites-container');
+            container.innerHTML = '';
+            if (appData.favorites.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-xs text-slate-400 font-bold">لا توجد منتجات مفضلة حالياً</div>`;
+                return;
+            }
+            appData.favorites.forEach(id => {
+                const p = products.find(item => item.id === id);
+                if (!p) return;
+                const div = document.createElement('div');
+                div.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <img src="${p.img}" class="w-12 h-12 rounded-xl object-cover">
+                        <div>
+                            <h4 class="font-bold text-xs">${p.name}</h4>
+                            <span class="text-xs text-pink-500 font-bold">${p.price.toFixed(2)} $</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-pink-500 text-white rounded-xl text-[10px] font-bold">شراء</button>
+                        <button onclick="toggleFavorite(${p.id})" class="text-rose-500 p-2 text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
 
-    function resetSettings() {
-      localStorage.clear();
-      userMoney = 0;
-      levelIndex = 0;
-      nextAvailableTime = 0;
-      usedCodes = [];
-      setTheme('light');
-      setFontSize('medium');
-      applyLanguage('ar');
-      document.getElementById('notifToggle').checked = true;
-      alert(translations['ar'].resetMsg);
-    }
+        // Cart Management
+        function addToCart(id) {
+            const p = products.find(item => item.id === id);
+            appData.cart.push(p);
+            saveState();
+            renderCart();
+            showToast(`تمت إضافة "${p.name}" إلى السلة`, 'success');
+        }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      const savedFontSize = localStorage.getItem('fontSize') || 'medium';
-      const savedLang = localStorage.getItem('lang') || 'ar';
-      const savedNotif = localStorage.getItem('notifications');
+        function removeFromCart(index) {
+            appData.cart.splice(index, 1);
+            saveState();
+            renderCart();
+            showToast('تمت إزالة المنتج من السلة', 'info');
+        }
 
-      setTheme(savedTheme);
-      setFontSize(savedFontSize);
-      applyLanguage(savedLang);
+        function clearOrders() {
+            appData.cart = [];
+            saveState();
+            renderCart();
+            showToast('تم إفراغ سلة الطلبات', 'info');
+        }
 
-      if (savedNotif !== null) {
-        document.getElementById('notifToggle').checked = (savedNotif === 'true');
-      }
+        function renderCart() {
+            const container = document.getElementById('cart-items-list');
+            const badge = document.getElementById('cart-badge');
+            const totalPriceEl = document.getElementById('cart-total-price');
+            const hiddenProductsData = document.getElementById('hidden-products-data');
+            const hiddenTotalData = document.getElementById('hidden-total-data');
 
-      checkTimer();
-      setInterval(checkTimer, 1000);
-    });
-  </script>
+            container.innerHTML = '';
 
+            if (appData.cart.length > 0) {
+                badge.innerText = appData.cart.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                container.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-bold">السلة فارغة حالياً. أضف منتجات للطلب!</div>`;
+                totalPriceEl.innerText = "0.00 $";
+                hiddenProductsData.value = "";
+                hiddenTotalData.value = "0.00 $";
+                return;
+            }
+
+            let total = 0;
+            let summaryText = "";
+
+            appData.cart.forEach((item, index) => {
+                total += item.price;
+                summaryText += `- ${item.name} (${item.price} $)\n`;
+
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <img src="${item.img}" class="w-8 h-8 rounded-lg object-cover">
+                        <span class="font-bold line-clamp-1">${item.name}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-pink-500">${item.price.toFixed(2)} $</span>
+                        <button onclick="removeFromCart(${index})" class="text-rose-500 text-xs hover:scale-110"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            totalPriceEl.innerText = total.toFixed(2) + ' $';
+            hiddenProductsData.value = summaryText;
+            hiddenTotalData.value = total.toFixed(2) + ' $';
+        }
+
+        // GPS Geolocation for precise delivery tracking
+        function getGPSLocation() {
+            const gpsInput = document.getElementById('gps-input');
+            if (!navigator.geolocation) {
+                showToast('متصفحك لا يدعم تحديد الموقع الجغرافي', 'error');
+                return;
+            }
+            showToast('جاري تحديد موقعك بدقة عبر السماح GPS...', 'info');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                    gpsInput.value = `خط العرض: ${lat.toFixed(4)}, خط الطول: ${lng.toFixed(4)}`;
+                    showToast('تم تحديد موقعك بدقة بنجاح!', 'success');
+                },
+                (error) => {
+                    showToast('يرجى السماح بصلاحية الموقع للتعرف على مكان التوصيل', 'error');
+                    gpsInput.value = "فشل التحديد - يرجى تفعيل الموقع";
+                },
+                { enableHighAccuracy: true }
+            );
+        }
+
+        // Submit Order to Web3Forms
+        function submitOrderToWeb3Forms(event) {
+            event.preventDefault();
+            if (appData.cart.length === 0) {
+                showToast('سلة الطلبات فارغة! أضف أكل أو منتجات أولاً', 'error');
+                return;
+            }
+
+            const gpsVal = document.getElementById('gps-input').value;
+            if (!gpsVal || gpsVal.includes('فشل') || gpsVal.includes('اضغط')) {
+                showToast('الرجاء تحديد الموقع الجغرافي GPS أولاً لتتمكن من إرسال الطلب', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> جاري إرسال الطلب...`;
+
+            const formElement = document.getElementById('order-form');
+            const formData = new FormData(formElement);
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async (response) => {
+                const json = await response.json();
+                if (response.status === 200) {
+                    showToast('تم إرسال الطلب بنجاح وتتبع الموقع!', 'success');
+                    appData.cart = [];
+                    saveState();
+                    renderCart();
+                    formElement.reset();
+                    document.getElementById('gps-input').value = "";
+                } else {
+                    showToast(json.message || 'حدث خطأ أثناء الإرسال، حاول مرة أخرى', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('حدث خطأ في الاتصال بالإنترنت', 'error');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن وتأكيد التوصيل`;
+            });
+        }
+
+        // Wallet & Gift Code Modals
+        function openWalletModal() {
+            document.getElementById('wallet-modal').classList.remove('hidden');
+            document.getElementById('wallet-modal').classList.add('flex');
+        }
+        function closeWalletModal() {
+            document.getElementById('wallet-modal').classList.add('hidden');
+            document.getElementById('wallet-modal').classList.remove('flex');
+        }
+        function fillCode(code) {
+            document.getElementById('gift-input').value = code;
+        }
+        function redeemWalletCode() {
+            const code = document.getElementById('gift-input').value.trim().toUpperCase();
+            if (giftCodes.hasOwnProperty(code) && !usedCodesSet.has(code)) {
+                const amount = giftCodes[code];
+                appData.balance += amount;
+                usedCodesSet.add(code);
+                saveState();
+                updateWalletUI();
+                closeWalletModal();
+                showToast(`تم شحن المحفظة بنجاح +$${amount}`, 'success');
+                document.getElementById('gift-input').value = '';
+            } else {
+                showToast('الكود غير صالح أو تم استخدامه مسبقاً', 'error');
+            }
+        }
+
+        function updateWalletUI() {
+            document.getElementById('wallet-balance').innerText = appData.balance.toFixed(2) + ' $';
+        }
+
+        function clearUserData() {
+            if (confirm('هل أنت متأكد من مسح كافة البيانات وإعادة الضبط؟')) {
+                localStorage.removeItem('ultimate_store_state');
+                location.reload();
+            }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
+        }
+
+        // Toast Feedback
+        function showToast(text, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastText.innerText = text;
+            toastIcon.className = type === 'success' ? "fa-solid fa-circle-check text-emerald-400" : (type === 'info' ? "fa-solid fa-circle-info text-sky-400" : "fa-solid fa-circle-exclamation text-rose-400");
+            
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+    </script>
 </body>
 </html>
