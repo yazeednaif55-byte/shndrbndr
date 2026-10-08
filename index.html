@@ -36,7 +36,6 @@
         @media(min-width: 768px) {
             .app-shell { max-width: 100%; box-shadow: none; }
         }
-        .pulse-glow { box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
@@ -115,7 +114,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: CHECKOUT & ORDERS (Web3Forms Integration) -->
+            <!-- VIEW 3: CHECKOUT & ORDERS (Web3Forms Integration without GPS) -->
             <div id="view-orders" class="p-4 space-y-4 hidden">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-500"></i> سلة الطلبات وإرسال الطلب</h2>
@@ -134,17 +133,17 @@
                     </div>
                 </div>
 
-                <!-- Web3Forms Order Form with GPS Location -->
+                <!-- Web3Forms Order Form (Clean & Direct) -->
                 <div class="glass-panel p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
                     <div class="flex items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                         <i class="fa-solid fa-paper-plane"></i>
-                        <span>إرسال الطلب عبر Web3Forms (تتبع سماح للموقع)</span>
+                        <span>إرسال الطلب مباشرة عبر Web3Forms</span>
                     </div>
 
                     <form id="order-form" onsubmit="submitOrderToWeb3Forms(event)" class="space-y-3">
                         <!-- Web3Forms Access Key -->
                         <input type="hidden" name="access_key" value="0c1ab218-9ed9-46ac-bb2c-a3998dd553a8">
-                        <input type="hidden" name="subject" value="طلب جديد من متجر التطبيق الذكي - مع تحديد الموقع">
+                        <input type="hidden" name="subject" value="طلب جديد من متجر التطبيق الذكي">
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
@@ -156,15 +155,9 @@
                             <input type="tel" name="phone" placeholder="05xxxxxxxx" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
 
-                        <!-- GPS Location Tracking -->
                         <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="text-[11px] font-bold text-slate-500">موقع التوصيل (GPS):</label>
-                                <button type="button" onclick="getGPSLocation()" class="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold hover:bg-indigo-100 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي الآن
-                                </button>
-                            </div>
-                            <input type="text" name="location_gps" id="gps-input" placeholder="اضغط على زر تحديد موقعي..." readonly required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-mono text-slate-500">
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل (مكتوب):</label>
+                            <input type="text" name="address" placeholder="المدينة، الحي، الشارع، رقم الحوش/العمارة..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
 
                         <!-- Hidden Products Data to be sent -->
@@ -172,7 +165,7 @@
                         <input type="hidden" name="total_amount" id="hidden-total-data">
 
                         <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-pink-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن وتأكيد التوصيل
+                            <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن
                         </button>
                     </form>
                 </div>
@@ -487,41 +480,11 @@
             hiddenTotalData.value = total.toFixed(2) + ' $';
         }
 
-        // GPS Geolocation for precise delivery tracking
-        function getGPSLocation() {
-            const gpsInput = document.getElementById('gps-input');
-            if (!navigator.geolocation) {
-                showToast('متصفحك لا يدعم تحديد الموقع الجغرافي', 'error');
-                return;
-            }
-            showToast('جاري تحديد موقعك بدقة عبر السماح GPS...', 'info');
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                    gpsInput.value = `خط العرض: ${lat.toFixed(4)}, خط الطول: ${lng.toFixed(4)}`;
-                    showToast('تم تحديد موقعك بدقة بنجاح!', 'success');
-                },
-                (error) => {
-                    showToast('يرجى السماح بصلاحية الموقع للتعرف على مكان التوصيل', 'error');
-                    gpsInput.value = "فشل التحديد - يرجى تفعيل الموقع";
-                },
-                { enableHighAccuracy: true }
-            );
-        }
-
-        // Submit Order to Web3Forms
+        // Submit Order to Web3Forms (Direct without GPS)
         function submitOrderToWeb3Forms(event) {
             event.preventDefault();
             if (appData.cart.length === 0) {
-                showToast('سلة الطلبات فارغة! أضف أكل أو منتجات أولاً', 'error');
-                return;
-            }
-
-            const gpsVal = document.getElementById('gps-input').value;
-            if (!gpsVal || gpsVal.includes('فشل') || gpsVal.includes('اضغط')) {
-                showToast('الرجاء تحديد الموقع الجغرافي GPS أولاً لتتمكن من إرسال الطلب', 'error');
+                showToast('سلة الطلبات فارغة! أضف منتجات أولاً', 'error');
                 return;
             }
 
@@ -539,12 +502,11 @@
             .then(async (response) => {
                 const json = await response.json();
                 if (response.status === 200) {
-                    showToast('تم إرسال الطلب بنجاح وتتبع الموقع!', 'success');
+                    showToast('تم إرسال الطلب بنجاح!', 'success');
                     appData.cart = [];
                     saveState();
                     renderCart();
                     formElement.reset();
-                    document.getElementById('gps-input').value = "";
                 } else {
                     showToast(json.message || 'حدث خطأ أثناء الإرسال، حاول مرة أخرى', 'error');
                 }
@@ -554,7 +516,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن وتأكيد التوصيل`;
+                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن`;
             });
         }
 
