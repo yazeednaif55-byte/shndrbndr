@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: CHECKOUT & ORDERS (Web3Forms Integration without GPS) -->
+            <!-- VIEW 3: CHECKOUT & ORDERS -->
             <div id="view-orders" class="p-4 space-y-4 hidden">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-500"></i> سلة الطلبات وإرسال الطلب</h2>
@@ -133,11 +133,11 @@
                     </div>
                 </div>
 
-                <!-- Web3Forms Order Form (Clean & Direct) -->
+                <!-- Web3Forms Order Form (Auto-saved fields) -->
                 <div class="glass-panel p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
                     <div class="flex items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                         <i class="fa-solid fa-paper-plane"></i>
-                        <span>إرسال الطلب مباشرة عبر Web3Forms</span>
+                        <span>إرسال الطلب (يتم خصم المبلغ من المحفظة تلقائياً)</span>
                     </div>
 
                     <form id="order-form" onsubmit="submitOrderToWeb3Forms(event)" class="space-y-3">
@@ -147,17 +147,17 @@
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
-                            <input type="text" name="name" id="order-customer-name" value="يزيد بن نايف" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم الجوال أو التواصل:</label>
-                            <input type="tel" name="phone" placeholder="05xxxxxxxx" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <input type="tel" name="phone" id="user-phone" placeholder="05xxxxxxxx" required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل (مكتوب):</label>
-                            <input type="text" name="address" placeholder="المدينة، الحي، الشارع، رقم الحوش/العمارة..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل:</label>
+                            <input type="text" name="address" id="user-address" placeholder="المدينة، الحي، الشارع، رقم العمارة..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
 
                         <!-- Hidden Products Data to be sent -->
@@ -165,7 +165,7 @@
                         <input type="hidden" name="total_amount" id="hidden-total-data">
 
                         <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-pink-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن
+                            <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ
                         </button>
                     </form>
                 </div>
@@ -178,8 +178,8 @@
                         <i class="fa-solid fa-user-astronaut"></i>
                     </div>
                     <div>
-                        <h3 id="profile-name" class="font-bold text-base">يزيد بن نايف</h3>
-                        <p id="profile-email" class="text-xs text-slate-500">yazeed@store.app</p>
+                        <h3 id="profile-name" class="font-bold text-base">زائر المتجر</h3>
+                        <p class="text-xs text-slate-500">مستخدم نشط</p>
                     </div>
                     <div class="pt-2">
                         <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
@@ -260,32 +260,30 @@
         let appData = {
             balance: 150.00,
             favorites: [],
-            cart: []
+            cart: [],
+            user: {
+                name: '',
+                phone: '',
+                address: ''
+            }
         };
 
-        // All Products List (Full Food, Tissues, Sweets, Electronics, Gaming)
+        // All Products List
         const products = [
-            // الأكل والوجبات والبطاطس والباستا
             { id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, cat: "food", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80" },
             { id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, cat: "food", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80" },
             { id: 3, name: "وجبة دجاج مقرمش (تشكن)", price: 11.00, cat: "food", img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop&q=80" },
             { id: 4, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, cat: "food", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80" },
             { id: 5, name: "ساندوتش شاورما دجاج صاروخ", price: 6.00, cat: "food", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400&auto=format&fit=crop&q=80" },
             { id: 6, name: "باستا إيطالية بالصلصة البيضاء", price: 10.50, cat: "food", img: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&auto=format&fit=crop&q=80" },
-
-            // الحلويات والمقرمشات
             { id: 7, name: "علبة شوكولاتة بلجيكية فاخرة", price: 18.00, cat: "sweets", img: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80" },
             { id: 8, name: "دونتس محشي شوكولاتة وتوت", price: 3.50, cat: "sweets", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80" },
             { id: 9, name: "آيس كريم فانيليا وشوكولاتة بارد", price: 5.00, cat: "sweets", img: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&auto=format&fit=crop&q=80" },
             { id: 10, name: "ميني كيكة جبن (تشيز كيك)", price: 7.25, cat: "sweets", img: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&auto=format&fit=crop&q=80" },
             { id: 11, name: "كرواسون فرنسي طازج بالزبدة", price: 3.00, cat: "sweets", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&auto=format&fit=crop&q=80" },
-
-            // المناديل والعناية الشخصية
             { id: 12, name: "كرتون مناديل وجه ناعمة (10 حبات)", price: 8.50, cat: "tissues", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80" },
             { id: 13, name: "مناديل مبللة معطرة للاستخدام اليومي", price: 3.00, cat: "tissues", img: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&auto=format&fit=crop&q=80" },
             { id: 14, name: "رول مناديل مطبخ عملاقة وممتصة", price: 6.00, cat: "tissues", img: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80" },
-
-            // الإلكترونيات والألعاب
             { id: 15, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, cat: "electronics", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80" },
             { id: 16, name: "ساعة رياضية ذكية متطورة", price: 79.99, cat: "electronics", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80" },
             { id: 17, name: "بطاقة شحن ألعاب رقمية 50$", price: 50.00, cat: "gaming", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&auto=format&fit=crop&q=80" },
@@ -300,6 +298,15 @@
             if (saved) {
                 appData = JSON.parse(saved);
             }
+            // Populate user form inputs if saved
+            if (appData.user) {
+                document.getElementById('user-name').value = appData.user.name || '';
+                document.getElementById('user-phone').value = appData.user.phone || '';
+                document.getElementById('user-address').value = appData.user.address || '';
+                if (appData.user.name) {
+                    document.getElementById('profile-name').innerText = appData.user.name;
+                }
+            }
             updateWalletUI();
             renderProducts();
             renderFavorites();
@@ -308,6 +315,19 @@
 
         function saveState() {
             localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
+        }
+
+        // Save input user data automatically as they type
+        function saveUserDataInput() {
+            appData.user.name = document.getElementById('user-name').value;
+            appData.user.phone = document.getElementById('user-phone').value;
+            appData.user.address = document.getElementById('user-address').value;
+            if (appData.user.name) {
+                document.getElementById('profile-name').innerText = appData.user.name;
+            } else {
+                document.getElementById('profile-name').innerText = "زائر المتجر";
+            }
+            saveState();
         }
 
         // Tab Switching Logic
@@ -480,7 +500,7 @@
             hiddenTotalData.value = total.toFixed(2) + ' $';
         }
 
-        // Submit Order to Web3Forms (Direct without GPS)
+        // Submit Order to Web3Forms and Deduct Wallet Balance
         function submitOrderToWeb3Forms(event) {
             event.preventDefault();
             if (appData.cart.length === 0) {
@@ -488,9 +508,17 @@
                 return;
             }
 
+            let totalCost = appData.cart.reduce((sum, item) => sum + item.price, 0);
+
+            if (appData.balance < totalCost) {
+                showToast('رصيد المحفظة غير كافٍ! يرجى شحن الرصيد أولاً', 'error');
+                openWalletModal();
+                return;
+            }
+
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> جاري إرسال الطلب...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> جاري إتمام الدفع وإرسال الطلب...`;
 
             const formElement = document.getElementById('order-form');
             const formData = new FormData(formElement);
@@ -502,11 +530,14 @@
             .then(async (response) => {
                 const json = await response.json();
                 if (response.status === 200) {
-                    showToast('تم إرسال الطلب بنجاح!', 'success');
+                    // Deduct balance
+                    appData.balance -= totalCost;
+                    updateWalletUI();
+
+                    showToast(`تم الدفع وإرسال الطلب بنجاح! خصم $${totalCost.toFixed(2)}`, 'success');
                     appData.cart = [];
                     saveState();
                     renderCart();
-                    formElement.reset();
                 } else {
                     showToast(json.message || 'حدث خطأ أثناء الإرسال، حاول مرة أخرى', 'error');
                 }
@@ -516,7 +547,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن`;
+                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ`;
             });
         }
 
