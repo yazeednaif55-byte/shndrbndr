@@ -16,6 +16,18 @@
             theme: {
                 extend: {
                     fontFamily: { cairo: ['Cairo', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
                     animation: {
                         'bounce-slow': 'bounce 3s infinite',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -43,7 +55,7 @@
     <!-- Registration / Welcome Modal (First Time Only) -->
     <div id="email-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl text-center">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
                 <i class="fa-solid fa-user-check"></i>
             </div>
             <div>
@@ -51,9 +63,9 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">يرجى كتابة اسمك وإيميلك الصحيح للمتابعة واستخدام المتجر.</p>
             </div>
             <form id="email-gate-form" onsubmit="verifyAndSaveUserData(event)" class="space-y-3">
-                <input type="text" id="gate-name-input" placeholder="أدخل اسمك الكريم..." required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-slate-100">
-                <input type="email" id="gate-email-input" placeholder="example@domain.com" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-slate-100">
-                <button type="submit" id="btn-enter-store" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/25 hover:from-emerald-700 hover:to-green-700 transition active:scale-95">
+                <input type="text" id="gate-name-input" placeholder="أدخل اسمك الكريم..." required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-800 dark:text-slate-100">
+                <input type="email" id="gate-email-input" placeholder="example@domain.com" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-800 dark:text-slate-100">
+                <button type="submit" id="btn-enter-store" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-violet-500/25 hover:from-violet-700 hover:to-indigo-700 transition active:scale-95">
                     دخول إلى المتجر
                 </button>
             </form>
@@ -65,13 +77,13 @@
         <!-- Top Header Navigation -->
         <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-green-500 to-teal-600 flex items-center justify-center text-white shadow-lg animate-pulse-slow">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg animate-pulse-slow">
                     <i class="fa-solid fa-bag-shopping text-base"></i>
                 </div>
                 <div>
                     <h1 class="font-black text-sm text-slate-900 dark:text-white">المتجر الذكي المتكامل</h1>
-                    <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping"></span> متصل وجاهز للطلب
+                    <p class="text-[10px] text-violet-600 dark:text-violet-400 font-bold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-violet-500 inline-block animate-ping"></span> متصل وجاهز للطلب
                     </p>
                 </div>
             </div>
@@ -81,7 +93,7 @@
                 <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-110 transition">
                     <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button onclick="openWalletModal()" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center space-x-1.5 space-x-reverse text-emerald-700 dark:text-emerald-300 font-bold text-xs hover:scale-105 transition">
+                <button onclick="openWalletModal()" class="px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/50 border border-violet-200 dark:border-violet-800 flex items-center space-x-1.5 space-x-reverse text-violet-700 dark:text-violet-300 font-bold text-xs hover:scale-105 transition">
                     <i class="fa-solid fa-wallet text-xs"></i>
                     <span id="wallet-balance">0.00 $</span>
                 </button>
@@ -93,16 +105,16 @@
             
             <!-- VIEW 1: HOME / SHOP -->
             <div id="view-home" class="p-4 space-y-4">
-                <!-- National Day & Special Offers Banner Slider -->
-                <div class="relative rounded-3xl bg-gradient-to-r from-emerald-700 via-green-600 to-teal-800 text-white p-6 shadow-xl overflow-hidden">
+                <!-- Special Offers Banner Slider -->
+                <div class="relative rounded-3xl bg-gradient-to-r from-violet-700 via-indigo-600 to-purple-800 text-white p-6 shadow-xl overflow-hidden">
                     <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-spin-slow"></div>
                     <div class="relative z-10 space-y-2">
                         <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-extrabold backdrop-blur-md flex items-center gap-1.5 w-max">
-                            <i class="fa-solid fa-flag text-amber-300"></i> عروض اليوم الوطني المجيد 
+                            <i class="fa-solid fa-sparkles text-amber-300"></i> عروض وتخفيضات المتجر المميزة
                         </span>
-                        <h2 class="text-xl font-black">خصومات وعروض كبرى على الوجبات، البطاطس، الباستا والمناديل!</h2>
-                        <p class="text-xs text-emerald-100">استمتع بتخفيضات تصل إلى 50% على أقسام المتجر المختلفة لفترة محدودة.</p>
-                        <button onclick="openWalletModal()" class="mt-2 px-4 py-2 bg-white text-emerald-900 rounded-xl font-bold text-xs shadow-lg hover:bg-emerald-50 transition">شحن المحفظة الآن</button>
+                        <h2 class="text-xl font-black">خصومات كبرى على جميع الوجبات، الأجهزة والإلكترونيات!</h2>
+                        <p class="text-xs text-violet-100">استمتع بتخفيضات حصرية تصل إلى 50% لفترة محدودة على أرقى المنتجات.</p>
+                        <button onclick="openWalletModal()" class="mt-2 px-4 py-2 bg-white text-violet-900 rounded-xl font-bold text-xs shadow-lg hover:bg-violet-50 transition">شحن المحفظة الآن</button>
                     </div>
                 </div>
 
@@ -110,11 +122,11 @@
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
-                        <input type="text" id="app-search" oninput="filterProducts()" placeholder="ابحث عن بطاطس، باستا، بيتزا، مناديل..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
+                        <input type="text" id="app-search" oninput="filterProducts()" placeholder="ابحث عن بطاطس، باستا، بيتزا، مناديل..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500 shadow-sm">
                     </div>
                     <select id="cat-select" onchange="filterProducts()" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none shadow-sm">
                         <option value="all">الكل</option>
-                        <option value="offers"> عروض اليوم الوطني</option>
+                        <option value="offers"> العروض المميزة</option>
                         <option value="food"> أكل ووجبات</option>
                         <option value="sweets"> حلويات ومقرمشات</option>
                         <option value="tissues"> مناديل وعناية</option>
@@ -140,7 +152,7 @@
             <!-- VIEW 3: CHECKOUT & ORDERS -->
             <div id="view-orders" class="p-4 space-y-4 hidden">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-600"></i> سلة الطلبات وإرسال الطلب</h2>
+                    <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-violet-600"></i> سلة الطلبات وإرسال الطلب</h2>
                     <button onclick="clearOrders()" class="text-[11px] text-rose-500 font-bold hover:underline">مسح السلة</button>
                 </div>
 
@@ -152,13 +164,13 @@
                     </div>
                     <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center font-black text-sm">
                         <span>الإجمالي الكلي:</span>
-                        <span id="cart-total-price" class="text-emerald-600">0.00 $</span>
+                        <span id="cart-total-price" class="text-violet-600">0.00 $</span>
                     </div>
                 </div>
 
                 <!-- Web3Forms Order Form (Auto-saved fields) -->
                 <div class="glass-panel p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
-                    <div class="flex items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                    <div class="flex items-center space-x-2 space-x-reverse text-violet-600 dark:text-violet-400 font-bold text-xs">
                         <i class="fa-solid fa-paper-plane"></i>
                         <span>إرسال الطلب (يتم خصم المبلغ من المحفظة تلقائياً)</span>
                     </div>
@@ -174,23 +186,23 @@
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
-                            <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500">
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم الجوال أو التواصل:</label>
-                            <input type="tel" name="phone" id="user-phone" placeholder="05xxxxxxxx" required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <input type="tel" name="phone" id="user-phone" placeholder="05xxxxxxxx" required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500">
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل:</label>
-                            <input type="text" name="address" id="user-address" placeholder="المدينة، الحي، الشارع، رقم العمارة..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <input type="text" name="address" id="user-address" placeholder="المدينة، الحي، الشارع، رقم العمارة..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500">
                         </div>
 
                         <input type="hidden" name="products_details" id="hidden-products-data">
                         <input type="hidden" name="total_amount" id="hidden-total-data">
 
-                        <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-violet-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ
                         </button>
                     </form>
@@ -200,15 +212,15 @@
             <!-- VIEW 4: PROFILE & SETTINGS -->
             <div id="view-profile" class="p-4 space-y-4 hidden">
                 <div class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-lg">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-bounce-slow">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-bounce-slow">
                         <i class="fa-solid fa-user-astronaut"></i>
                     </div>
                     <div>
                         <h3 id="profile-name" class="font-bold text-base">زائر المتجر</h3>
-                        <p id="profile-email-display" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold"></p>
+                        <p id="profile-email-display" class="text-xs text-violet-600 dark:text-violet-400 font-semibold"></p>
                     </div>
                     <div class="pt-2">
-                        <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
+                        <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
                     </div>
                 </div>
 
@@ -219,7 +231,7 @@
                     </div>
                     <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
                         <span>إشعارات الطلبات والتوصيل</span>
-                        <span class="text-emerald-500"><i class="fa-solid fa-check-circle"></i> مفعلة</span>
+                        <span class="text-violet-500"><i class="fa-solid fa-check-circle"></i> مفعلة</span>
                     </div>
                     <button onclick="clearUserData()" class="w-full p-4 text-right text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 flex items-center justify-between transition">
                         <span>إعادة ضبط المتجر ومسح البيانات</span>
@@ -232,7 +244,7 @@
 
         <!-- Bottom Navigation Bar -->
         <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-2 py-2.5 flex justify-around items-center z-40 shadow-2xl">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-emerald-600 flex-1 py-1 transition transform hover:scale-105">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-violet-600 flex-1 py-1 transition transform hover:scale-105">
                 <i class="fa-solid fa-store text-base"></i>
                 <span class="text-[10px] font-bold">المتجر</span>
             </button>
@@ -242,7 +254,7 @@
             </button>
             <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105 relative">
                 <i class="fa-solid fa-cart-shopping text-base"></i>
-                <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-emerald-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
+                <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
                 <span class="text-[10px] font-bold">السلة والطلب</span>
             </button>
             <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition transform hover:scale-105">
@@ -273,9 +285,9 @@
             <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
                 <div>
                     <span class="text-[10px] text-slate-400 block">السعر:</span>
-                    <span id="modal-product-price" class="font-black text-base text-emerald-600">0.00 $</span>
+                    <span id="modal-product-price" class="font-black text-base text-violet-600">0.00 $</span>
                 </div>
-                <button id="modal-add-btn" onclick="" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-500/20">إضافة للسلة</button>
+                <button id="modal-add-btn" onclick="" class="px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-violet-500/20">إضافة للسلة</button>
             </div>
         </div>
     </div>
@@ -284,21 +296,21 @@
     <div id="wallet-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-sm text-emerald-600 flex items-center gap-1.5">
+                <h3 class="font-bold text-sm text-violet-600 flex items-center gap-1.5">
                     <i class="fa-solid fa-gift"></i> شحن رصيد التطبيق
                 </h3>
                 <button onclick="closeWalletModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-xs text-slate-500">أدخل كود الهدية أو كود اليوم الوطني لشحن حسابك فوراً:</p>
-            <input type="text" id="gift-input" placeholder="أدخل الكود هنا..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 uppercase font-mono text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <p class="text-xs text-slate-500">أدخل كود الهدية أو كود التخفيض لشحن حسابك فوراً:</p>
+            <input type="text" id="gift-input" placeholder="أدخل الكود هنا..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 uppercase font-mono text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-violet-500">
             
-            <button onclick="redeemWalletCode()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700 transition">تأكيد وشحن الرصيد</button>
+            <button onclick="redeemWalletCode()" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-violet-500/20 hover:from-violet-700 hover:to-indigo-700 transition">تأكيد وشحن الرصيد</button>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 space-x-reverse text-xs border border-slate-800">
-        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <i id="toast-icon" class="fa-solid fa-circle-check text-violet-400"></i>
         <span id="toast-text">تمت العملية بنجاح</span>
     </div>
 
@@ -456,7 +468,7 @@
             "VIP50": 50, 
             "PRO100": 100, 
             "MEGA250": 250,
-            "ILOVESAUDI": 1000,
+            "WELCOME": 500,
             "SHNDRBNDR_LOVE": 1000 
         };
         const usedCodesSet = new Set();
@@ -553,7 +565,7 @@
                 document.getElementById(`nav-${t}`).className = "flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 transition";
             });
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-emerald-600 flex-1 py-1 transition";
+            document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-violet-600 flex-1 py-1 transition";
         }
 
         function renderProducts() {
@@ -579,7 +591,7 @@
                     <div class="glass-panel rounded-3xl p-3 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md transition">
                         <div class="relative rounded-2xl overflow-hidden aspect-square bg-slate-100 dark:bg-slate-800 cursor-pointer" onclick="openProductModal(${p.id})">
                             <img src="${p.images[0]}" class="w-full h-full object-cover">
-                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[9px] font-black">عرض خاص</span>' : ''}
+                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-violet-600 text-white px-2 py-0.5 rounded-lg text-[9px] font-black">عرض خاص</span>' : ''}
                             <button onclick="event.stopPropagation(); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow-md">
                                 <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                             </button>
@@ -587,11 +599,11 @@
                         <div class="space-y-1 cursor-pointer" onclick="openProductModal(${p.id})">
                             <h3 class="font-bold text-xs line-clamp-1">${p.name}</h3>
                             <div class="flex items-center space-x-2 space-x-reverse">
-                                <span class="font-black text-sm text-emerald-600">${p.price.toFixed(2)} $</span>
+                                <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
                                 ${p.oldPrice ? `<span class="text-[10px] text-slate-400 line-through">${p.oldPrice.toFixed(2)}$</span>` : ''}
                             </div>
                         </div>
-                        <button onclick="addToCart(${p.id})" class="w-full py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-bold hover:bg-emerald-600 hover:text-white transition">
+                        <button onclick="addToCart(${p.id})" class="w-full py-2 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 rounded-xl text-xs font-bold hover:bg-violet-600 hover:text-white transition">
                             إضافة للسلة
                         </button>
                     </div>
@@ -633,11 +645,11 @@
                             <img src="${p.images[0]}" class="w-14 h-14 rounded-xl object-cover">
                             <div>
                                 <h4 class="font-bold text-xs">${p.name}</h4>
-                                <span class="font-black text-xs text-emerald-600">${p.price.toFixed(2)} $</span>
+                                <span class="font-black text-xs text-violet-600">${p.price.toFixed(2)} $</span>
                             </div>
                         </div>
                         <div class="flex items-center space-x-2 space-x-reverse">
-                            <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold">شراء</button>
+                            <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-violet-600 text-white rounded-xl text-xs font-bold">شراء</button>
                             <button onclick="toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
@@ -692,7 +704,7 @@
                                 <img src="${item.images[0]}" class="w-10 h-10 rounded-lg object-cover">
                                 <div>
                                     <h4 class="font-bold line-clamp-1">${item.name}</h4>
-                                    <span class="text-emerald-600 font-bold">${(item.price * item.qty).toFixed(2)} $</span>
+                                    <span class="text-violet-600 font-bold">${(item.price * item.qty).toFixed(2)} $</span>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2 space-x-reverse bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">
@@ -735,7 +747,7 @@
             thumbsContainer.innerHTML = '';
             p.images.forEach((img) => {
                 thumbsContainer.innerHTML += `
-                    <img src="${img}" onclick="document.getElementById('modal-main-img').src='${img}'" class="w-14 h-14 rounded-xl object-cover cursor-pointer border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition">
+                    <img src="${img}" onclick="document.getElementById('modal-main-img').src='${img}'" class="w-14 h-14 rounded-xl object-cover cursor-pointer border-2 border-slate-200 dark:border-slate-700 hover:border-violet-500 transition">
                 `;
             });
 
@@ -866,7 +878,7 @@
             if (type === "error") {
                 toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400";
             } else {
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+                toastIcon.className = "fa-solid fa-circle-check text-violet-400";
             }
 
             toast.classList.remove('-translate-y-20', 'opacity-0');
