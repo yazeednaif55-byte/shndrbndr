@@ -40,6 +40,26 @@
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
+    <!-- Registration / Welcome Modal (First Time Only) -->
+    <div id="email-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl text-center">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+                <h2 class="font-black text-lg text-slate-900 dark:text-white">مرحباً بك في متجر المنتجات</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">يرجى كتابة اسمك وإيميلك الصحيح للمتابعة واستخدام المتجر.</p>
+            </div>
+            <form id="email-gate-form" onsubmit="verifyAndSaveUserData(event)" class="space-y-3">
+                <input type="text" id="gate-name-input" placeholder="أدخل اسمك الكريم..." required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-slate-100">
+                <input type="email" id="gate-email-input" placeholder="example@domain.com" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-slate-100">
+                <button type="submit" id="btn-enter-store" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/25 hover:from-emerald-700 hover:to-green-700 transition active:scale-95">
+                    دخول إلى المتجر
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div class="app-shell flex flex-col bg-slate-50 dark:bg-slate-900 relative overflow-x-hidden">
 
         <!-- Top Header Navigation -->
@@ -148,6 +168,11 @@
                         <input type="hidden" name="subject" value="طلب جديد من متجر التطبيق الذكي">
 
                         <div>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">البريد الإلكتروني:</label>
+                            <input type="email" name="email" id="user-email" placeholder="email@domain.com" required readonly class="w-full px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 cursor-not-allowed">
+                        </div>
+
+                        <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
                             <input type="text" name="name" id="user-name" placeholder="أدخل اسمك الكريم..." required oninput="saveUserDataInput()" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
@@ -180,7 +205,7 @@
                     </div>
                     <div>
                         <h3 id="profile-name" class="font-bold text-base">زائر المتجر</h3>
-                        <p class="text-xs text-slate-500">مستخدم نشط</p>
+                        <p id="profile-email-display" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold"></p>
                     </div>
                     <div class="pt-2">
                         <button onclick="openWalletModal()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">شحن المحفظة بالكود</button>
@@ -228,7 +253,7 @@
 
     </div>
 
-    <!-- Product Details Modal (Multi-Image Support) -->
+    <!-- Product Details Modal -->
     <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
         <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
@@ -236,16 +261,12 @@
                 <button onclick="closeProductModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <!-- Main Gallery Image -->
             <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
                 <img id="modal-main-img" src="" class="w-full h-full object-cover transition-all duration-300">
                 <span id="modal-discount-tag" class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[10px] font-black hidden">خصم خاص</span>
             </div>
 
-            <!-- Thumbnail Slider for Multi-Images -->
-            <div id="modal-thumbs" class="flex gap-2 overflow-x-auto pb-1">
-                <!-- Dynamic Thumbs -->
-            </div>
+            <div id="modal-thumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
 
             <p id="modal-product-desc" class="text-xs text-slate-500 dark:text-slate-400">وصف تفصيلي للمنتج ومواصفاته الكاملة.</p>
             
@@ -287,10 +308,10 @@
             balance: 150.00,
             favorites: [],
             cart: [],
-            user: { name: '', phone: '', address: '' }
+            user: { email: '', name: '', phone: '', address: '' }
         };
 
-        // Complete Products List with Multiple Images and National Day Offers
+        // Complete Products List
         const products = [
             { 
                 id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, oldPrice: 18.00, cat: "food", isOffer: true,
@@ -430,7 +451,7 @@
             }
         ];
 
-        // Secret Gift / Promo Codes
+        // Secret Promo Codes
         const giftCodes = { 
             "VIP50": 50, 
             "PRO100": 100, 
@@ -440,24 +461,75 @@
         };
         const usedCodesSet = new Set();
 
-        window.onload = function() {
+        window.addEventListener('DOMContentLoaded', function() {
             const saved = localStorage.getItem('ultimate_store_state');
             if (saved) {
-                appData = JSON.parse(saved);
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {}
             }
+
+            // Verify User Registration Status
+            if (!appData.user || !appData.user.email || !appData.user.name) {
+                const modal = document.getElementById('email-gate-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                initAppValues();
+            }
+        });
+
+        function verifyAndSaveUserData(event) {
+            if (event) event.preventDefault();
+            
+            const nameInput = document.getElementById('gate-name-input').value.trim();
+            const emailInput = document.getElementById('gate-email-input').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if(!nameInput) {
+                showToast("الرجاء إدخال اسمك الكريم", "error");
+                return false;
+            }
+
+            if(!emailInput || !emailRegex.test(emailInput)) {
+                showToast("الرجاء إدخال بريد إلكتروني صحيح", "error");
+                return false;
+            }
+
+            if (!appData.user) appData.user = {};
+            appData.user.name = nameInput;
+            appData.user.email = emailInput;
+            saveState();
+
+            const modal = document.getElementById('email-gate-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+
+            initAppValues();
+            showToast(`أهلاً بك يا ${nameInput}! تم الدخول إلى المتجر بنجاح`);
+            return false;
+        }
+
+        function initAppValues() {
             if (appData.user) {
+                document.getElementById('user-email').value = appData.user.email || '';
                 document.getElementById('user-name').value = appData.user.name || '';
                 document.getElementById('user-phone').value = appData.user.phone || '';
                 document.getElementById('user-address').value = appData.user.address || '';
                 if (appData.user.name) {
                     document.getElementById('profile-name').innerText = appData.user.name;
+                } else {
+                    document.getElementById('profile-name').innerText = "زائر المتجر";
+                }
+                if (appData.user.email) {
+                    document.getElementById('profile-email-display').innerText = appData.user.email;
                 }
             }
             updateWalletUI();
             renderProducts();
             renderFavorites();
             renderCart();
-        };
+        }
 
         function saveState() {
             localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
@@ -503,28 +575,27 @@
 
             filtered.forEach(p => {
                 const isFav = appData.favorites.includes(p.id);
-                const card = document.createElement('div');
-                card.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition";
-                card.innerHTML = `
-                    <div onclick="openProductModal(${p.id})" class="cursor-pointer">
-                        <div class="relative rounded-xl overflow-hidden mb-2 bg-slate-100 dark:bg-slate-800 aspect-video">
-                            <img src="${p.images[0]}" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
-                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9px] font-black shadow">عرض خاص</span>' : ''}
-                            <button onclick="event.stopPropagation(); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow hover:scale-110 transition">
-                                <i class="fa-solid fa-heart"></i>
+                container.innerHTML += `
+                    <div class="glass-panel rounded-3xl p-3 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md transition">
+                        <div class="relative rounded-2xl overflow-hidden aspect-square bg-slate-100 dark:bg-slate-800 cursor-pointer" onclick="openProductModal(${p.id})">
+                            <img src="${p.images[0]}" class="w-full h-full object-cover">
+                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[9px] font-black">عرض خاص</span>' : ''}
+                            <button onclick="event.stopPropagation(); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} shadow-md">
+                                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                             </button>
                         </div>
-                        <h3 class="font-bold text-xs line-clamp-1 mb-1">${p.name}</h3>
-                        <div class="flex items-center gap-2">
-                            <span class="font-black text-sm text-emerald-600">${p.price.toFixed(2)} $</span>
-                            ${p.oldPrice > p.price ? `<span class="text-[10px] text-slate-400 line-through">${p.oldPrice.toFixed(2)}$</span>` : ''}
+                        <div class="space-y-1 cursor-pointer" onclick="openProductModal(${p.id})">
+                            <h3 class="font-bold text-xs line-clamp-1">${p.name}</h3>
+                            <div class="flex items-center space-x-2 space-x-reverse">
+                                <span class="font-black text-sm text-emerald-600">${p.price.toFixed(2)} $</span>
+                                ${p.oldPrice ? `<span class="text-[10px] text-slate-400 line-through">${p.oldPrice.toFixed(2)}$</span>` : ''}
+                            </div>
                         </div>
+                        <button onclick="addToCart(${p.id})" class="w-full py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-bold hover:bg-emerald-600 hover:text-white transition">
+                            إضافة للسلة
+                        </button>
                     </div>
-                    <button onclick="addToCart(${p.id})" class="mt-3 w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold text-[11px] rounded-xl transition shadow flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus text-xs"></i> إضافة للسلة
-                    </button>
                 `;
-                container.appendChild(card);
             });
         }
 
@@ -532,61 +603,14 @@
             renderProducts();
         }
 
-        // Product Details & Multi-Image Gallery Modal
-        function openProductModal(id) {
-            const p = products.find(item => item.id === id);
-            if (!p) return;
-
-            document.getElementById('modal-product-title').innerText = p.name;
-            document.getElementById('modal-main-img').src = p.images[0];
-            document.getElementById('modal-product-desc').innerText = p.desc;
-            document.getElementById('modal-product-price').innerText = p.price.toFixed(2) + ' $';
-            
-            const discountTag = document.getElementById('modal-discount-tag');
-            if (p.isOffer) {
-                discountTag.classList.remove('hidden');
-            } else {
-                discountTag.classList.add('hidden');
-            }
-
-            const thumbsContainer = document.getElementById('modal-thumbs');
-            thumbsContainer.innerHTML = '';
-            p.images.forEach((imgSrc, idx) => {
-                const thumb = document.createElement('img');
-                thumb.src = imgSrc;
-                thumb.className = `w-14 h-14 rounded-xl object-cover cursor-pointer border-2 ${idx === 0 ? 'border-emerald-600' : 'border-transparent'} hover:opacity-80 transition`;
-                thumb.onclick = () => {
-                    document.getElementById('modal-main-img').src = imgSrc;
-                    Array.from(thumbsContainer.children).forEach(t => t.classList.remove('border-emerald-600'));
-                    thumb.classList.add('border-emerald-600');
-                };
-                thumbsContainer.appendChild(thumb);
-            });
-
-            document.getElementById('modal-add-btn').onclick = () => {
-                addToCart(p.id);
-                closeProductModal();
-            };
-
-            const modal = document.getElementById('product-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeProductModal() {
-            const modal = document.getElementById('product-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
         function toggleFavorite(id) {
             const index = appData.favorites.indexOf(id);
             if (index > -1) {
                 appData.favorites.splice(index, 1);
-                showToast('تمت الإزالة من المفضلة', 'info');
+                showToast("تم إزالة المنتج من المفضلة");
             } else {
                 appData.favorites.push(id);
-                showToast('تمت الإضافة للمفضلة', 'success');
+                showToast("تم إضافة المنتج للمفضلة");
             }
             saveState();
             renderProducts();
@@ -597,205 +621,261 @@
             const container = document.getElementById('favorites-container');
             container.innerHTML = '';
             if (appData.favorites.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-xs text-slate-400 font-bold">لا توجد منتجات مفضلة حالياً</div>`;
+                container.innerHTML = `<div class="text-center py-12 text-xs text-slate-400 font-bold">لا توجد منتجات في المفضلة حالياً</div>`;
                 return;
             }
             appData.favorites.forEach(id => {
                 const p = products.find(item => item.id === id);
                 if (!p) return;
-                const div = document.createElement('div');
-                div.className = "glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between";
-                div.innerHTML = `
-                    <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="openProductModal(${p.id})">
-                        <img src="${p.images[0]}" class="w-12 h-12 rounded-xl object-cover">
-                        <div>
-                            <h4 class="font-bold text-xs">${p.name}</h4>
-                            <span class="text-xs text-emerald-600 font-bold">${p.price.toFixed(2)} $</span>
+                container.innerHTML += `
+                    <div class="glass-panel p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="openProductModal(${p.id})">
+                            <img src="${p.images[0]}" class="w-14 h-14 rounded-xl object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs">${p.name}</h4>
+                                <span class="font-black text-xs text-emerald-600">${p.price.toFixed(2)} $</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold">شراء</button>
+                            <button onclick="toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-[10px] font-bold">شراء</button>
-                        <button onclick="toggleFavorite(${p.id})" class="text-rose-500 p-2 text-xs"><i class="fa-solid fa-trash"></i></button>
-                    </div>
                 `;
-                container.appendChild(div);
             });
         }
 
         function addToCart(id) {
             const p = products.find(item => item.id === id);
-            appData.cart.push(p);
+            if (!p) return;
+            const existing = appData.cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                appData.cart.push({ ...p, qty: 1 });
+            }
             saveState();
             renderCart();
-            showToast(`تمت إضافة "${p.name}" إلى السلة`, 'success');
+            showToast(`تمت إضافة ${p.name} إلى السلة`);
         }
 
-        function removeFromCart(index) {
-            appData.cart.splice(index, 1);
+        function updateCartQty(id, change) {
+            const item = appData.cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += change;
+            if (item.qty <= 0) {
+                appData.cart = appData.cart.filter(i => i.id !== id);
+            }
             saveState();
             renderCart();
-            showToast('تمت إزالة المنتج من السلة', 'info');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-list');
+            container.innerHTML = '';
+            const badge = document.getElementById('cart-badge');
+            
+            let totalQty = 0;
+            let totalPrice = 0;
+
+            if (appData.cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-4 font-bold">السلة فارغة حالياً</p>`;
+                badge.classList.add('hidden');
+            } else {
+                badge.classList.remove('hidden');
+                appData.cart.forEach(item => {
+                    totalQty += item.qty;
+                    totalPrice += item.price * item.qty;
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between bg-white/50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700 text-xs">
+                            <div class="flex items-center space-x-2 space-x-reverse">
+                                <img src="${item.images[0]}" class="w-10 h-10 rounded-lg object-cover">
+                                <div>
+                                    <h4 class="font-bold line-clamp-1">${item.name}</h4>
+                                    <span class="text-emerald-600 font-bold">${(item.price * item.qty).toFixed(2)} $</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="text-slate-500 font-bold px-1"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                <span class="font-black text-xs">${item.qty}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="text-slate-500 font-bold px-1"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            badge.innerText = totalQty;
+            document.getElementById('cart-total-price').innerText = totalPrice.toFixed(2) + ' $';
+            document.getElementById('hidden-total-data').value = totalPrice.toFixed(2) + ' $';
+
+            let detailsStr = appData.cart.map(i => `${i.name} (الكمية: ${i.qty}) - السعر: ${i.price * i.qty}$`).join(' | ');
+            document.getElementById('hidden-products-data').value = detailsStr;
         }
 
         function clearOrders() {
             appData.cart = [];
             saveState();
             renderCart();
-            showToast('تم إفراغ سلة الطلبات', 'info');
+            showToast("تم مسح السلة بنجاح");
         }
 
-        function renderCart() {
-            const container = document.getElementById('cart-items-list');
-            const badge = document.getElementById('cart-badge');
-            const totalPriceEl = document.getElementById('cart-total-price');
-            const hiddenProductsData = document.getElementById('hidden-products-data');
-            const hiddenTotalData = document.getElementById('hidden-total-data');
+        // Product Modal Functions
+        function openProductModal(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('modal-product-title').innerText = p.name;
+            document.getElementById('modal-main-img').src = p.images[0];
+            document.getElementById('modal-product-desc').innerText = p.desc;
+            document.getElementById('modal-product-price').innerText = p.price.toFixed(2) + ' $';
+            
+            const tag = document.getElementById('modal-discount-tag');
+            if(p.isOffer) tag.classList.remove('hidden'); else tag.classList.add('hidden');
 
-            container.innerHTML = '';
-
-            if (appData.cart.length > 0) {
-                badge.innerText = appData.cart.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-                container.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-bold">السلة فارغة حالياً. أضف منتجات للطلب!</div>`;
-                totalPriceEl.innerText = "0.00 $";
-                hiddenProductsData.value = "";
-                hiddenTotalData.value = "0.00 $";
-                return;
-            }
-
-            let total = 0;
-            let summaryText = "";
-
-            appData.cart.forEach((item, index) => {
-                total += item.price;
-                summaryText += `- ${item.name} (${item.price} $)\n`;
-
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl text-xs";
-                div.innerHTML = `
-                    <div class="flex items-center space-x-2 space-x-reverse cursor-pointer" onclick="openProductModal(${item.id})">
-                        <img src="${item.images[0]}" class="w-8 h-8 rounded-lg object-cover">
-                        <span class="font-bold line-clamp-1">${item.name}</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-bold text-emerald-600">${item.price.toFixed(2)} $</span>
-                        <button onclick="removeFromCart(${index})" class="text-rose-500 text-xs hover:scale-110"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
+            const thumbsContainer = document.getElementById('modal-thumbs');
+            thumbsContainer.innerHTML = '';
+            p.images.forEach((img) => {
+                thumbsContainer.innerHTML += `
+                    <img src="${img}" onclick="document.getElementById('modal-main-img').src='${img}'" class="w-14 h-14 rounded-xl object-cover cursor-pointer border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition">
                 `;
-                container.appendChild(div);
             });
 
-            totalPriceEl.innerText = total.toFixed(2) + ' $';
-            hiddenProductsData.value = summaryText;
-            hiddenTotalData.value = total.toFixed(2) + ' $';
+            document.getElementById('modal-add-btn').setAttribute('onclick', `addToCart(${p.id}); closeProductModal();`);
+            document.getElementById('product-modal').classList.remove('hidden');
+            document.getElementById('product-modal').classList.add('flex');
         }
 
-        function submitOrderToWeb3Forms(event) {
-            event.preventDefault();
-            if (appData.cart.length === 0) {
-                showToast('سلة الطلبات فارغة! أضف منتجات أولاً', 'error');
-                return;
-            }
-
-            let totalCost = appData.cart.reduce((sum, item) => sum + item.price, 0);
-
-            if (appData.balance < totalCost) {
-                showToast('رصيد المحفظة غير كافٍ! يرجى شحن الرصيد أولاً', 'error');
-                openWalletModal();
-                return;
-            }
-
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> جاري إتمام الدفع وإرسال الطلب...`;
-
-            const formElement = document.getElementById('order-form');
-            const formData = new FormData(formElement);
-
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                body: formData
-            })
-            .then(async (response) => {
-                const json = await response.json();
-                if (response.status === 200) {
-                    appData.balance -= totalCost;
-                    updateWalletUI();
-
-                    showToast(`تم الدفع وإرسال الطلب بنجاح! خصم $${totalCost.toFixed(2)}`, 'success');
-                    appData.cart = [];
-                    saveState();
-                    renderCart();
-                } else {
-                    showToast(json.message || 'حدث خطأ أثناء الإرسال، حاول مرة أخرى', 'error');
-                }
-            })
-            .catch(error => {
-                showToast('حدث خطأ في الاتصال بالإنترنت', 'error');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ`;
-            });
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('flex');
+            document.getElementById('product-modal').classList.add('hidden');
         }
 
+        // Wallet Modal Functions
         function openWalletModal() {
             document.getElementById('wallet-modal').classList.remove('hidden');
             document.getElementById('wallet-modal').classList.add('flex');
         }
-        function closeWalletModal() {
-            document.getElementById('wallet-modal').classList.add('hidden');
-            document.getElementById('wallet-modal').classList.remove('flex');
-        }
 
-        function redeemWalletCode() {
-            const codeInput = document.getElementById('gift-input');
-            const code = codeInput.value.trim().toUpperCase();
-            if (giftCodes.hasOwnProperty(code) && !usedCodesSet.has(code)) {
-                const amount = giftCodes[code];
-                appData.balance += amount;
-                usedCodesSet.add(code);
-                saveState();
-                updateWalletUI();
-                closeWalletModal();
-                showToast(`تم شحن المحفظة بنجاح +$${amount}`, 'success');
-                codeInput.value = '';
-            } else {
-                showToast('الكود غير صالح أو تم استخدامه مسبقاً', 'error');
-            }
+        function closeWalletModal() {
+            document.getElementById('wallet-modal').classList.remove('flex');
+            document.getElementById('wallet-modal').classList.add('hidden');
         }
 
         function updateWalletUI() {
             document.getElementById('wallet-balance').innerText = appData.balance.toFixed(2) + ' $';
         }
 
+        function redeemWalletCode() {
+            const code = document.getElementById('gift-input').value.trim().toUpperCase();
+            if (!code) {
+                showToast("الرجاء إدخال الكود", "error");
+                return;
+            }
+            if (usedCodesSet.has(code)) {
+                showToast("تم استخدام هذا الكود من قبل!", "error");
+                return;
+            }
+            if (giftCodes[code]) {
+                appData.balance += giftCodes[code];
+                usedCodesSet.add(code);
+                saveState();
+                updateWalletUI();
+                closeWalletModal();
+                showToast(`تم شحن المحفظة بنجاح بقيمة ${giftCodes[code]}$!`);
+                document.getElementById('gift-input').value = '';
+            } else {
+                showToast("الكود غير صالح أو منتهي الصلاحية", "error");
+            }
+        }
+
+        // Web3Forms Order Submission
+        function submitOrderToWeb3Forms(event) {
+            event.preventDefault();
+            if (appData.cart.length === 0) {
+                showToast("السلة فارغة، أضف منتجات أولاً", "error");
+                return;
+            }
+            const totalPrice = appData.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            if (appData.balance < totalPrice) {
+                showToast("رصيد المحفظة غير كافٍ! يرجى شحن الرصيد أولاً", "error");
+                openWalletModal();
+                return;
+            }
+
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
+
+            const form = document.getElementById('order-form');
+            const formData = new FormData(form);
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status === 200) {
+                    appData.balance -= totalPrice;
+                    appData.cart = [];
+                    saveState();
+                    updateWalletUI();
+                    renderCart();
+                    showToast("تم إرسال الطلب بنجاح وخصم المبلغ!");
+                    switchTab('home');
+                } else {
+                    showToast(json.message || "حدث خطأ أثناء الإرسال", "error");
+                }
+            })
+            .catch(() => {
+                showToast("تعذر الاتصال بالخادم", "error");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ`;
+            });
+        }
+
+        // Theme Toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
+            localStorage.setItem('theme_dark', isDark);
+        }
+
+        if (localStorage.getItem('theme_dark') === 'true') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').className = "fa-solid fa-sun text-sm";
+        }
+
+        // Reset App Data
         function clearUserData() {
-            if (confirm('هل أنت متأكد من مسح كافة البيانات وإعادة الضبط؟')) {
+            if (confirm("هل أنت متأكد من إعادة ضبط المتجر ومسح البيانات؟")) {
                 localStorage.removeItem('ultimate_store_state');
                 location.reload();
             }
         }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
-        }
-
-        function showToast(text, type = 'success') {
+        // Toast Notification Function
+        function showToast(text, type = "success") {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
             const toastIcon = document.getElementById('toast-icon');
 
             toastText.innerText = text;
-            toastIcon.className = type === 'success' ? "fa-solid fa-circle-check text-emerald-400" : (type === 'info' ? "fa-solid fa-circle-info text-sky-400" : "fa-solid fa-circle-exclamation text-rose-400");
-            
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
             toast.classList.remove('-translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
             setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('-translate-y-20', 'opacity-0');
-            }, 3500);
+            }, 3000);
         }
     </script>
 </body>
