@@ -1,9 +1,3 @@
-/**
- * ============================================================================
- * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v25.0 FULL SCALE)
- * ============================================================================
- */
-
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -37,14 +31,8 @@ let serverState = {
             id: 3, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
             desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 4, name: "معكرونة باستا إيطالية بصلصة الكريمة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
-            desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
-            images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
         }
-    ],
-    pendingTransfers: {}
+    ]
 };
 
 function broadcast(data) {
@@ -61,35 +49,7 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         try {
             const parsed = JSON.parse(message);
-            if (parsed.type === 'CHECK_TRANSFERS') {
-                const email = parsed.email.toLowerCase().trim();
-                if (serverState.pendingTransfers[email] && serverState.pendingTransfers[email].length > 0) {
-                    ws.send(JSON.stringify({
-                        type: 'BATCH_TRANSFERS',
-                        transfers: serverState.pendingTransfers[email]
-                    }));
-                    serverState.pendingTransfers[email] = [];
-                }
-            }
-            else if (parsed.type === 'TRANSFER_MONEY') {
-                const recipient = parsed.recipientEmail.toLowerCase().trim();
-                const transferData = {
-                    senderName: parsed.senderName,
-                    amount: parsed.amount,
-                    timestamp: Date.now()
-                };
-                if (!serverState.pendingTransfers[recipient]) {
-                    serverState.pendingTransfers[recipient] = [];
-                }
-                serverState.pendingTransfers[recipient].push(transferData);
-                broadcast({ 
-                    type: 'INCOMING_TRANSFER', 
-                    recipientEmail: recipient,
-                    senderName: parsed.senderName,
-                    amount: parsed.amount 
-                });
-            }
-            else if (parsed.type === 'SET_THEME') {
+            if (parsed.type === 'SET_THEME') {
                 serverState.theme = parsed.theme;
                 broadcast({ type: 'THEME_CHANGE', theme: parsed.theme });
             }
@@ -115,5 +75,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
