@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v20.0 MASSIVE)
+ * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v25.0 FULL SCALE)
  * ============================================================================
  */
 
@@ -37,6 +37,11 @@ let serverState = {
             id: 3, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
             desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 4, name: "معكرونة باستا إيطالية بصلصة الكريمة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
+            desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
+            images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
         }
     ],
     pendingTransfers: {}
@@ -110,5 +115,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
 });
