@@ -2,11 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <!-- ================================================================= -->
-    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (MASSIVE v15) -->
+    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (v20.0 FULL)   -->
     <!-- ================================================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر الأسطوري العملاق - النسخة الكاملة والمطورة بامتياز</title>
+    <title>المتجر الأسطوري العملاق - النسخة الضخمة والمطورة</title>
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -200,7 +200,13 @@
                 <div id="products-container" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- TRANSFER VIEW (مستقل تماماً بجانب السلة في شريط التنقل) -->
+            <!-- FAVORITES VIEW (زر المفضلة الكامل) -->
+            <div id="view-favorites" class="p-4 space-y-4 hidden">
+                <h2 class="font-black text-lg mb-2"><i class="fa-solid fa-heart text-rose-500"></i> المفضلة</h2>
+                <div id="favorites-container" class="space-y-3"></div>
+            </div>
+
+            <!-- TRANSFER VIEW (التحويل المالي المستقل) -->
             <div id="view-transfer" class="p-4 space-y-4 hidden">
                 <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-emerald-500"></i> التحويل المالي السريع</h2>
                 <div class="glass-panel p-6 rounded-3xl border border-emerald-500/40 space-y-4 shadow-xl bg-emerald-500/5">
@@ -255,9 +261,10 @@
             </div>
         </main>
 
-        <!-- Navigation Bar (زر التحويل بجانب السلة تماماً) -->
+        <!-- Navigation Bar (المتجر، المفضلة، التحويل، السلة، الإعدادات) -->
         <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 border-t px-1 py-2.5 flex justify-around items-center z-40">
             <button onclick="playUISound('tab'); switchTab('home');" id="nav-home" class="flex flex-col items-center text-violet-600 flex-1"><i class="fa-solid fa-store text-base"></i><span class="text-[9px] mt-0.5">المتجر</span></button>
+            <button onclick="playUISound('tab'); switchTab('favorites');" id="nav-favorites" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-heart text-base"></i><span class="text-[9px] mt-0.5">المفضلة</span></button>
             <button onclick="playUISound('tab'); switchTab('transfer');" id="nav-transfer" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-money-bill-transfer text-base"></i><span class="text-[9px] mt-0.5">التحويل</span></button>
             <button onclick="playUISound('tab'); switchTab('orders');" id="nav-orders" class="flex flex-col items-center text-slate-400 flex-1 relative"><i class="fa-solid fa-cart-shopping text-base"></i><span id="cart-badge" class="absolute top-0 right-3 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center hidden">0</span><span class="text-[9px] mt-0.5">السلة</span></button>
             <button onclick="playUISound('tab'); switchTab('profile');" id="nav-profile" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-gear text-base"></i><span class="text-[9px] mt-0.5">الإعدادات</span></button>
@@ -483,6 +490,8 @@
             }
             updateWalletUI();
             renderProducts();
+            renderFavorites();
+            renderCart();
         }
 
         function updateWalletUI() {
@@ -529,7 +538,7 @@
         }
 
         function switchTab(tabId) {
-            ['home', 'transfer', 'orders', 'profile'].forEach(t => {
+            ['home', 'favorites', 'transfer', 'orders', 'profile'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "flex flex-col items-center text-slate-400 flex-1";
             });
@@ -541,14 +550,102 @@
             const container = document.getElementById('products-container');
             container.innerHTML = '';
             products.forEach(p => {
+                const isFav = appData.favorites.includes(p.id);
                 container.innerHTML += `
-                    <div class="glass-panel rounded-3xl p-3 border flex flex-col justify-between space-y-3 shadow-sm">
+                    <div class="glass-panel rounded-3xl p-3 border flex flex-col justify-between space-y-3 shadow-sm relative">
+                        <button onclick="toggleFavorite(${p.id})" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'} z-10 shadow">
+                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                        </button>
                         <img src="${p.images[0]}" class="w-full aspect-square rounded-2xl object-cover">
                         <h3 class="font-bold text-xs">${p.name}</h3>
-                        <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
+                            <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-violet-600 text-white rounded-xl text-[10px] font-bold">إضافة للسلة</button>
+                        </div>
                     </div>
                 `;
             });
+        }
+
+        function toggleFavorite(id) {
+            const index = appData.favorites.indexOf(id);
+            if (index > -1) appData.favorites.splice(index, 1);
+            else appData.favorites.push(id);
+            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
+            renderProducts();
+            renderFavorites();
+            showToast("تم تحديث المفضلة");
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-container');
+            container.innerHTML = '';
+            if (appData.favorites.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">قائمة المفضلة فارغة</p>`;
+                return;
+            }
+            appData.favorites.forEach(id => {
+                const p = products.find(item => item.id === id);
+                if (!p) return;
+                container.innerHTML += `
+                    <div class="glass-panel p-3 rounded-2xl border flex items-center justify-between">
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <img src="${p.images[0]}" class="w-12 h-12 rounded-xl object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs">${p.name}</h4>
+                                <span class="text-violet-600 font-bold text-xs">${p.price.toFixed(2)} $</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+            const existing = appData.cart.find(item => item.id === id);
+            if (existing) existing.qty += 1; else appData.cart.push({ ...p, qty: 1 });
+            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
+            renderCart();
+            showToast(`تمت إضافة ${p.name} للسلة`);
+            playUISound('buy');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-list');
+            if(!container) return;
+            container.innerHTML = '';
+            const badge = document.getElementById('cart-badge');
+            let total = 0, qty = 0;
+
+            if (appData.cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">السلة فارغة</p>`;
+                if(badge) badge.classList.add('hidden');
+            } else {
+                if(badge) badge.classList.remove('hidden');
+                appData.cart.forEach(item => {
+                    qty += item.qty;
+                    total += item.price * item.qty;
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-white/50 p-2 rounded-xl text-xs">
+                            <span class="font-bold">${item.name} (${item.qty})</span>
+                            <span class="text-violet-600 font-bold">${(item.price * item.qty).toFixed(2)}$</span>
+                        </div>
+                    `;
+                });
+            }
+            if(badge) badge.innerText = qty;
+            const totalEl = document.getElementById('cart-total-price');
+            if(totalEl) totalEl.innerText = total.toFixed(2) + ' $';
+        }
+
+        function clearOrders() { 
+            appData.cart = []; 
+            localStorage.setItem('ultimate_store_state', JSON.stringify(appData)); 
+            renderCart(); 
+            showToast("تم مسح السلة"); 
         }
 
         function openWalletModal() { document.getElementById('wallet-modal').classList.remove('hidden'); document.getElementById('wallet-modal').classList.add('flex'); }
