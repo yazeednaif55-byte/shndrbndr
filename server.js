@@ -1,3 +1,9 @@
+/**
+ * ============================================================================
+ * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v5.0)
+ * ============================================================================
+ */
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -74,7 +80,6 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         try {
             const parsed = JSON.parse(message);
-            
             if (parsed.type === 'APPLY_DISCOUNT') {
                 serverState.globalDiscount = parsed.percent;
                 serverState.products.forEach(p => {
@@ -83,21 +88,16 @@ wss.on('connection', (ws) => {
                     p.isOffer = true;
                 });
                 broadcast({ type: 'GLOBAL_DISCOUNT', percent: parsed.percent, products: serverState.products });
-            } 
-            else if (parsed.type === 'ADD_PRODUCT') {
+            } else if (parsed.type === 'ADD_PRODUCT') {
                 serverState.products.unshift(parsed.product);
                 broadcast({ type: 'NEW_PRODUCT', product: parsed.product, products: serverState.products });
-            } 
-            else if (parsed.type === 'SET_THEME') {
+            } else if (parsed.type === 'SET_THEME') {
                 serverState.theme = parsed.theme;
                 broadcast({ type: 'THEME_CHANGE', theme: parsed.theme });
-            }
-            else if (parsed.type === 'SET_SOUND') {
+            } else if (parsed.type === 'SET_SOUND') {
                 serverState.customSoundUrl = parsed.url;
                 broadcast({ type: 'SOUND_CHANGE', url: parsed.url });
-            }
-            // توجيه التحويل المالي للمستهدف عبر الإيميل
-            else if (parsed.type === 'TRANSFER_MONEY') {
+            } else if (parsed.type === 'TRANSFER_MONEY') {
                 broadcast({ 
                     type: 'INCOMING_TRANSFER', 
                     recipientEmail: parsed.recipientEmail.toLowerCase().trim(),
