@@ -1,3 +1,9 @@
+/**
+ * ============================================================================
+ * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v20.0 MASSIVE)
+ * ============================================================================
+ */
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -50,7 +56,6 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         try {
             const parsed = JSON.parse(message);
-            
             if (parsed.type === 'CHECK_TRANSFERS') {
                 const email = parsed.email.toLowerCase().trim();
                 if (serverState.pendingTransfers[email] && serverState.pendingTransfers[email].length > 0) {
@@ -68,12 +73,10 @@ wss.on('connection', (ws) => {
                     amount: parsed.amount,
                     timestamp: Date.now()
                 };
-
                 if (!serverState.pendingTransfers[recipient]) {
                     serverState.pendingTransfers[recipient] = [];
                 }
                 serverState.pendingTransfers[recipient].push(transferData);
-
                 broadcast({ 
                     type: 'INCOMING_TRANSFER', 
                     recipientEmail: recipient,
