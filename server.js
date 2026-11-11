@@ -1,3 +1,12 @@
+/**
+ * ============================================================================
+ * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v15.0 MASSIVE PRODUCTION)
+ * ============================================================================
+ * Developed for high-concurrency real-time WebSocket communication, state 
+ * synchronization, and secure fund transfers between client nodes.
+ * ============================================================================
+ */
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -12,6 +21,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* ============================================================================
+ * CENTRAL SERVER STATE REGISTRY
+ * ============================================================================ */
 let serverState = {
     theme: 'default',
     globalDiscount: 0,
@@ -31,11 +43,29 @@ let serverState = {
             id: 3, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
             desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 4, name: "معكرونة باستا إيطالية بصلصة الكريمة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
+            desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
+            images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 5, name: "شيبس مقرمش بنكهة الحار والحامض", price: 2.50, oldPrice: 3.50, cat: "sweets", isOffer: true,
+            desc: "رقائق شيبس طازجة ومقرمشة ومبهرة بخلطة التوابل الحارة والليمون.",
+            images: ["https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 6, name: "علبة شوكولاتة فاخرة مشكلة", price: 15.00, oldPrice: 20.00, cat: "sweets", isOffer: false,
+            desc: "تشكيلة غنية من قطع الشوكولاتة البلجيكية المحشوة بالكراميل.",
+            images: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80"]
         }
     ],
     pendingTransfers: {}
 };
 
+/* ============================================================================
+ * WEBSOCKET BROADCAST CONTROLLER
+ * ============================================================================ */
 function broadcast(data) {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
@@ -107,5 +137,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
 });
