@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <!-- ================================================================= -->
-    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (v5.5 FULL)   -->
+    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (v6.0 FINAL)   -->
     <!-- ================================================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,9 +44,6 @@
         }
     </script>
     <style>
-        /* ================================================================= */
-        /* CUSTOM CORE STYLES & LAYOUT ENGINE (BLOCK 1)                      */
-        /* ================================================================= */
         body { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         .glass-panel { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(20px); }
@@ -71,20 +68,6 @@
         .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
         @media(min-width: 768px) { .app-shell { max-width: 100%; box-shadow: none; } }
         #web-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
-
-        /* ================================================================= */
-        /* EXTENDED DESIGN UTILITIES & STRUCTURAL PADDING BLOCKS (BLOCK 2)   */
-        /* ================================================================= */
-        .ext-util-alpha { display: block; visibility: visible; }
-        .ext-util-beta { position: relative; box-sizing: border-box; }
-        .ext-util-gamma { transform: translate3d(0,0,0); backface-visibility: hidden; }
-        .ext-util-delta { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .ext-util-epsilon { outline: none; user-select: none; }
-        .ext-util-zeta { pointer-events: auto; isolation: isolate; }
-        .ext-util-eta { contain: layout paint style; }
-        .ext-util-theta { will-change: transform, opacity; }
-        .ext-util-iota { border-collapse: collapse; }
-        .ext-util-kappa { overflow-wrap: break-word; }
     </style>
 </head>
 <body id="app-body" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300" onclick="unlockAudioContext()">
@@ -153,6 +136,7 @@
 
         <!-- Main Content Views -->
         <main class="flex-1 pb-28 overflow-y-auto">
+            <!-- HOME VIEW -->
             <div id="view-home" class="p-4 space-y-4">
                 <div class="relative rounded-3xl bg-gradient-to-r from-violet-700 to-purple-800 text-white p-6 shadow-xl">
                     <h2 class="text-xl font-black">عروض كبرى وتخفيضات أسطورية!</h2>
@@ -177,23 +161,37 @@
                 <div id="favorites-container" class="space-y-3"></div>
             </div>
 
-            <!-- CART VIEW WITH MONEY TRANSFER FEATURE NEXT TO IT -->
-            <div id="view-orders" class="p-4 space-y-4 hidden">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-black text-lg"><i class="fa-solid fa-receipt text-violet-600"></i> السلة والتحويل</h2>
-                    <button onclick="playUISound('delete'); clearOrders();" class="text-[11px] text-rose-500 font-bold">مسح السلة</button>
-                </div>
-
-                <!-- زر التحويل المالي السريع بجانب السلة -->
-                <div class="glass-panel p-4 rounded-3xl border border-emerald-500/40 space-y-3 bg-emerald-500/5 shadow-md">
-                    <h3 class="font-black text-xs text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-paper-plane"></i> تحويل أموال لصديق</h3>
-                    <div class="space-y-2">
-                        <input type="email" id="transfer-email" placeholder="إيميل المستلم (مثال: friend@domain.com)" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
-                        <input type="number" id="transfer-amount" placeholder="المبلغ ($)" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
-                        <button type="button" onclick="sendMoneyTransfer()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl text-xs shadow">إرسال الحوالة فوراً 💸</button>
+            <!-- TRANSFER VIEW (الصفحة المستقلة للتحويل المالي بجانب السلة) -->
+            <div id="view-transfer" class="p-4 space-y-4 hidden">
+                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-emerald-500"></i> التحويل المالي السريع</h2>
+                <div class="glass-panel p-6 rounded-3xl border border-emerald-500/40 space-y-4 shadow-xl bg-emerald-500/5">
+                    <div class="text-center space-y-1">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white text-2xl flex items-center justify-center mx-auto shadow-md">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </div>
+                        <h3 class="font-bold text-sm text-emerald-600 mt-2">حول الأموال لأي صديق لحظياً</h3>
+                        <p class="text-[11px] text-slate-400">اكتب البريد الإلكتروني والمبلغ ليصله إشعار استلام فوري.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">البريد الإلكتروني للمستلم:</label>
+                            <input type="email" id="transfer-email" placeholder="friend@domain.com" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">المبلغ المراد تحويله ($):</label>
+                            <input type="number" id="transfer-amount" placeholder="50.00" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
+                        </div>
+                        <button type="button" onclick="sendMoneyTransfer()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl text-xs shadow-lg">إرسال الحوالة الآن 💸</button>
                     </div>
                 </div>
+            </div>
 
+            <!-- CART VIEW -->
+            <div id="view-orders" class="p-4 space-y-4 hidden">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-black text-lg"><i class="fa-solid fa-receipt text-violet-600"></i> سلة الطلبات</h2>
+                    <button onclick="playUISound('delete'); clearOrders();" class="text-[11px] text-rose-500 font-bold">مسح السلة</button>
+                </div>
                 <div class="glass-panel p-4 rounded-3xl border space-y-3">
                     <div id="cart-items-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
                     <div class="pt-2 border-t flex justify-between font-black text-sm">
@@ -201,7 +199,6 @@
                         <span id="cart-total-price" class="text-violet-600">0.00 $</span>
                     </div>
                 </div>
-
                 <form id="order-form" onsubmit="submitOrder(event)" class="glass-panel p-5 rounded-3xl border space-y-3">
                     <input type="email" id="user-email" readonly class="w-full px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-xs">
                     <input type="text" id="user-name" placeholder="اسمك..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
@@ -225,12 +222,13 @@
             </div>
         </main>
 
-        <!-- Navigation -->
-        <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 border-t px-2 py-2.5 flex justify-around items-center z-40">
-            <button onclick="playUISound('tab'); switchTab('home');" id="nav-home" class="flex flex-col items-center text-violet-600 flex-1"><i class="fa-solid fa-store"></i><span class="text-[10px]">المتجر</span></button>
-            <button onclick="playUISound('tab'); switchTab('favorites');" id="nav-favorites" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-heart"></i><span class="text-[10px]">المفضلة</span></button>
-            <button onclick="playUISound('tab'); switchTab('orders');" id="nav-orders" class="flex flex-col items-center text-slate-400 flex-1 relative"><i class="fa-solid fa-cart-shopping"></i><span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center hidden">0</span><span class="text-[10px]">السلة والتحويل</span></button>
-            <button onclick="playUISound('tab'); switchTab('profile');" id="nav-profile" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-gear"></i><span class="text-[10px]">الإعدادات</span></button>
+        <!-- Navigation Bar (زر التحويل أصبح مستقلاً تماماً وبجانب زر السلة كما طلبته) -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 border-t px-1 py-2.5 flex justify-around items-center z-40">
+            <button onclick="playUISound('tab'); switchTab('home');" id="nav-home" class="flex flex-col items-center text-violet-600 flex-1"><i class="fa-solid fa-store text-base"></i><span class="text-[9px] mt-0.5">المتجر</span></button>
+            <button onclick="playUISound('tab'); switchTab('favorites');" id="nav-favorites" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-heart text-base"></i><span class="text-[9px] mt-0.5">المفضلة</span></button>
+            <button onclick="playUISound('tab'); switchTab('transfer');" id="nav-transfer" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-money-bill-transfer text-base"></i><span class="text-[9px] mt-0.5">التحويل</span></button>
+            <button onclick="playUISound('tab'); switchTab('orders');" id="nav-orders" class="flex flex-col items-center text-slate-400 flex-1 relative"><i class="fa-solid fa-cart-shopping text-base"></i><span id="cart-badge" class="absolute top-0 right-3 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center hidden">0</span><span class="text-[9px] mt-0.5">السلة</span></button>
+            <button onclick="playUISound('tab'); switchTab('profile');" id="nav-profile" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-gear text-base"></i><span class="text-[9px] mt-0.5">الإعدادات</span></button>
         </nav>
     </div>
 
@@ -284,9 +282,6 @@
     <div id="toast" class="modal-layer fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-2 rounded-2xl text-xs shadow-xl">تمت العملية</div>
 
     <script>
-        // =====================================================================
-        // CORE APPLICATION CONTROLLER & SCRIPT RUNTIME (BLOCK 1)
-        // =====================================================================
         let appData = {
             balance: 150.00,
             favorites: [],
@@ -500,7 +495,7 @@
         }
 
         function switchTab(tabId) {
-            ['home', 'favorites', 'orders', 'profile'].forEach(t => {
+            ['home', 'favorites', 'transfer', 'orders', 'profile'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "flex flex-col items-center text-slate-400 flex-1";
             });
@@ -652,61 +647,6 @@
                 toast.classList.add('-translate-y-20', 'opacity-0');
             }, 3000);
         }
-
-        // =====================================================================
-        // EXTENDED PADDING AND SCRIPT LOGGING BLOCKS TO ENSURE 1000+ LINES (BLOCK 2)
-        // =====================================================================
-        /* [0500] Registry system module loaded successfully */
-        /* [0510] Application state cache mapping initialized */
-        /* [0520] WebSocket transmission protocol layer secured */
-        /* [0530] User profile database interface synchronized */
-        /* [0540] Audio context synthesizer node instantiated */
-        /* [0550] DOM event listeners bound and verified */
-        /* [0560] Local storage backup protocols operating */
-        /* [0570] Responsive container layout engine online */
-        /* [0580] Error handling fallback middleware active */
-        /* [0590] Performance monitoring ticker started */
-        /* [0600] Security token authentication layer verified */
-        /* [0610] Dynamic theme rendering pipeline operational */
-        /* [0620] Product catalog indexation system ready */
-        /* [0630] Cart synchronization pipeline running */
-        /* [0640] Money transfer gateway socket opened */
-        /* [0650] Toast notification queue manager active */
-        /* [0660] Admin authorization privileges confirmed */
-        /* [0670] Canvas element graphics context initialized */
-        /* [0680] UI animation frame scheduler running */
-        /* [0690] Touch event gesture handlers registered */
-        /* [0700] Extended Block 700: Memory allocation stable */
-        /* [0710] Extended Block 710: Garbage collection hook active */
-        /* [0720] Extended Block 720: Network latency stabilizer online */
-        /* [0730] Extended Block 730: Client state sync verification */
-        /* [0740] Extended Block 740: UI element padding bounds checked */
-        /* [0750] Extended Block 750: Color contrast accessibility verified */
-        /* [0760] Extended Block 760: Event propagation rules applied */
-        /* [0770] Extended Block 770: CSS transition timing hooks set */
-        /* [0780] Extended Block 780: Localized text direction verified */
-        /* [0790] Extended Block 790: Audio frequency mapping compiled */
-        /* [0800] Extended Block 800: Core controller sequence active */
-        /* [0810] Extended Block 810: Buffer allocation limits checked */
-        /* [0820] Extended Block 820: Data stream packet validator online */
-        /* [0830] Extended Block 830: Secure connection handshake complete */
-        /* [0840] Extended Block 840: User interface render loop active */
-        /* [0850] Extended Block 850: Application state persistence ready */
-        /* [0860] Extended Block 860: Background worker process check */
-        /* [0870] Extended Block 870: Session token expiration timer set */
-        /* [0880] Extended Block 880: UI component hierarchy validated */
-        /* [0890] Extended Block 890: Dynamic script execution engine online */
-        /* [0900] Extended Block 900: System performance metrics nominal */
-        /* [0910] Extended Block 910: Memory footprint optimization active */
-        /* [0920] Extended Block 920: Event listener leak prevention ready */
-        /* [0930] Extended Block 930: Network reconnection protocol armed */
-        /* [0940] Extended Block 940: Storage capacity quota check passed */
-        /* [0950] Extended Block 950: Interface layout responsiveness verified */
-        /* [0960] Extended Block 960: Audio output channel routed correctly */
-        /* [0970] Extended Block 970: Global variable scope isolation secure */
-        /* [0980] Extended Block 980: Execution stack trace monitoring active */
-        /* [0990] Extended Block 990: Pre-deployment health check successful */
-        /* [1000] Final Line 1000: Ultimate Store Platform is fully loaded. */
     </script>
 </body>
 </html>
