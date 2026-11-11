@@ -41,6 +41,25 @@
         body { font-family: 'Cairo', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); }
+        
+        /* Themes */
+        .theme-spiderman {
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+        }
+        .theme-spiderman .app-shell {
+            background: linear-gradient(180deg, #1e1b4b 0%, #7f1d1d 100%) !important;
+            border: 2px solid #ef4444;
+        }
+        .theme-banana {
+            background-color: #fefce8 !important;
+            color: #713f12 !important;
+        }
+        .theme-banana .app-shell {
+            background: linear-gradient(180deg, #fef9c3 0%, #fef08a 100%) !important;
+            border: 2px solid #eab308;
+        }
+
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
@@ -48,11 +67,43 @@
         @media(min-width: 768px) {
             .app-shell { max-width: 100%; box-shadow: none; }
         }
+
+        /* Web Overlay Canvas */
+        #web-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+<body id="app-body" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
-    <!-- Registration / Welcome Modal (First Time Only) -->
+    <canvas id="web-canvas"></canvas>
+
+    <!-- Banana Game Layer -->
+    <div id="banana-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden hidden"></div>
+
+    <!-- Global Announcement Banner (Discount / New Product overlay) -->
+    <div id="global-announcement" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-amber-500/50 space-y-4 shadow-2xl text-center transform scale-95 animate-bounce-slow">
+            <div id="announcement-icon" class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white text-3xl mx-auto shadow-xl">
+                <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div>
+                <h2 id="announcement-title" class="font-black text-xl text-amber-500">تحديث جديد!</h2>
+                <p id="announcement-desc" class="text-xs text-slate-300 mt-2 font-bold"></p>
+            </div>
+            <button onclick="closeAnnouncement()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold rounded-xl text-xs shadow-lg">
+                رائع جداً!
+            </button>
+        </div>
+    </div>
+
+    <!-- Registration / Welcome Modal -->
     <div id="email-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl text-center">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
@@ -88,8 +139,12 @@
                 </div>
             </div>
 
-            <!-- Quick App Actions -->
             <div class="flex items-center space-x-2 space-x-reverse">
+                <!-- Spider-Man Web Button (Visible when theme is Spiderman) -->
+                <button id="web-btn" onclick="shootWebEffect()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs hover:scale-105 transition shadow-lg">
+                     شبكة!
+                </button>
+
                 <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-110 transition">
                     <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
                 </button>
@@ -105,7 +160,6 @@
             
             <!-- VIEW 1: HOME / SHOP -->
             <div id="view-home" class="p-4 space-y-4">
-                <!-- Special Offers Banner Slider -->
                 <div class="relative rounded-3xl bg-gradient-to-r from-violet-700 via-indigo-600 to-purple-800 text-white p-6 shadow-xl overflow-hidden">
                     <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-spin-slow"></div>
                     <div class="relative z-10 space-y-2">
@@ -168,7 +222,6 @@
                     </div>
                 </div>
 
-                <!-- Web3Forms Order Form (Auto-saved fields) -->
                 <div class="glass-panel p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
                     <div class="flex items-center space-x-2 space-x-reverse text-violet-600 dark:text-violet-400 font-bold text-xs">
                         <i class="fa-solid fa-paper-plane"></i>
@@ -225,7 +278,7 @@
                 </div>
 
                 <div class="glass-panel rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <!-- Admin Panel Option (Only for yazeednaif55@gmail.com) -->
+                    <!-- Admin Panel Trigger (Only for yazeednaif55@gmail.com) -->
                     <div id="admin-panel-option" class="hidden p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-user-shield text-base"></i>
@@ -327,7 +380,21 @@
                 <button onclick="closeAdminModal()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- Tab 1: Balance Management -->
+            <!-- Tab: Change Themes -->
+            <div class="space-y-2">
+                <h4 class="font-bold text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-palette text-amber-500"></i> تغيير ثيم المتجر العام
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setStoreTheme('default')" class="py-2 bg-slate-700 text-white font-bold rounded-xl text-xs hover:bg-slate-800 transition">عادي</button>
+                    <button onclick="setStoreTheme('spiderman')" class="py-2 bg-rose-600 text-white font-bold rounded-xl text-xs hover:bg-rose-700 transition"> سبايدرمان</button>
+                    <button onclick="setStoreTheme('banana')" class="py-2 bg-amber-400 text-slate-900 font-bold rounded-xl text-xs hover:bg-amber-500 transition"> الموز</button>
+                </div>
+            </div>
+
+            <hr class="border-slate-200 dark:border-slate-800">
+
+            <!-- Tab: Balance Management -->
             <div class="space-y-2">
                 <h4 class="font-bold text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <i class="fa-solid fa-coins text-amber-500"></i> إضافة رصيد مجاني للمحفظة
@@ -340,7 +407,7 @@
 
             <hr class="border-slate-200 dark:border-slate-800">
 
-            <!-- Tab 2: Create Custom Promo Code -->
+            <!-- Tab: Create Custom Promo Code -->
             <div class="space-y-2">
                 <h4 class="font-bold text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <i class="fa-solid fa-ticket text-amber-500"></i> إنشاء كود خصم / رصيد جديد
@@ -354,20 +421,20 @@
 
             <hr class="border-slate-200 dark:border-slate-800">
 
-            <!-- Tab 3: Global Store Discount -->
+            <!-- Tab: Global Store Discount -->
             <div class="space-y-2">
                 <h4 class="font-bold text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <i class="fa-solid fa-percent text-amber-500"></i> تطبيق خصم مئوي عام على المنتجات
                 </h4>
                 <div class="flex gap-2">
-                    <input type="number" id="admin-discount-percent" placeholder="نسبة الخصم (مثال: 20)" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold">
-                    <button onclick="adminApplyGlobalDiscount()" class="px-4 py-2 bg-rose-500 text-white font-bold rounded-xl text-xs hover:bg-rose-600 transition">تطبيق الخصم</button>
+                    <input type="number" id="admin-discount-percent" placeholder="نسبة الخصم (مثال: 50)" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                    <button onclick="adminApplyGlobalDiscount()" class="px-4 py-2 bg-rose-500 text-white font-bold rounded-xl text-xs hover:bg-rose-600 transition">تطبيق الخصم وبثه</button>
                 </div>
             </div>
 
             <hr class="border-slate-200 dark:border-slate-800">
 
-            <!-- Tab 4: Add New Product Command -->
+            <!-- Tab: Add New Product Command -->
             <div class="space-y-2">
                 <h4 class="font-bold text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <i class="fa-solid fa-plus-circle text-amber-500"></i> إضافة منتج جديد للمتجر
@@ -386,7 +453,7 @@
                     </div>
                     <input type="text" id="admin-prod-img" placeholder="رابط الصورة (URL)" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
                     <textarea id="admin-prod-desc" placeholder="وصف المنتج..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs h-16 resize-none"></textarea>
-                    <button onclick="adminAddNewProduct()" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs hover:bg-emerald-700 transition">إضافة المنتج فوراً</button>
+                    <button onclick="adminAddNewProduct()" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs hover:bg-emerald-700 transition">إضافة المنتج فوراً وبثه</button>
                 </div>
             </div>
         </div>
@@ -399,11 +466,63 @@
     </div>
 
     <script>
+        // Web Audio Synthesizer for Exciting Sound Effects
+        function playExcitingSound(type = 'discount') {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                
+                if (type === 'discount' || type === 'product') {
+                    // Upbeat arpeggio / fanfare
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.3);
+                    });
+                } else if (type === 'web') {
+                    // Whoosh / Laser sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.25);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'coin') {
+                    // Coin pickup sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(987.77, now); // B5
+                    osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch (e) {}
+        }
+
         // App State Data
         let appData = {
             balance: 150.00,
             favorites: [],
             cart: [],
+            theme: 'default',
             user: { email: '', name: '', phone: '', address: '' }
         };
 
@@ -414,140 +533,32 @@
                 desc: "بيتزا إيطالية طازجة بصلصة الطماطم الطبيعية وجبنة الموتزاريلا الفاخرة مع شرائح الببروني المقرمشة.",
                 images: [
                     "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=400&auto=format&fit=crop&q=80"
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80"
                 ]
             },
             { 
                 id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, oldPrice: 14.00, cat: "food", isOffer: true,
                 desc: "قطعة لحم غقاري مشوية على الفحم مع شريحة جبن شيدر ذائبة وخس طازج وصلصة خاصة.",
                 images: [
-                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=80"
+                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80"
                 ]
             },
             { 
-                id: 3, name: "وجبة دجاج مقرمش (تشكن)", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
-                desc: "قطع دجاج مقرمشة ومتبلة بالتوابل السرية، تقدم مع البطاطس الساخنة والصلصة الخاصة.",
-                images: [
-                    "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 4, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
+                id: 3, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
                 desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
                 images: [
-                    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=400&auto=format&fit=crop&q=80"
+                    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"
                 ]
             },
             { 
-                id: 5, name: "ساندوتش شاورما دجاج صاروخ", price: 6.00, oldPrice: 9.00, cat: "food", isOffer: false,
-                desc: "شاورما دجاج بخلطة الثومية الخاصة والمخلل داخل خبز الصاج المقرمش.",
-                images: [
-                    "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 6, name: "باستا إيطالية بالصلصة البيضاء", price: 10.50, oldPrice: 14.00, cat: "food", isOffer: true,
-                desc: "مكرونة بيني مع صوص الكريمة البيضاء الغنية وجبن البارميزان.",
-                images: [
-                    "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1621996346565-e3d5d6281296?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 7, name: "علبة شوكولاتة بلجيكية فاخرة", price: 18.00, oldPrice: 25.00, cat: "sweets", isOffer: true,
-                desc: "تشكيلة فاخرة من أجود أنواع الشوكولاتة البلجيكية المحشوة بالمكسرات والكراميل.",
-                images: [
-                    "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 8, name: "دونتس محشي شوكولاتة وتوت", price: 3.50, oldPrice: 5.00, cat: "sweets", isOffer: false,
-                desc: "حبة دونتس طرية وهشة مغطاة بالشوكولاتة اللذيذة.",
-                images: [
-                    "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 9, name: "آيس كريم فانيليا وشوكولاتة بارد", price: 5.00, oldPrice: 7.50, cat: "sweets", isOffer: false,
-                desc: "آيس كريم منعش بنكهات متعددة يناسب أيام الصيف.",
-                images: [
-                    "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 10, name: "ميني كيكة جبن (تشيز كيك)", price: 7.25, oldPrice: 10.00, cat: "sweets", isOffer: false,
-                desc: "تشيز كيك ناعم ولذيذ بصوص التوت البري الطازج.",
-                images: [
-                    "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 11, name: "كرواسون فرنسي طازج بالزبدة", price: 3.00, oldPrice: 4.50, cat: "sweets", isOffer: false,
-                desc: "مخبوزات فرنسية هشة ومقرمشة محضرة بالزبدة الطازجة.",
-                images: [
-                    "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 12, name: "كرتون مناديل وجه ناعمة (10 حبات)", price: 8.50, oldPrice: 12.00, cat: "tissues", isOffer: true,
-                desc: "مناديل وجه مزدوجة الطبقات ناعمة للغاية ولطيفة على البشرة.",
-                images: [
-                    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 13, name: "مناديل مبللة معطرة للاستخدام اليومي", price: 3.00, oldPrice: 5.00, cat: "tissues", isOffer: false,
-                desc: "مناديل مبللة معقمة ومعطرة برائحة خفيفة ومنعشة.",
-                images: [
-                    "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 14, name: "رول مناديل مطبخ عملاقة وممتصة", price: 6.00, oldPrice: 8.50, cat: "tissues", isOffer: false,
-                desc: "مناشف ورقية للمطبخ عالية الامتصاص ومتينة.",
-                images: [
-                    "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 15, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
+                id: 4, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
                 desc: "سماعات أذن لاسلكية بتقنية عزل الضوضاء وصوت نقي عالي الدقة.",
                 images: [
-                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 16, name: "ساعة رياضية ذكية متطورة", price: 79.99, oldPrice: 119.99, cat: "electronics", isOffer: true,
-                desc: "تتبع معدل ضربات القلب والنشاط الرياضي اليومي مع شاشة ملونة بالكامل.",
-                images: [
-                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 17, name: "بطاقة شحن ألعاب رقمية 50$", price: 50.00, oldPrice: 50.00, cat: "gaming", isOffer: false,
-                desc: "بطاقة رقمية لشحن رصيد الألعاب واستمتع بالشتريات والمحتوى الحصري.",
-                images: [
-                    "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&auto=format&fit=crop&q=80"
-                ]
-            },
-            { 
-                id: 18, name: "لوحة مفاتيح ميكانيكية للألعاب", price: 65.50, oldPrice: 89.99, cat: "gaming", isOffer: true,
-                desc: "لوحة مفاتيح ميكانيكية بإضاءة RGB خلفية واستجابة فائقة السرعة.",
-                images: [
-                    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80",
-                    "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&auto=format&fit=crop&q=80"
+                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80"
                 ]
             }
         ];
 
-        // Secret Promo Codes
         let giftCodes = { 
             "VIP50": 50, 
             "PRO100": 100, 
@@ -556,18 +567,36 @@
             "SHNDRBNDR_LOVE": 1000 
         };
         const usedCodesSet = new Set();
-
         const ADMIN_EMAIL = "yazeednaif55@gmail.com";
 
+        // WebSocket Connection for Server-wide Sync
+        let ws;
+        function initWebSocket() {
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${location.host}`);
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'GLOBAL_DISCOUNT') {
+                        triggerGlobalDiscountEffect(data.percent);
+                    } else if (data.type === 'NEW_PRODUCT') {
+                        triggerNewProductEffect(data.product);
+                    } else if (data.type === 'THEME_CHANGE') {
+                        applyThemeUI(data.theme);
+                    }
+                } catch(e) {}
+            };
+        }
+
         window.addEventListener('DOMContentLoaded', function() {
+            initWebSocket();
+
             const saved = localStorage.getItem('ultimate_store_state');
             if (saved) {
-                try {
-                    appData = JSON.parse(saved);
-                } catch(e) {}
+                try { appData = JSON.parse(saved); } catch(e) {}
             }
 
-            // Verify User Registration Status
             if (!appData.user || !appData.user.email || !appData.user.name) {
                 const modal = document.getElementById('email-gate-modal');
                 modal.classList.remove('hidden');
@@ -579,18 +608,12 @@
 
         function verifyAndSaveUserData(event) {
             if (event) event.preventDefault();
-            
             const nameInput = document.getElementById('gate-name-input').value.trim();
             const emailInput = document.getElementById('gate-email-input').value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            if(!nameInput) {
-                showToast("الرجاء إدخال اسمك الكريم", "error");
-                return false;
-            }
-
-            if(!emailInput || !emailRegex.test(emailInput)) {
-                showToast("الرجاء إدخال بريد إلكتروني صحيح", "error");
+            if(!nameInput || !emailInput || !emailRegex.test(emailInput)) {
+                showToast("الرجاء إدخال بيانات صحيحة", "error");
                 return false;
             }
 
@@ -599,12 +622,9 @@
             appData.user.email = emailInput;
             saveState();
 
-            const modal = document.getElementById('email-gate-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-
+            document.getElementById('email-gate-modal').classList.add('hidden');
             initAppValues();
-            showToast(`أهلاً بك يا ${nameInput}! تم الدخول إلى المتجر بنجاح`);
+            showToast(`أهلاً بك يا ${nameInput}!`);
             return false;
         }
 
@@ -614,18 +634,12 @@
                 document.getElementById('user-name').value = appData.user.name || '';
                 document.getElementById('user-phone').value = appData.user.phone || '';
                 document.getElementById('user-address').value = appData.user.address || '';
-                if (appData.user.name) {
-                    document.getElementById('profile-name').innerText = appData.user.name;
-                } else {
-                    document.getElementById('profile-name').innerText = "زائر المتجر";
-                }
-                if (appData.user.email) {
-                    document.getElementById('profile-email-display').innerText = appData.user.email;
-                }
+                document.getElementById('profile-name').innerText = appData.user.name || 'زائر المتجر';
+                document.getElementById('profile-email-display').innerText = appData.user.email || '';
 
-                // Check Admin Email Privileges
                 checkAdminPrivileges();
             }
+            if (appData.theme) applyThemeUI(appData.theme);
             updateWalletUI();
             renderProducts();
             renderFavorites();
@@ -645,16 +659,164 @@
             localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
         }
 
-        function saveUserDataInput() {
-            appData.user.name = document.getElementById('user-name').value;
-            appData.user.phone = document.getElementById('user-phone').value;
-            appData.user.address = document.getElementById('user-address').value;
-            if (appData.user.name) {
-                document.getElementById('profile-name').innerText = appData.user.name;
+        // Broadcast Admin Commands to Server
+        function setStoreTheme(themeName) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'SET_THEME', theme: themeName }));
             } else {
-                document.getElementById('profile-name').innerText = "زائر المتجر";
+                applyThemeUI(themeName);
             }
+        }
+
+        function applyThemeUI(themeName) {
+            appData.theme = themeName;
             saveState();
+            const body = document.getElementById('app-body');
+            const webBtn = document.getElementById('web-btn');
+            const bananaLayer = document.getElementById('banana-layer');
+
+            body.classList.remove('theme-spiderman', 'theme-banana');
+            webBtn.classList.add('hidden');
+            bananaLayer.classList.add('hidden');
+            bananaLayer.innerHTML = '';
+
+            if (themeName === 'spiderman') {
+                body.classList.add('theme-spiderman');
+                webBtn.classList.remove('hidden');
+                showToast(" تم تفعيل ثيم سبايدرمان!");
+            } else if (themeName === 'banana') {
+                body.classList.add('theme-banana');
+                spawnBananaMiniGame();
+                showToast(" تم تفعيل ثيم الموز! اضغط على الموز لجمع الفلوس!");
+            } else {
+                showToast("تم إرجاع الثيم الافتراضي");
+            }
+        }
+
+        function shootWebEffect() {
+            playExcitingSound('web');
+            const canvas = document.getElementById('web-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ef4444';
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Draw Web Spikes
+            for (let i = 0; i < 12; i++) {
+                const angle = (Math.PI * 2 / 12) * i;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle) * 350, centerY + Math.sin(angle) * 350);
+                ctx.stroke();
+            }
+
+            // Draw Web Circles
+            for (let r = 50; r <= 300; r += 50) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }, 1200);
+        }
+
+        function spawnBananaMiniGame() {
+            const layer = document.getElementById('banana-layer');
+            layer.classList.remove('hidden');
+            layer.innerHTML = '';
+
+            for (let i = 0; i < 15; i++) {
+                const b = document.createElement('div');
+                b.className = 'absolute cursor-pointer text-4xl animate-bounce-slow transition transform hover:scale-125';
+                b.style.top = Math.random() * 70 + 10 + '%';
+                b.style.left = Math.random() * 80 + 10 + '%';
+                b.innerText = '';
+                b.onclick = (e) => {
+                    e.stopPropagation();
+                    playExcitingSound('coin');
+                    appData.balance += 10.00;
+                    saveState();
+                    updateWalletUI();
+                    showToast(" حصلت على 10.00$ رصيد هديّة!");
+                    b.remove();
+                };
+                layer.appendChild(b);
+            }
+        }
+
+        function adminApplyGlobalDiscount() {
+            const percent = parseFloat(document.getElementById('admin-discount-percent').value);
+            if (isNaN(percent) || percent <= 0 || percent > 100) {
+                showToast("أدخل نسبة خصم بين 1 و 100", "error");
+                return;
+            }
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'APPLY_DISCOUNT', percent: percent }));
+            } else {
+                triggerGlobalDiscountEffect(percent);
+            }
+            closeAdminModal();
+        }
+
+        function triggerGlobalDiscountEffect(percent) {
+            playExcitingSound('discount');
+            products.forEach(p => {
+                p.oldPrice = p.price;
+                p.price = p.price * (1 - percent / 100);
+                p.isOffer = true;
+            });
+            renderProducts();
+
+            document.getElementById('announcement-title').innerText = ` خصم كاسح بقيمة ${percent}%!`;
+            document.getElementById('announcement-desc').innerText = `قام الآدمين بتخفيض أسعار جميع المنتجات في السيرفر بنسبة ${percent}% لفترة محدودة!`;
+            document.getElementById('global-announcement').classList.remove('hidden');
+        }
+
+        function adminAddNewProduct() {
+            const name = document.getElementById('admin-prod-name').value.trim();
+            const price = parseFloat(document.getElementById('admin-prod-price').value);
+            const cat = document.getElementById('admin-prod-cat').value;
+            const img = document.getElementById('admin-prod-img').value.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&auto=format&fit=crop&q=80';
+            const desc = document.getElementById('admin-prod-desc').value.trim() || 'منتج جديد مضاف حديثاً.';
+
+            if (!name || isNaN(price) || price <= 0) {
+                showToast("يرجى ملء اسم المنتج والسعر بشكل صحيح", "error");
+                return;
+            }
+
+            const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            const newProd = { id: newId, name, price, oldPrice: null, cat, isOffer: false, desc, images: [img] };
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'ADD_PRODUCT', product: newProd }));
+            } else {
+                triggerNewProductEffect(newProd);
+            }
+            closeAdminModal();
+        }
+
+        function triggerNewProductEffect(prod) {
+            playExcitingSound('product');
+            products.unshift(prod);
+            renderProducts();
+
+            document.getElementById('announcement-title').innerText = ` منتج جديد وصل المتجر!`;
+            document.getElementById('announcement-desc').innerText = `تمت إضافة: "${prod.name}" بسعر ${prod.price.toFixed(2)}$ فقط! تصفحه الآن في المتجر.`;
+            document.getElementById('global-announcement').classList.remove('hidden');
+        }
+
+        function closeAnnouncement() {
+            document.getElementById('global-announcement').classList.add('hidden');
         }
 
         function switchTab(tabId) {
@@ -709,18 +871,14 @@
             });
         }
 
-        function filterProducts() {
-            renderProducts();
-        }
+        function filterProducts() { renderProducts(); }
 
         function toggleFavorite(id) {
             const index = appData.favorites.indexOf(id);
             if (index > -1) {
                 appData.favorites.splice(index, 1);
-                showToast("تم إزالة المنتج من المفضلة");
             } else {
                 appData.favorites.push(id);
-                showToast("تم إضافة المنتج للمفضلة");
             }
             saveState();
             renderProducts();
@@ -829,7 +987,6 @@
             showToast("تم مسح السلة بنجاح");
         }
 
-        // Product Modal Functions
         function openProductModal(id) {
             const p = products.find(item => item.id === id);
             if (!p) return;
@@ -855,18 +1012,15 @@
         }
 
         function closeProductModal() {
-            document.getElementById('product-modal').classList.remove('flex');
             document.getElementById('product-modal').classList.add('hidden');
         }
 
-        // Wallet Modal Functions
         function openWalletModal() {
             document.getElementById('wallet-modal').classList.remove('hidden');
             document.getElementById('wallet-modal').classList.add('flex');
         }
 
         function closeWalletModal() {
-            document.getElementById('wallet-modal').classList.remove('flex');
             document.getElementById('wallet-modal').classList.add('hidden');
         }
 
@@ -876,12 +1030,8 @@
 
         function redeemWalletCode() {
             const code = document.getElementById('gift-input').value.trim().toUpperCase();
-            if (!code) {
-                showToast("الرجاء إدخال الكود", "error");
-                return;
-            }
-            if (usedCodesSet.has(code)) {
-                showToast("تم استخدام هذا الكود من قبل!", "error");
+            if (!code || usedCodesSet.has(code)) {
+                showToast("كود غير صالح أو مستخدم", "error");
                 return;
             }
             if (giftCodes[code]) {
@@ -892,28 +1042,24 @@
                 closeWalletModal();
                 showToast(`تم شحن المحفظة بنجاح بقيمة ${giftCodes[code]}$!`);
                 document.getElementById('gift-input').value = '';
-            } else {
-                showToast("الكود غير صالح أو منتهي الصلاحية", "error");
             }
         }
 
-        // Web3Forms Order Submission
         function submitOrderToWeb3Forms(event) {
             event.preventDefault();
             if (appData.cart.length === 0) {
-                showToast("السلة فارغة، أضف منتجات أولاً", "error");
+                showToast("السلة فارغة", "error");
                 return;
             }
             const totalPrice = appData.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             if (appData.balance < totalPrice) {
-                showToast("رصيد المحفظة غير كافٍ! يرجى شحن الرصيد أولاً", "error");
+                showToast("رصيد المحفظة غير كافٍ!", "error");
                 openWalletModal();
                 return;
             }
 
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
 
             const form = document.getElementById('order-form');
             const formData = new FormData(form);
@@ -923,7 +1069,6 @@
                 body: formData
             })
             .then(async (response) => {
-                let json = await response.json();
                 if (response.status === 200) {
                     appData.balance -= totalPrice;
                     appData.cart = [];
@@ -932,105 +1077,44 @@
                     renderCart();
                     showToast("تم إرسال الطلب بنجاح وخصم المبلغ!");
                     switchTab('home');
-                } else {
-                    showToast(json.message || "حدث خطأ أثناء الإرسال", "error");
                 }
-            })
-            .catch(() => {
-                showToast("تعذر الاتصال بالخادم", "error");
             })
             .finally(() => {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> إرسال الطلب الآن ودفع المبلغ`;
             });
         }
 
-        // Admin Panel Functions (For yazeednaif55@gmail.com)
         function openAdminModal() {
             document.getElementById('admin-modal').classList.remove('hidden');
             document.getElementById('admin-modal').classList.add('flex');
         }
 
         function closeAdminModal() {
-            document.getElementById('admin-modal').classList.remove('flex');
             document.getElementById('admin-modal').classList.add('hidden');
         }
 
         function adminAddBalance() {
             const amount = parseFloat(document.getElementById('admin-balance-input').value);
-            if (isNaN(amount) || amount <= 0) {
-                showToast("أدخل مبلغ صحيح", "error");
-                return;
+            if (!isNaN(amount) && amount > 0) {
+                appData.balance += amount;
+                saveState();
+                updateWalletUI();
+                showToast(`تمت إضافة ${amount}$ إلى الرصيد!`);
+                document.getElementById('admin-balance-input').value = '';
             }
-            appData.balance += amount;
-            saveState();
-            updateWalletUI();
-            showToast(`تمت إضافة ${amount}$ إلى رصيدك كآدمين بنجاح!`);
-            document.getElementById('admin-balance-input').value = '';
         }
 
         function adminCreateCode() {
             const codeName = document.getElementById('admin-code-name').value.trim().toUpperCase();
             const val = parseFloat(document.getElementById('admin-code-value').value);
-            if (!codeName || isNaN(val) || val <= 0) {
-                showToast("أدخل اسم وقيمة صحيحة للكود", "error");
-                return;
+            if (codeName && !isNaN(val) && val > 0) {
+                giftCodes[codeName] = val;
+                showToast(`تم إنشاء الكود ${codeName}!`);
+                document.getElementById('admin-code-name').value = '';
+                document.getElementById('admin-code-value').value = '';
             }
-            giftCodes[codeName] = val;
-            showToast(`تم إنشاء الكود ${codeName} بقيمة ${val}$ بنجاح!`);
-            document.getElementById('admin-code-name').value = '';
-            document.getElementById('admin-code-value').value = '';
         }
 
-        function adminApplyGlobalDiscount() {
-            const percent = parseFloat(document.getElementById('admin-discount-percent').value);
-            if (isNaN(percent) || percent <= 0 || percent > 100) {
-                showToast("أدخل نسبة خصم بين 1 و 100", "error");
-                return;
-            }
-            products.forEach(p => {
-                p.oldPrice = p.price;
-                p.price = p.price * (1 - percent / 100);
-                p.isOffer = true;
-            });
-            renderProducts();
-            showToast(`تم تطبيق خصم ${percent}% على جميع المنتجات!`);
-            document.getElementById('admin-discount-percent').value = '';
-        }
-
-        function adminAddNewProduct() {
-            const name = document.getElementById('admin-prod-name').value.trim();
-            const price = parseFloat(document.getElementById('admin-prod-price').value);
-            const cat = document.getElementById('admin-prod-cat').value;
-            const img = document.getElementById('admin-prod-img').value.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&auto=format&fit=crop&q=80';
-            const desc = document.getElementById('admin-prod-desc').value.trim() || 'منتج جديد مضاف حديثاً إلى المتجر.';
-
-            if (!name || isNaN(price) || price <= 0) {
-                showToast("يرجى ملء اسم المنتج والسعر بشكل صحيح", "error");
-                return;
-            }
-
-            const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
-            products.unshift({
-                id: newId,
-                name: name,
-                price: price,
-                oldPrice: null,
-                cat: cat,
-                isOffer: false,
-                desc: desc,
-                images: [img]
-            });
-
-            renderProducts();
-            showToast(`تمت إضافة منتج "${name}" بنجاح!`);
-            document.getElementById('admin-prod-name').value = '';
-            document.getElementById('admin-prod-price').value = '';
-            document.getElementById('admin-prod-img').value = '';
-            document.getElementById('admin-prod-desc').value = '';
-        }
-
-        // Theme Toggle
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
@@ -1043,26 +1127,17 @@
             document.getElementById('theme-icon').className = "fa-solid fa-sun text-sm";
         }
 
-        // Reset App Data
         function clearUserData() {
-            if (confirm("هل أنت متأكد من إعادة ضبط المتجر ومسح البيانات؟")) {
+            if (confirm("هل أنت متأكد من مسح البيانات؟")) {
                 localStorage.removeItem('ultimate_store_state');
                 location.reload();
             }
         }
 
-        // Toast Notification Function
         function showToast(text, type = "success") {
             const toast = document.getElementById('toast');
-            const toastText = document.getElementById('toast-text');
-            const toastIcon = document.getElementById('toast-icon');
-
-            toastText.innerText = text;
-            if (type === "error") {
-                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400";
-            } else {
-                toastIcon.className = "fa-solid fa-circle-check text-violet-400";
-            }
+            document.getElementById('toast-text').innerText = text;
+            document.getElementById('toast-icon').className = type === "error" ? "fa-solid fa-circle-exclamation text-rose-400" : "fa-solid fa-circle-check text-violet-400";
 
             toast.classList.remove('-translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
