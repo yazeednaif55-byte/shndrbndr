@@ -1,7 +1,6 @@
 /**
- * Ultimate Store Server - Main Entry Point
- * Handles WebSocket broadcasting, state synchronization, global discounts,
- * custom sound URLs, and real-time store events for all connected clients.
+ * Ultimate Store Server Engine
+ * Real-time WebSocket broadcasting & Server State Sync for all clients.
  */
 
 const express = require('express');
@@ -18,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Server-side State Storage for full synchronization across clients
+// Server-side State Database
 let serverState = {
     theme: 'default',
     globalDiscount: 0,
@@ -27,14 +26,11 @@ let serverState = {
         { 
             id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, oldPrice: 18.00, cat: "food", isOffer: true,
             desc: "بيتزا إيطالية طازجة بصلصة الطماطم الطبيعية وجبنة الموتزاريلا الفاخرة مع شرائح الببروني المقرمشة.",
-            images: [
-                "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80",
-                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80"
-            ]
+            images: ["https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80"]
         },
         { 
             id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, oldPrice: 14.00, cat: "food", isOffer: true,
-            desc: "قطعة لحم غقاري مشوية على الفحم مع شريحة جبن شيدر ذائبة وخس طازج وصلصة خاصة.",
+            desc: "قطعة لحم بقر مشوية على الفحم مع شريحة جبن شيدر ذائبة وخس طازج وصلصة خاصة.",
             images: ["https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80"]
         },
         { 
@@ -43,7 +39,7 @@ let serverState = {
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
         },
         { 
-            id: 4, name: "معكرونة باستا بالإيطالية الفاخرة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
+            id: 4, name: "معكرونة باستا إيطالية بصلصة الكريمة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
             desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
             images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
         },
@@ -59,7 +55,7 @@ let serverState = {
         },
         { 
             id: 7, name: "عبوة مناديل ناعمة 10 حبات", price: 6.99, oldPrice: 9.99, cat: "tissues", isOffer: true,
-            desc: "مناديل ورقية فائقة النعومة وقوية الامتصاص.",
+            desc: "مناديل ورقية فائقة النعومة وقوية الامتصاص تناسب الاستخدام اليومي.",
             images: ["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80"]
         },
         { 
@@ -71,11 +67,26 @@ let serverState = {
             id: 9, name: "يد تحكم ألعاب لاسلكية احترافية", price: 39.99, oldPrice: 59.99, cat: "gaming", isOffer: true,
             desc: "يد تحكم متوافقة مع الكمبيوتر والأجهزة الذكية مع اهتزاز تفاعلي.",
             images: ["https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 10, name: "كيبورد مكانيكي مضيء بـ RGB", price: 34.99, oldPrice: 49.99, cat: "gaming", isOffer: true,
+            desc: "لوحة مفاتيح ميكانيكية استجابة فائقة مع إضاءة RGB مخصصة للألعاب.",
+            images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 11, name: "ماوس جيمنج احترافي عالي الدقة", price: 19.99, oldPrice: 29.99, cat: "gaming", isOffer: false,
+            desc: "فأرة ألعاب مع حساسية تصل إلى 12000 DPI وأزرار جانبية قابلة للبرمجة.",
+            images: ["https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 12, name: "عصير برتقال طبيعي منعش", price: 3.00, oldPrice: 4.50, cat: "food", isOffer: true,
+            desc: "عصير برتقال طبيعي 100% معصور طازج بدون إضافة سكر.",
+            images: ["https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&auto=format&fit=crop&q=80"]
         }
     ]
 };
 
-// Broadcast helper function to send messages to all active WebSocket clients
+// Broadcast data to all open WebSockets
 function broadcast(data) {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
@@ -85,7 +96,6 @@ function broadcast(data) {
 }
 
 wss.on('connection', (ws) => {
-    // Send initial state upon connection
     ws.send(JSON.stringify({ type: 'INIT_STATE', state: serverState }));
 
     ws.on('message', (message) => {
@@ -114,7 +124,7 @@ wss.on('connection', (ws) => {
                 broadcast({ type: 'SOUND_CHANGE', url: parsed.url });
             }
         } catch (e) {
-            console.error('WebSocket parsing error:', e);
+            console.error('WebSocket Error:', e);
         }
     });
 });
@@ -124,5 +134,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
 });
