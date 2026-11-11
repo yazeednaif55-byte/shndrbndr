@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر الأسطوري العملاق - Ultimate Store Engine</title>
-    <!-- Tailwind CSS -->
+    <title>المتجر الأسطوري العملاق - Ultimate Store Platform</title>
+    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Pro / Free Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -28,6 +28,10 @@
                         floatItem: {
                             '0%, 100%': { transform: 'translateY(0px)' },
                             '50%': { transform: 'translateY(-8px)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
                         }
                     },
                     animation: {
@@ -35,6 +39,7 @@
                         'bounce-slow': 'bounce 3s infinite',
                         'pulse-glow': 'pulseGlow 2s infinite',
                         'float-item': 'floatItem 3s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s infinite linear'
                     }
                 }
             }
@@ -45,7 +50,7 @@
         .glass-panel { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(20px); }
         
-        /* Themes Setup */
+        /* Themes Setup & Dynamic Customization */
         .theme-spiderman { background-color: #0f172a !important; color: #ffffff !important; }
         .theme-spiderman .app-shell { background: linear-gradient(180deg, #1e1b4b 0%, #7f1d1d 100%) !important; border: 2px solid #ef4444; }
         
@@ -55,11 +60,9 @@
         .theme-cyberpunk { background-color: #050515 !important; color: #00f0ff !important; }
         .theme-cyberpunk .app-shell { background: linear-gradient(180deg, #0d0221 0%, #260033 100%) !important; border: 2px solid #ff007f; }
 
-        /* حل مشكلة طبقة الموز: الحاوية لا تستقبل الضغطات نهائياً، والموزة وحدها هي التي تتفاعل */
+        /* Banana Layer Fix */
         #banana-layer { pointer-events: none; }
         .banana-item { pointer-events: auto; }
-
-        /* التأكد من أن المودلات والأزرار تظهر دائمًا فوق كل شيء */
         .modal-layer { z-index: 100000 !important; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -72,11 +75,11 @@
         #web-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
     </style>
 </head>
-<body id="app-body" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+<body id="app-body" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300" onclick="unlockAudioContext()">
 
     <canvas id="web-canvas"></canvas>
     
-    <!-- Banana Rain Layer (Pointer events disabled for container, enabled only for bananas) -->
+    <!-- Banana Fast Rain Layer -->
     <div id="banana-layer" class="fixed inset-0 z-50 overflow-hidden hidden"></div>
 
     <!-- Announcement Modal -->
@@ -127,7 +130,7 @@
             </div>
 
             <div class="flex items-center space-x-2 space-x-reverse">
-                <button id="web-btn" onclick="shootWebEffect()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs shadow-lg animate-pulse">
+                <button id="web-btn" onclick="playUISound('buy'); shootWebEffect()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs shadow-lg animate-pulse">
                     🕸️ شبكة!
                 </button>
                 <button onclick="playUISound('toggle'); toggleDarkMode();" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
@@ -361,6 +364,7 @@
     <div id="toast" class="modal-layer fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs">تمت العملية بنجاح</div>
 
     <script>
+        // App State Management Data & Configuration Registry
         let appData = {
             balance: 150.00,
             favorites: [],
@@ -373,72 +377,83 @@
         let products = [];
         const ADMIN_EMAIL = "yazeednaif55@gmail.com";
         let ws;
+        let audioCtx = null;
 
+        function unlockAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } else if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Comprehensive UI Sound Engine for every single button and interactive element
         function playUISound(type = 'click') {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                unlockAudioContext();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
 
                 if (type === 'click') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(600, now);
-                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.frequency.setValueAtTime(700, now);
+                    osc.frequency.exponentialRampToValueAtTime(350, now + 0.06);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
                 } else if (type === 'coin') {
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(987.77, now);
                     osc.frequency.setValueAtTime(1318.51, now + 0.08);
-                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.setValueAtTime(0.35, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                 } else if (type === 'tab') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, now);
-                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-                    gain.gain.setValueAtTime(0.15, now);
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
                 } else if (type === 'buy') {
                     osc.type = 'square';
                     osc.frequency.setValueAtTime(523.25, now);
                     osc.frequency.setValueAtTime(659.25, now + 0.08);
                     osc.frequency.setValueAtTime(783.99, now + 0.16);
-                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.setValueAtTime(0.25, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 } else if (type === 'delete') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
-                    gain.gain.setValueAtTime(0.2, now);
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.exponentialRampToValueAtTime(120, now + 0.15);
+                    gain.gain.setValueAtTime(0.25, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
                 } else if (type === 'open') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(900, now + 0.12);
-                    gain.gain.setValueAtTime(0.2, now);
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.exponentialRampToValueAtTime(950, now + 0.12);
+                    gain.gain.setValueAtTime(0.25, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
                 } else if (type === 'close') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(900, now);
-                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.12);
-                    gain.gain.setValueAtTime(0.2, now);
+                    osc.frequency.setValueAtTime(950, now);
+                    osc.frequency.exponentialRampToValueAtTime(350, now + 0.12);
+                    gain.gain.setValueAtTime(0.25, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                } else {
+                } else if (type === 'toggle') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(500, now);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
                 }
 
                 osc.connect(gain);
-                gain.connect(ctx.destination);
+                gain.connect(audioCtx.destination);
                 osc.start(now);
                 osc.stop(now + 0.3);
-            } catch (e) {}
+            } catch(e) {}
         }
 
-        function playBroadCastSound() {
+        function playBroadcastSound() {
             try {
                 if (appData.customSoundUrl) {
                     const audio = new Audio(appData.customSoundUrl);
@@ -463,12 +478,12 @@
                         renderProducts();
                     } else if (data.type === 'GLOBAL_DISCOUNT') {
                         products = data.products;
-                        playBroadCastSound();
+                        playBroadcastSound();
                         renderProducts();
                         showAnnouncement("🔥 خصم عام على السيرفر!", `تم تطبيق خصم بقيمة ${data.percent}% على كافة المنتجات!`);
                     } else if (data.type === 'NEW_PRODUCT') {
                         products = data.products;
-                        playBroadCastSound();
+                        playBroadcastSound();
                         renderProducts();
                         showAnnouncement("✨ منتج جديد وصول حديث!", `تمت إضافة: "${data.product.name}" بسعر ${data.product.price}$ لكل السيرفر!`);
                     } else if (data.type === 'THEME_CHANGE') {
@@ -576,7 +591,6 @@
 
             for (let i = 0; i < 35; i++) {
                 const b = document.createElement('div');
-                // إضافة الفئة banana-item لضمان تفاعل الضغط فقط على الموزة نفسها وليس الفراغ
                 b.className = 'banana-item absolute cursor-pointer text-4xl animate-fall-fast transition transform hover:scale-125 select-none';
                 b.style.left = Math.random() * 92 + '%';
                 b.style.animationDuration = (Math.random() * 1.2 + 1.2) + 's';
@@ -597,7 +611,6 @@
         }
 
         function shootWebEffect() {
-            playUISound('buy');
             const canvas = document.getElementById('web-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
