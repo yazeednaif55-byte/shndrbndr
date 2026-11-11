@@ -6,7 +6,7 @@
     <title>المتجر الأسطوري العملاق - Ultimate Store Engine</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Pro / Free Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -55,8 +55,12 @@
         .theme-cyberpunk { background-color: #050515 !important; color: #00f0ff !important; }
         .theme-cyberpunk .app-shell { background: linear-gradient(180deg, #0d0221 0%, #260033 100%) !important; border: 2px solid #ff007f; }
 
-        .theme-volcano { background-color: #1a0500 !important; color: #ff6b00 !important; }
-        .theme-volcano .app-shell { background: linear-gradient(180deg, #2b0900 0%, #4a1200 100%) !important; border: 2px solid #ff4500; }
+        /* حل مشكلة طبقة الموز: الحاوية لا تستقبل الضغطات نهائياً، والموزة وحدها هي التي تتفاعل */
+        #banana-layer { pointer-events: none; }
+        .banana-item { pointer-events: auto; }
+
+        /* التأكد من أن المودلات والأزرار تظهر دائمًا فوق كل شيء */
+        .modal-layer { z-index: 100000 !important; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
@@ -72,11 +76,11 @@
 
     <canvas id="web-canvas"></canvas>
     
-    <!-- Fast Falling Banana Layer -->
-    <div id="banana-layer" class="fixed inset-0 z-50 overflow-hidden hidden pointer-events-auto"></div>
+    <!-- Banana Rain Layer (Pointer events disabled for container, enabled only for bananas) -->
+    <div id="banana-layer" class="fixed inset-0 z-50 overflow-hidden hidden"></div>
 
     <!-- Announcement Modal -->
-    <div id="global-announcement" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
+    <div id="global-announcement" class="modal-layer fixed inset-0 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-amber-500/50 space-y-4 shadow-2xl text-center">
             <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white text-3xl mx-auto shadow-xl animate-pulse-glow">
                 <i class="fa-solid fa-bullhorn"></i>
@@ -90,7 +94,7 @@
     </div>
 
     <!-- Login Modal -->
-    <div id="email-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
+    <div id="email-gate-modal" class="modal-layer fixed inset-0 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl text-center">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
                 <i class="fa-solid fa-user-check"></i>
@@ -264,7 +268,7 @@
     </div>
 
     <!-- Product Details Modal -->
-    <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+    <div id="product-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
         <div class="glass-panel w-full max-w-md rounded-3xl p-5 border space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
                 <h3 id="modal-product-title" class="font-black text-sm">تفاصيل المنتج</h3>
@@ -282,7 +286,7 @@
     </div>
 
     <!-- Wallet Modal -->
-    <div id="wallet-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4">
+    <div id="wallet-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/80 p-4">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-center">
             <h3 class="font-bold text-sm text-violet-600"><i class="fa-solid fa-wallet"></i> رصيد محفظتك الأسطورية</h3>
             <p class="text-xs text-slate-500">رصيدك الحالي المتاح للشراء:</p>
@@ -292,7 +296,7 @@
     </div>
 
     <!-- Admin Panel Modal -->
-    <div id="admin-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/85 backdrop-blur-md p-4">
+    <div id="admin-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/85 backdrop-blur-md p-4">
         <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-amber-500/30 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-black text-sm text-amber-500"><i class="fa-solid fa-crown"></i> لوحة تحكم الآدمين (لكل السيرفر)</h3>
@@ -354,10 +358,9 @@
     </div>
 
     <!-- Toast Notification Container -->
-    <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs">تمت العملية بنجاح</div>
+    <div id="toast" class="modal-layer fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs">تمت العملية بنجاح</div>
 
     <script>
-        // App State
         let appData = {
             balance: 150.00,
             favorites: [],
@@ -371,7 +374,6 @@
         const ADMIN_EMAIL = "yazeednaif55@gmail.com";
         let ws;
 
-        // Interactive UI Sound Synthesizer System
         function playUISound(type = 'click') {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -436,7 +438,6 @@
             } catch (e) {}
         }
 
-        // Play Custom URL Sound or Fallback
         function playBroadCastSound() {
             try {
                 if (appData.customSoundUrl) {
@@ -448,7 +449,6 @@
             } catch(e) { playUISound('buy'); }
         }
 
-        // WebSocket Integration
         function initWebSocket() {
             const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
             ws = new WebSocket(`${protocol}//${location.host}`);
@@ -548,7 +548,7 @@
             const webBtn = document.getElementById('web-btn');
             const bananaLayer = document.getElementById('banana-layer');
 
-            body.classList.remove('theme-spiderman', 'theme-banana', 'theme-cyberpunk', 'theme-volcano');
+            body.classList.remove('theme-spiderman', 'theme-banana', 'theme-cyberpunk');
             webBtn.classList.add('hidden');
             bananaLayer.classList.add('hidden');
             bananaLayer.innerHTML = '';
@@ -569,7 +569,6 @@
             }
         }
 
-        // Fast Falling Bananas Game (Banana Theme)
         function spawnBananaRain() {
             const layer = document.getElementById('banana-layer');
             layer.classList.remove('hidden');
@@ -577,7 +576,8 @@
 
             for (let i = 0; i < 35; i++) {
                 const b = document.createElement('div');
-                b.className = 'absolute cursor-pointer text-4xl animate-fall-fast transition transform hover:scale-125 select-none';
+                // إضافة الفئة banana-item لضمان تفاعل الضغط فقط على الموزة نفسها وليس الفراغ
+                b.className = 'banana-item absolute cursor-pointer text-4xl animate-fall-fast transition transform hover:scale-125 select-none';
                 b.style.left = Math.random() * 92 + '%';
                 b.style.animationDuration = (Math.random() * 1.2 + 1.2) + 's';
                 b.style.animationDelay = (Math.random() * 2) + 's';
@@ -845,7 +845,7 @@
         function showToast(text, type = "success") {
             const toast = document.getElementById('toast');
             toast.innerText = text;
-            toast.className = `fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl shadow-xl text-xs text-white transition-all duration-300 ${type === 'error' ? 'bg-rose-600' : 'bg-slate-900'}`;
+            toast.className = `modal-layer fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl shadow-xl text-xs text-white transition-all duration-300 ${type === 'error' ? 'bg-rose-600' : 'bg-slate-900'}`;
             toast.classList.remove('-translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
             setTimeout(() => {
