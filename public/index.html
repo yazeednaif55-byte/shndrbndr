@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر الأسطوري المتكامل - Ultimate Store Platform</title>
-    <!-- Tailwind CSS Engine -->
+    <title>المتجر الأسطوري العملاق - Ultimate Store Engine</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Pro / Free Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,14 +22,19 @@
                             '100%': { transform: 'translateY(105vh) rotate(360deg)', opacity: '0.9' }
                         },
                         pulseGlow: {
-                            '0%, 100%': { transform: 'scale(1)', opacity: '1' },
-                            '50%': { transform: 'scale(1.05)', opacity: '0.8' }
+                            '0%, 100%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))' },
+                            '50%': { transform: 'scale(1.05)', filter: 'drop-shadow(0 0 25px rgba(139, 92, 246, 0.9))' }
+                        },
+                        floatItem: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
                         }
                     },
                     animation: {
-                        'fall-fast': 'fall 2.0s linear infinite',
+                        'fall-fast': 'fall 1.8s linear infinite',
                         'bounce-slow': 'bounce 3s infinite',
                         'pulse-glow': 'pulseGlow 2s infinite',
+                        'float-item': 'floatItem 3s ease-in-out infinite',
                     }
                 }
             }
@@ -40,12 +45,18 @@
         .glass-panel { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(20px); }
         
-        /* Themes Styling */
+        /* Themes Setup */
         .theme-spiderman { background-color: #0f172a !important; color: #ffffff !important; }
         .theme-spiderman .app-shell { background: linear-gradient(180deg, #1e1b4b 0%, #7f1d1d 100%) !important; border: 2px solid #ef4444; }
         
         .theme-banana { background-color: #fefce8 !important; color: #713f12 !important; }
         .theme-banana .app-shell { background: linear-gradient(180deg, #fef9c3 0%, #fef08a 100%) !important; border: 2px solid #eab308; }
+
+        .theme-cyberpunk { background-color: #050515 !important; color: #00f0ff !important; }
+        .theme-cyberpunk .app-shell { background: linear-gradient(180deg, #0d0221 0%, #260033 100%) !important; border: 2px solid #ff007f; }
+
+        .theme-volcano { background-color: #1a0500 !important; color: #ff6b00 !important; }
+        .theme-volcano .app-shell { background: linear-gradient(180deg, #2b0900 0%, #4a1200 100%) !important; border: 2px solid #ff4500; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
@@ -61,8 +72,8 @@
 
     <canvas id="web-canvas"></canvas>
     
-    <!-- Banana Fast Rain Layer for Theme Banana -->
-    <div id="banana-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden hidden"></div>
+    <!-- Fast Falling Banana Layer -->
+    <div id="banana-layer" class="fixed inset-0 z-50 overflow-hidden hidden pointer-events-auto"></div>
 
     <!-- Announcement Modal -->
     <div id="global-announcement" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
@@ -74,39 +85,39 @@
                 <h2 id="announcement-title" class="font-black text-xl text-amber-500">تحديث جديد من السيرفر!</h2>
                 <p id="announcement-desc" class="text-xs text-slate-300 mt-2 font-bold"></p>
             </div>
-            <button onclick="closeAnnouncement()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold rounded-xl text-xs shadow-lg">رائع جداً!</button>
+            <button onclick="playUISound('click'); closeAnnouncement();" class="w-full py-3 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold rounded-xl text-xs shadow-lg">رائع جداً!</button>
         </div>
     </div>
 
-    <!-- Welcome & Email Gate Modal -->
+    <!-- Login Modal -->
     <div id="email-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 shadow-2xl text-center">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white text-2xl mx-auto shadow-lg animate-bounce-slow">
                 <i class="fa-solid fa-user-check"></i>
             </div>
             <div>
-                <h2 class="font-black text-lg text-slate-900 dark:text-white">تسجيل الدخول للمتجر الأسطوري</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">يرجى كتابة اسمك وإيميلك للمتابعة وبدء التسوق السيرفري.</p>
+                <h2 class="font-black text-lg text-slate-900 dark:text-white">دخول المتجر الأسطوري</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">اكتب اسمك وإيميلك للبدء.</p>
             </div>
             <form onsubmit="verifyAndSaveUserData(event)" class="space-y-3">
-                <input type="text" id="gate-name-input" placeholder="أدخل اسمك الكريم..." required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs text-center font-bold focus:outline-none">
-                <input type="email" id="gate-email-input" placeholder="example@domain.com" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs text-center font-bold focus:outline-none">
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg">دخول إلى المتجر</button>
+                <input type="text" id="gate-name-input" placeholder="اسمك الكريم..." required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs text-center font-bold">
+                <input type="email" id="gate-email-input" placeholder="example@domain.com" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs text-center font-bold">
+                <button type="submit" onclick="playUISound('click')" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg">دخول إلى المتجر</button>
             </form>
         </div>
     </div>
 
     <div class="app-shell flex flex-col bg-slate-50 dark:bg-slate-900 relative overflow-x-hidden">
-        <!-- Top Header Navigation -->
+        <!-- Header Nav -->
         <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-purple-600 flex items-center justify-center text-white shadow-lg animate-float-item">
                     <i class="fa-solid fa-bag-shopping text-base"></i>
                 </div>
                 <div>
-                    <h1 class="font-black text-sm text-slate-900 dark:text-white">المتجر الأسطوري</h1>
+                    <h1 class="font-black text-sm text-slate-900 dark:text-white">المتجر الأسطوري العملاق</h1>
                     <p class="text-[10px] text-violet-600 dark:text-violet-400 font-bold flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-violet-500 inline-block animate-ping"></span> متصل بجميع مستخدمي السيرفر
+                        <span class="w-2 h-2 rounded-full bg-violet-500 inline-block animate-ping"></span> متصل بالسيرفر المباشر
                     </p>
                 </div>
             </div>
@@ -115,17 +126,17 @@
                 <button id="web-btn" onclick="shootWebEffect()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs shadow-lg animate-pulse">
                     🕸️ شبكة!
                 </button>
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                <button onclick="playUISound('toggle'); toggleDarkMode();" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
                     <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button onclick="openWalletModal()" class="px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/50 border border-violet-200 dark:border-violet-800 flex items-center space-x-1.5 space-x-reverse text-violet-700 dark:text-violet-300 font-bold text-xs">
+                <button onclick="playUISound('open'); openWalletModal();" class="px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/50 border border-violet-200 dark:border-violet-800 flex items-center space-x-1.5 space-x-reverse text-violet-700 dark:text-violet-300 font-bold text-xs">
                     <i class="fa-solid fa-wallet text-xs"></i>
                     <span id="wallet-balance">0.00 $</span>
                 </button>
             </div>
         </header>
 
-        <!-- Main Dynamic View Container -->
+        <!-- Main View Container -->
         <main class="flex-1 pb-28 overflow-y-auto">
             
             <!-- HOME VIEW -->
@@ -133,10 +144,10 @@
                 <div class="relative rounded-3xl bg-gradient-to-r from-violet-700 via-indigo-600 to-purple-800 text-white p-6 shadow-xl">
                     <div class="space-y-2">
                         <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-extrabold backdrop-blur-md flex items-center gap-1.5 w-max">
-                            <i class="fa-solid fa-sparkles text-amber-300"></i> عروض وتخفيضات السيرفر الشاملة
+                            <i class="fa-solid fa-sparkles text-amber-300"></i> عروض السيرفر الشاملة
                         </span>
-                        <h2 class="text-xl font-black">خصومات كبرى وأقوى الأجهزة والوجبات للجميع!</h2>
-                        <p class="text-xs text-violet-100">تحديثات فورية لجميع المتواجدين في السيرفر في نفس اللحظة.</p>
+                        <h2 class="text-xl font-black">تخفيضات أسطورية ومباشرة للجميع!</h2>
+                        <p class="text-xs text-violet-100">كل تغيير وتخفيض يصل للكل بنفس اللحظة.</p>
                     </div>
                 </div>
 
@@ -144,33 +155,33 @@
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
-                        <input type="text" id="app-search" oninput="renderProducts()" placeholder="ابحث عن منتج، أكل، إلكترونيات..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs focus:outline-none">
+                        <input type="text" id="app-search" oninput="playUISound('click'); renderProducts();" placeholder="ابحث عن منتج..." class="w-full pr-9 pl-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs focus:outline-none">
                     </div>
-                    <select id="cat-select" onchange="renderProducts()" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
+                    <select id="cat-select" onchange="playUISound('click'); renderProducts();" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
                         <option value="all">الكل</option>
                         <option value="food">أكل ووجبات</option>
-                        <option value="sweets">حلويات</option>
+                        <option value="sweets">حلويات ومقرمشات</option>
                         <option value="tissues">مناديل وعناية</option>
                         <option value="electronics">إلكترونيات</option>
-                        <option value="gaming">ألعاب</option>
+                        <option value="gaming">ألعاب ومستلزمات</option>
                     </select>
                 </div>
 
-                <!-- Products Grid -->
+                <!-- Products Grid Container -->
                 <div id="products-container" class="grid grid-cols-2 gap-3"></div>
             </div>
 
             <!-- FAVORITES VIEW -->
             <div id="view-favorites" class="p-4 space-y-4 hidden">
-                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-heart text-rose-500"></i> المنتجات المفضلة</h2>
+                <h2 class="font-black text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-heart text-rose-500"></i> المفضلة</h2>
                 <div id="favorites-container" class="space-y-3"></div>
             </div>
 
-            <!-- ORDERS / CART VIEW -->
+            <!-- CART VIEW -->
             <div id="view-orders" class="p-4 space-y-4 hidden">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-receipt text-violet-600"></i> سلة الطلبات</h2>
-                    <button onclick="clearOrders()" class="text-[11px] text-rose-500 font-bold hover:underline">مسح السلة</button>
+                    <button onclick="playUISound('delete'); clearOrders();" class="text-[11px] text-rose-500 font-bold hover:underline">مسح السلة</button>
                 </div>
 
                 <div class="glass-panel p-4 rounded-3xl border space-y-3 shadow-md">
@@ -190,25 +201,25 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">اسم العميل:</label>
-                            <input type="text" id="user-name" placeholder="أدخل اسمك الكريم..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="user-name" placeholder="اسمك الكريم..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم الجوال:</label>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">رقم التواصل:</label>
                             <input type="tel" id="user-phone" placeholder="05xxxxxxxx" required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 mb-1">عنوان التوصيل:</label>
-                            <input type="text" id="user-address" placeholder="المدينة، الحي، الشارع..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="user-address" placeholder="المدينة، الحي..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border text-xs">
                         </div>
-                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg">إرسال الطلب ودفع المبلغ</button>
+                        <button type="submit" onclick="playUISound('buy')" class="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg">إرسال الطلب ودفع المبلغ</button>
                     </form>
                 </div>
             </div>
 
-            <!-- PROFILE & SETTINGS VIEW -->
+            <!-- PROFILE VIEW -->
             <div id="view-profile" class="p-4 space-y-4 hidden">
                 <div class="glass-panel p-6 rounded-3xl border text-center space-y-3 shadow-lg">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white text-2xl font-bold flex items-center justify-center mx-auto">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white text-2xl font-bold flex items-center justify-center mx-auto shadow-lg animate-float-item">
                         <i class="fa-solid fa-user-astronaut"></i>
                     </div>
                     <div>
@@ -219,10 +230,10 @@
 
                 <div class="glass-panel rounded-2xl border overflow-hidden shadow-sm">
                     <div id="admin-panel-option" class="hidden p-4 border-b flex items-center justify-between text-xs font-bold bg-amber-500/10 text-amber-600">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-base"></i> لوحة التحكم للآدمين (السيرفر)</span>
-                        <button onclick="openAdminModal()" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg">فتح اللوحة</button>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-crown text-base"></i> لوحة الآدمين (التحكم بالسيرفر)</span>
+                        <button onclick="playUISound('open'); openAdminModal();" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg">فتح اللوحة</button>
                     </div>
-                    <button onclick="clearUserData()" class="w-full p-4 text-right text-xs font-bold text-rose-500 hover:bg-rose-50 flex items-center justify-between">
+                    <button onclick="playUISound('delete'); clearUserData();" class="w-full p-4 text-right text-xs font-bold text-rose-500 hover:bg-rose-50 flex items-center justify-between">
                         <span>إعادة ضبط المتجر ومسح البيانات</span>
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
@@ -230,22 +241,22 @@
             </div>
         </main>
 
-        <!-- Bottom Navigation Bar -->
+        <!-- Navigation Bar -->
         <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t px-2 py-2.5 flex justify-around items-center z-40 shadow-2xl">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-violet-600 flex-1 py-1">
+            <button onclick="playUISound('tab'); switchTab('home');" id="nav-home" class="flex flex-col items-center space-y-1 text-violet-600 flex-1 py-1">
                 <i class="fa-solid fa-store text-base"></i>
                 <span class="text-[10px] font-bold">المتجر</span>
             </button>
-            <button onclick="switchTab('favorites')" id="nav-favorites" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1">
+            <button onclick="playUISound('tab'); switchTab('favorites');" id="nav-favorites" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1">
                 <i class="fa-solid fa-heart text-base"></i>
                 <span class="text-[10px] font-bold">المفضلة</span>
             </button>
-            <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 relative">
+            <button onclick="playUISound('tab'); switchTab('orders');" id="nav-orders" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1 relative">
                 <i class="fa-solid fa-cart-shopping text-base"></i>
                 <span id="cart-badge" class="absolute top-0 right-4 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold hidden animate-pulse">0</span>
                 <span class="text-[10px] font-bold">السلة</span>
             </button>
-            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1">
+            <button onclick="playUISound('tab'); switchTab('profile');" id="nav-profile" class="flex flex-col items-center space-y-1 text-slate-400 flex-1 py-1">
                 <i class="fa-solid fa-gear text-base"></i>
                 <span class="text-[10px] font-bold">الإعدادات</span>
             </button>
@@ -257,7 +268,7 @@
         <div class="glass-panel w-full max-w-md rounded-3xl p-5 border space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
                 <h3 id="modal-product-title" class="font-black text-sm">تفاصيل المنتج</h3>
-                <button onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="playUISound('close'); closeProductModal();"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-100">
                 <img id="modal-main-img" src="" class="w-full h-full object-cover">
@@ -270,13 +281,13 @@
         </div>
     </div>
 
-    <!-- Wallet / Balance Modal -->
+    <!-- Wallet Modal -->
     <div id="wallet-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-center">
             <h3 class="font-bold text-sm text-violet-600"><i class="fa-solid fa-wallet"></i> رصيد محفظتك الأسطورية</h3>
             <p class="text-xs text-slate-500">رصيدك الحالي المتاح للشراء:</p>
             <div class="text-2xl font-black text-violet-600"><span id="wallet-amount">150.00</span> $</div>
-            <button onclick="closeWalletModal()" class="w-full py-3 bg-violet-600 text-white font-bold rounded-xl text-xs">إغلاق</button>
+            <button onclick="playUISound('close'); closeWalletModal();" class="w-full py-3 bg-violet-600 text-white font-bold rounded-xl text-xs">إغلاق</button>
         </div>
     </div>
 
@@ -285,42 +296,43 @@
         <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-amber-500/30 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-black text-sm text-amber-500"><i class="fa-solid fa-crown"></i> لوحة تحكم الآدمين (لكل السيرفر)</h3>
-                <button onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="playUISound('close'); closeAdminModal();"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="space-y-2">
-                <h4 class="font-bold text-xs">تغيير الثيم العام (ينعكس على الجميع فوراً):</h4>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setStoreTheme('default')" class="py-2 bg-slate-700 text-white rounded-xl text-xs">عادي</button>
-                    <button onclick="setStoreTheme('spiderman')" class="py-2 bg-rose-600 text-white rounded-xl text-xs">🕸️ سبايدرمان</button>
-                    <button onclick="setStoreTheme('banana')" class="py-2 bg-amber-400 text-slate-900 rounded-xl text-xs">🍌 الموز</button>
+                <h4 class="font-bold text-xs">تغيير الثيم العام (ينعكس فوراً عند كل الناس):</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="playUISound('click'); setStoreTheme('default')" class="py-2 bg-slate-700 text-white rounded-xl text-xs font-bold">عادي</button>
+                    <button onclick="playUISound('click'); setStoreTheme('spiderman')" class="py-2 bg-rose-600 text-white rounded-xl text-xs font-bold">🕸️ سبايدرمان</button>
+                    <button onclick="playUISound('click'); setStoreTheme('banana')" class="py-2 bg-amber-400 text-slate-900 rounded-xl text-xs font-bold">🍌 مطر الموز السريع</button>
+                    <button onclick="playUISound('click'); setStoreTheme('cyberpunk')" class="py-2 bg-pink-600 text-white rounded-xl text-xs font-bold">🌌 سايبربانك</button>
                 </div>
             </div>
 
             <hr>
 
             <div class="space-y-2">
-                <h4 class="font-bold text-xs">تحديث رابط الصوت الحماسي المباشر (للجميع من رابط):</h4>
+                <h4 class="font-bold text-xs">رابط الصوت الحماسي المباشر (رابط mp3/wav):</h4>
                 <div class="flex gap-2">
                     <input type="text" id="admin-sound-url" placeholder="https://domain.com/sound.mp3" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <button onclick="saveAdminSoundUrl()" class="px-4 py-2 bg-violet-600 text-white rounded-xl text-xs font-bold">حفظ وبث</button>
+                    <button onclick="playUISound('click'); saveAdminSoundUrl()" class="px-4 py-2 bg-violet-600 text-white rounded-xl text-xs font-bold">حفظ وبث</button>
                 </div>
             </div>
 
             <hr>
 
             <div class="space-y-2">
-                <h4 class="font-bold text-xs">تطبيق خصم عام على السيرفر (%):</h4>
+                <h4 class="font-bold text-xs">تطبيق خصم مئوي عام (%):</h4>
                 <div class="flex gap-2">
-                    <input type="number" id="admin-discount-percent" placeholder="50" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <button onclick="adminApplyGlobalDiscount()" class="px-4 py-2 bg-rose-500 text-white rounded-xl text-xs">تطبيق وبث</button>
+                    <input type="number" id="admin-discount-percent" placeholder="50" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">
+                    <button onclick="playUISound('click'); adminApplyGlobalDiscount()" class="px-4 py-2 bg-rose-500 text-white rounded-xl text-xs font-bold">تطبيق وبث</button>
                 </div>
             </div>
 
             <hr>
 
             <div class="space-y-2">
-                <h4 class="font-bold text-xs">إضافة منتج جديد وبثه للسيرفر:</h4>
+                <h4 class="font-bold text-xs">إضافة منتج جديد وبثه للجميع:</h4>
                 <div class="space-y-2">
                     <input type="text" id="admin-prod-name" placeholder="اسم المنتج..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
                     <div class="flex gap-2">
@@ -335,17 +347,17 @@
                     </div>
                     <input type="text" id="admin-prod-img" placeholder="رابط الصورة (URL)" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
                     <textarea id="admin-prod-desc" placeholder="وصف المنتج..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs h-16 resize-none"></textarea>
-                    <button onclick="adminAddNewProduct()" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">إضافة المنتج وبثه للكل!</button>
+                    <button onclick="playUISound('buy'); adminAddNewProduct()" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">إضافة المنتج وبثه فوراً!</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast Notification Container -->
     <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs">تمت العملية بنجاح</div>
 
     <script>
-        // App State Data
+        // App State
         let appData = {
             balance: 150.00,
             favorites: [],
@@ -359,36 +371,84 @@
         const ADMIN_EMAIL = "yazeednaif55@gmail.com";
         let ws;
 
-        // Play Sound: Custom URL or Synth
-        function playSound() {
+        // Interactive UI Sound Synthesizer System
+        function playUISound(type = 'click') {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                } else if (type === 'coin') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(987.77, now);
+                    osc.frequency.setValueAtTime(1318.51, now + 0.08);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                } else if (type === 'tab') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                } else if (type === 'buy') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                } else if (type === 'delete') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                } else if (type === 'open') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(900, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                } else if (type === 'close') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(900, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                } else {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(500, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                }
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        // Play Custom URL Sound or Fallback
+        function playBroadCastSound() {
             try {
                 if (appData.customSoundUrl) {
                     const audio = new Audio(appData.customSoundUrl);
-                    audio.play().catch(e => playSynthSound());
+                    audio.play().catch(e => playUISound('buy'));
                 } else {
-                    playSynthSound();
+                    playUISound('buy');
                 }
-            } catch(e) { playSynthSound(); }
+            } catch(e) { playUISound('buy'); }
         }
 
-        function playSynthSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.3);
-            } catch(e) {}
-        }
-
-        // WebSocket Connection
+        // WebSocket Integration
         function initWebSocket() {
             const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
             ws = new WebSocket(`${protocol}//${location.host}`);
@@ -403,14 +463,14 @@
                         renderProducts();
                     } else if (data.type === 'GLOBAL_DISCOUNT') {
                         products = data.products;
-                        playSound();
+                        playBroadCastSound();
                         renderProducts();
-                        showAnnouncement("🔥 خصم عام على السيرفر!", `تم تطبيق خصم بقيمة ${data.percent}% على جميع منتجات السيرفر.`);
+                        showAnnouncement("🔥 خصم عام على السيرفر!", `تم تطبيق خصم بقيمة ${data.percent}% على كافة المنتجات!`);
                     } else if (data.type === 'NEW_PRODUCT') {
                         products = data.products;
-                        playSound();
+                        playBroadCastSound();
                         renderProducts();
-                        showAnnouncement("✨ منتج جديد مضاف!", `تمت إضافة: "${data.product.name}" بسعر ${data.product.price}$ للجميع في السيرفر!`);
+                        showAnnouncement("✨ منتج جديد وصول حديث!", `تمت إضافة: "${data.product.name}" بسعر ${data.product.price}$ لكل السيرفر!`);
                     } else if (data.type === 'THEME_CHANGE') {
                         applyThemeUI(data.theme, true);
                     } else if (data.type === 'SOUND_CHANGE') {
@@ -488,7 +548,7 @@
             const webBtn = document.getElementById('web-btn');
             const bananaLayer = document.getElementById('banana-layer');
 
-            body.classList.remove('theme-spiderman', 'theme-banana');
+            body.classList.remove('theme-spiderman', 'theme-banana', 'theme-cyberpunk', 'theme-volcano');
             webBtn.classList.add('hidden');
             bananaLayer.classList.add('hidden');
             bananaLayer.innerHTML = '';
@@ -501,27 +561,31 @@
                 body.classList.add('theme-banana');
                 spawnBananaRain();
                 if(showNotif) showToast("🍌 مطر الموز السريع بدأ! اضغط على الموز لتربح 100 ⃁ !");
+            } else if (themeName === 'cyberpunk') {
+                body.classList.add('theme-cyberpunk');
+                if(showNotif) showToast("🌌 تم تفعيل ثيم السايبربانك!");
             } else {
                 if(showNotif) showToast("تم إرجاع الثيم الافتراضي");
             }
         }
 
-        // Fast Banana Rain Game (Banana Theme)
+        // Fast Falling Bananas Game (Banana Theme)
         function spawnBananaRain() {
             const layer = document.getElementById('banana-layer');
             layer.classList.remove('hidden');
             layer.innerHTML = '';
 
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 35; i++) {
                 const b = document.createElement('div');
-                b.className = 'absolute cursor-pointer text-4xl animate-fall-fast transition transform hover:scale-125';
+                b.className = 'absolute cursor-pointer text-4xl animate-fall-fast transition transform hover:scale-125 select-none';
                 b.style.left = Math.random() * 92 + '%';
                 b.style.animationDuration = (Math.random() * 1.2 + 1.2) + 's';
                 b.style.animationDelay = (Math.random() * 2) + 's';
                 b.innerText = '🍌';
+                
                 b.onclick = (e) => {
                     e.stopPropagation();
-                    playSound();
+                    playUISound('coin');
                     appData.balance += 100.00;
                     localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
                     updateWalletUI();
@@ -533,7 +597,7 @@
         }
 
         function shootWebEffect() {
-            playSound();
+            playUISound('buy');
             const canvas = document.getElementById('web-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
@@ -611,21 +675,21 @@
                 const isFav = appData.favorites.includes(p.id);
                 container.innerHTML += `
                     <div class="glass-panel rounded-3xl p-3 border flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md transition">
-                        <div class="relative rounded-2xl overflow-hidden aspect-square bg-slate-100 cursor-pointer" onclick="openProductModal(${p.id})">
+                        <div class="relative rounded-2xl overflow-hidden aspect-square bg-slate-100 cursor-pointer" onclick="playUISound('open'); openProductModal(${p.id})">
                             <img src="${p.images[0]}" class="w-full h-full object-cover">
-                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-violet-600 text-white px-2 py-0.5 rounded-lg text-[9px] font-black">عرض</span>' : ''}
-                            <button onclick="event.stopPropagation(); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'}">
+                            ${p.isOffer ? '<span class="absolute top-2 right-2 bg-violet-600 text-white px-2 py-0.5 rounded-lg text-[9px] font-black">عرض خاص</span>' : ''}
+                            <button onclick="event.stopPropagation(); playUISound('click'); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'}">
                                 <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                             </button>
                         </div>
-                        <div class="space-y-1 cursor-pointer" onclick="openProductModal(${p.id})">
+                        <div class="space-y-1 cursor-pointer" onclick="playUISound('open'); openProductModal(${p.id})">
                             <h3 class="font-bold text-xs line-clamp-1">${p.name}</h3>
                             <div class="flex items-center space-x-2 space-x-reverse">
                                 <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
                                 ${p.oldPrice ? `<span class="text-[10px] text-slate-400 line-through">${p.oldPrice.toFixed(2)}$</span>` : ''}
                             </div>
                         </div>
-                        <button onclick="addToCart(${p.id})" class="w-full py-2 bg-violet-50 dark:bg-violet-950/45 border text-violet-700 dark:text-violet-300 rounded-xl text-xs font-bold">إضافة للسلة</button>
+                        <button onclick="playUISound('buy'); addToCart(${p.id})" class="w-full py-2 bg-violet-50 dark:bg-violet-950/45 border text-violet-700 dark:text-violet-300 rounded-xl text-xs font-bold">إضافة للسلة</button>
                     </div>
                 `;
             });
@@ -651,14 +715,14 @@
                 if (!p) return;
                 container.innerHTML += `
                     <div class="glass-panel p-3 rounded-2xl border flex items-center justify-between shadow-sm">
-                        <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="openProductModal(${p.id})">
+                        <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="playUISound('open'); openProductModal(${p.id})">
                             <img src="${p.images[0]}" class="w-14 h-14 rounded-xl object-cover">
                             <div>
                                 <h4 class="font-bold text-xs">${p.name}</h4>
                                 <span class="font-black text-xs text-violet-600">${p.price.toFixed(2)} $</span>
                             </div>
                         </div>
-                        <button onclick="toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="playUISound('delete'); toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
@@ -707,9 +771,9 @@
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2 space-x-reverse bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">
-                                <button onclick="updateCartQty(${item.id}, -1)" class="text-slate-500 px-1"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                <button onclick="playUISound('click'); updateCartQty(${item.id}, -1)" class="text-slate-500 px-1"><i class="fa-solid fa-minus text-[10px]"></i></button>
                                 <span class="font-black text-xs">${item.qty}</span>
-                                <button onclick="updateCartQty(${item.id}, 1)" class="text-slate-500 px-1"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                                <button onclick="playUISound('click'); updateCartQty(${item.id}, 1)" class="text-slate-500 px-1"><i class="fa-solid fa-plus text-[10px]"></i></button>
                             </div>
                         </div>
                     `;
@@ -748,7 +812,7 @@
             document.getElementById('modal-main-img').src = p.images[0];
             document.getElementById('modal-product-desc').innerText = p.desc;
             document.getElementById('modal-product-price').innerText = p.price.toFixed(2) + ' $';
-            document.getElementById('modal-add-btn').setAttribute('onclick', `addToCart(${p.id}); closeProductModal();`);
+            document.getElementById('modal-add-btn').setAttribute('onclick', `playUISound('buy'); addToCart(${p.id}); closeProductModal();`);
             document.getElementById('product-modal').classList.remove('hidden');
             document.getElementById('product-modal').classList.add('flex');
         }
