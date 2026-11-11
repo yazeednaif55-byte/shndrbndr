@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v5.0)
+ * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v10.0 PRODUCTION)
  * ============================================================================
  */
 
@@ -52,18 +52,9 @@ let serverState = {
             id: 6, name: "علبة شوكولاتة فاخرة مشكلة", price: 15.00, oldPrice: 20.00, cat: "sweets", isOffer: false,
             desc: "تشكيلة غنية من قطع الشوكولاتة البلجيكية المحشوة بالكراميل.",
             images: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 7, name: "عبوة مناديل ناعمة 10 حبات", price: 6.99, oldPrice: 9.99, cat: "tissues", isOffer: true,
-            desc: "مناديل ورقية فائقة النعومة وقوية الامتصاص تناسب الاستخدام اليومي.",
-            images: ["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 8, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
-            desc: "سماعات أذن لاسلكية بتقنية عزل الضوضاء وصوت نقي عالي الدقة.",
-            images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80"]
         }
-    ]
+    ],
+    pendingTransfers: {}
 };
 
 function broadcast(data) {
@@ -80,30 +71,40 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         try {
             const parsed = JSON.parse(message);
-            if (parsed.type === 'APPLY_DISCOUNT') {
-                serverState.globalDiscount = parsed.percent;
-                serverState.products.forEach(p => {
-                    p.oldPrice = p.price;
-                    p.price = p.price * (1 - parsed.percent / 100);
-                    p.isOffer = true;
-                });
-                broadcast({ type: 'GLOBAL_DISCOUNT', percent: parsed.percent, products: serverState.products });
-            } else if (parsed.type === 'ADD_PRODUCT') {
-                serverState.products.unshift(parsed.product);
-                broadcast({ type: 'NEW_PRODUCT', product: parsed.product, products: serverState.products });
-            } else if (parsed.type === 'SET_THEME') {
-                serverState.theme = parsed.theme;
-                broadcast({ type: 'THEME_CHANGE', theme: parsed.theme });
-            } else if (parsed.type === 'SET_SOUND') {
-                serverState.customSoundUrl = parsed.url;
-                broadcast({ type: 'SOUND_CHANGE', url: parsed.url });
-            } else if (parsed.type === 'TRANSFER_MONEY') {
+            
+            if (parsed.type === 'CHECK_TRANSFERS') {
+                const email = parsed.email.toLowerCase().trim();
+                if (serverState.pendingTransfers[email] && serverState.pendingTransfers[email].length > 0) {
+                    ws.send(JSON.stringify({
+                        type: 'BATCH_TRANSFERS',
+                        transfers: serverState.pendingTransfers[email]
+                    }));
+                    serverState.pendingTransfers[email] = [];
+                }
+            }
+            else if (parsed.type === 'TRANSFER_MONEY') {
+                const recipient = parsed.recipientEmail.toLowerCase().trim();
+                const transferData = {
+                    senderName: parsed.senderName,
+                    amount: parsed.amount,
+                    timestamp: Date.now()
+                };
+
+                if (!serverState.pendingTransfers[recipient]) {
+                    serverState.pendingTransfers[recipient] = [];
+                }
+                serverState.pendingTransfers[recipient].push(transferData);
+
                 broadcast({ 
                     type: 'INCOMING_TRANSFER', 
-                    recipientEmail: parsed.recipientEmail.toLowerCase().trim(),
+                    recipientEmail: recipient,
                     senderName: parsed.senderName,
                     amount: parsed.amount 
                 });
+            }
+            else if (parsed.type === 'SET_THEME') {
+                serverState.theme = parsed.theme;
+                broadcast({ type: 'THEME_CHANGE', theme: parsed.theme });
             }
         } catch (e) {}
     });
@@ -114,5 +115,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
 });
