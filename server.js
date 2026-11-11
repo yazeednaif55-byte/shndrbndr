@@ -1,3 +1,9 @@
+/**
+ * Ultimate Store Server - Main Entry Point
+ * Handles WebSocket broadcasting, state synchronization, global discounts,
+ * custom sound URLs, and real-time store events for all connected clients.
+ */
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -12,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Server-side State Storage for full synchronization across clients
 let serverState = {
     theme: 'default',
     globalDiscount: 0,
@@ -20,7 +27,10 @@ let serverState = {
         { 
             id: 1, name: "بيتزا ببروني ساخنة وجديدة", price: 12.99, oldPrice: 18.00, cat: "food", isOffer: true,
             desc: "بيتزا إيطالية طازجة بصلصة الطماطم الطبيعية وجبنة الموتزاريلا الفاخرة مع شرائح الببروني المقرمشة.",
-            images: ["https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80"]
+            images: [
+                "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&auto=format&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80"
+            ]
         },
         { 
             id: 2, name: "برجر لحم ديلوكس مع الجبن", price: 9.50, oldPrice: 14.00, cat: "food", isOffer: true,
@@ -33,13 +43,39 @@ let serverState = {
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
         },
         { 
-            id: 4, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
+            id: 4, name: "معكرونة باستا بالإيطالية الفاخرة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
+            desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
+            images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 5, name: "شيبس مقرمش بنكهة الحار والحامض", price: 2.50, oldPrice: 3.50, cat: "sweets", isOffer: true,
+            desc: "رقائق شيبس طازجة ومقرمشة ومبهرة بخلطة التوابل الحارة والليمون.",
+            images: ["https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 6, name: "علبة شوكولاتة فاخرة مشكلة", price: 15.00, oldPrice: 20.00, cat: "sweets", isOffer: false,
+            desc: "تشكيلة غنية من قطع الشوكولاتة البلجيكية المحشوة بالكراميل.",
+            images: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 7, name: "عبوة مناديل ناعمة 10 حبات", price: 6.99, oldPrice: 9.99, cat: "tissues", isOffer: true,
+            desc: "مناديل ورقية فائقة النعومة وقوية الامتصاص.",
+            images: ["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 8, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
             desc: "سماعات أذن لاسلكية بتقنية عزل الضوضاء وصوت نقي عالي الدقة.",
             images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80"]
+        },
+        { 
+            id: 9, name: "يد تحكم ألعاب لاسلكية احترافية", price: 39.99, oldPrice: 59.99, cat: "gaming", isOffer: true,
+            desc: "يد تحكم متوافقة مع الكمبيوتر والأجهزة الذكية مع اهتزاز تفاعلي.",
+            images: ["https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400&auto=format&fit=crop&q=80"]
         }
     ]
 };
 
+// Broadcast helper function to send messages to all active WebSocket clients
 function broadcast(data) {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
@@ -49,6 +85,7 @@ function broadcast(data) {
 }
 
 wss.on('connection', (ws) => {
+    // Send initial state upon connection
     ws.send(JSON.stringify({ type: 'INIT_STATE', state: serverState }));
 
     ws.on('message', (message) => {
@@ -76,7 +113,9 @@ wss.on('connection', (ws) => {
                 serverState.customSoundUrl = parsed.url;
                 broadcast({ type: 'SOUND_CHANGE', url: parsed.url });
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error('WebSocket parsing error:', e);
+        }
     });
 });
 
@@ -85,5 +124,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
 });
