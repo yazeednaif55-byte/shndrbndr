@@ -1,7 +1,7 @@
 {
   "name": "shndrbndr-ultimate-store",
-  "version": "4.1.0",
-  "description": "المتجر الأسطوري مع نظام التحويل المالي المباشر بين المستخدمين",
+  "version": "4.0.0",
+  "description": "المتجر الأسطوري العملاق المتكامل بجميع الأسطر والأصوات والثيمات",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
