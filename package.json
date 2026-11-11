@@ -1,7 +1,7 @@
 {
-  "name": "shndrbndr-store",
-  "version": "2.5.0",
-  "description": "المتجر الأسطوري المتكامل مع المزامنة الكاملة والتحكم اللحظي",
+  "name": "shndrbndr-ultimate-store",
+  "version": "3.0.0",
+  "description": "المتجر الأسطوري الضخم المتكامل مع الأصوات التفاعلية والمزامنة الكاملة",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
