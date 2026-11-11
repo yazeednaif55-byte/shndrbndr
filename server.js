@@ -1,9 +1,3 @@
-/**
- * ============================================================================
- * ULTIMATE STORE PLATFORM - BACKEND SERVER ENGINE (v10.0 PRODUCTION)
- * ============================================================================
- */
-
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -37,21 +31,6 @@ let serverState = {
             id: 3, name: "بطاطس مقلية مقرمشة بالحجم الكبير", price: 4.50, oldPrice: 7.00, cat: "food", isOffer: true,
             desc: "أصابع بطاطس ذهبية ومقرمشة ومملحة باعتدال، وجبة جانبية مثالية.",
             images: ["https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 4, name: "معكرونة باستا إيطالية بصلصة الكريمة", price: 11.00, oldPrice: 15.00, cat: "food", isOffer: false,
-            desc: "معكرونة باستا بصلصة الكريمة والجبن مع قطع الدجاج المشوي والأعشاب.",
-            images: ["https://images.unsplash.com/photo-1621996346565-e3d5d6281358?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 5, name: "شيبس مقرمش بنكهة الحار والحامض", price: 2.50, oldPrice: 3.50, cat: "sweets", isOffer: true,
-            desc: "رقائق شيبس طازجة ومقرمشة ومبهرة بخلطة التوابل الحارة والليمون.",
-            images: ["https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 6, name: "علبة شوكولاتة فاخرة مشكلة", price: 15.00, oldPrice: 20.00, cat: "sweets", isOffer: false,
-            desc: "تشكيلة غنية من قطع الشوكولاتة البلجيكية المحشوة بالكراميل.",
-            images: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80"]
         }
     ],
     pendingTransfers: {}
@@ -106,6 +85,19 @@ wss.on('connection', (ws) => {
                 serverState.theme = parsed.theme;
                 broadcast({ type: 'THEME_CHANGE', theme: parsed.theme });
             }
+            else if (parsed.type === 'APPLY_DISCOUNT') {
+                serverState.globalDiscount = parsed.percent;
+                serverState.products.forEach(p => {
+                    p.oldPrice = p.price;
+                    p.price = p.price * (1 - parsed.percent / 100);
+                    p.isOffer = true;
+                });
+                broadcast({ type: 'GLOBAL_DISCOUNT', percent: parsed.percent, products: serverState.products });
+            }
+            else if (parsed.type === 'ADD_PRODUCT') {
+                serverState.products.unshift(parsed.product);
+                broadcast({ type: 'NEW_PRODUCT', product: parsed.product, products: serverState.products });
+            }
         } catch (e) {}
     });
 });
@@ -115,5 +107,5 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Ultimate Store Server is running smoothly on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
