@@ -1,7 +1,7 @@
 {
   "name": "shndrbndr-store",
-  "version": "2.0.0",
-  "description": "المتجر الذكي الأسطوري المتكامل مع التحكم الكامل للآدمين",
+  "version": "2.5.0",
+  "description": "المتجر الأسطوري المتكامل مع المزامنة الكاملة والتحكم اللحظي",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
