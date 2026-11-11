@@ -56,16 +56,6 @@ let serverState = {
             id: 8, name: "سماعات بلوتوث برو اللاسلكية", price: 49.99, oldPrice: 79.99, cat: "electronics", isOffer: true,
             desc: "سماعات أذن لاسلكية بتقنية عزل الضوضاء وصوت نقي عالي الدقة.",
             images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 9, name: "يد تحكم ألعاب لاسلكية احترافية", price: 39.99, oldPrice: 59.99, cat: "gaming", isOffer: true,
-            desc: "يد تحكم متوافقة مع الكمبيوتر والأجهزة الذكية مع اهتزاز تفاعلي.",
-            images: ["https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400&auto=format&fit=crop&q=80"]
-        },
-        { 
-            id: 10, name: "كيبورد مكانيكي مضيء بـ RGB", price: 34.99, oldPrice: 49.99, cat: "gaming", isOffer: true,
-            desc: "لوحة مفاتيح ميكانيكية استجابة فائقة مع إضاءة RGB مخصصة للألعاب.",
-            images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80"]
         }
     ]
 };
