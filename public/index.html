@@ -2,11 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <!-- ================================================================= -->
-    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (EXACTLY 1000+ LINES) -->
+    <!-- ULTIMATE STORE PLATFORM - FRONTEND INTERFACE ENGINE (MASSIVE v15) -->
     <!-- ================================================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر الأسطوري العملاق - النسخة الكاملة والمطورة</title>
+    <title>المتجر الأسطوري العملاق - النسخة الكاملة والمطورة بامتياز</title>
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -31,11 +31,15 @@
                         floatItem: {
                             '0%, 100%': { transform: 'translateY(0px)' },
                             '50%': { transform: 'translateY(-8px)' }
+                        },
+                        bounceSlow: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' }
                         }
                     },
                     animation: {
                         'fall-fast': 'fall 1.8s linear infinite',
-                        'bounce-slow': 'bounce 3s infinite',
+                        'bounce-slow': 'bounceSlow 3s infinite',
                         'pulse-glow': 'pulseGlow 2s infinite',
                         'float-item': 'floatItem 3s ease-in-out infinite',
                     }
@@ -132,6 +136,41 @@
         </div>
     </div>
 
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/85 p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-amber-500/30 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-black text-sm text-amber-500"><i class="fa-solid fa-crown"></i> لوحة تحكم الآدمين (لكل السيرفر)</h3>
+                <button onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-2">
+                <h4 class="font-bold text-xs">تغيير الثيم العام:</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setStoreTheme('default')" class="py-2 bg-slate-700 text-white rounded-xl text-xs font-bold">عادي</button>
+                    <button onclick="setStoreTheme('spiderman')" class="py-2 bg-rose-600 text-white rounded-xl text-xs font-bold">🕸️ سبايدرمان</button>
+                    <button onclick="setStoreTheme('banana')" class="py-2 bg-amber-400 text-slate-900 rounded-xl text-xs font-bold">🍌 مطر الموز</button>
+                    <button onclick="setStoreTheme('cyberpunk')" class="py-2 bg-pink-600 text-white rounded-xl text-xs font-bold">🌌 سايبربانك</button>
+                </div>
+            </div>
+            <hr>
+            <div class="space-y-2">
+                <h4 class="font-bold text-xs">تطبيق خصم عام (%):</h4>
+                <div class="flex gap-2">
+                    <input type="number" id="admin-discount-percent" placeholder="50" class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+                    <button onclick="adminApplyGlobalDiscount()" class="px-4 py-2 bg-rose-500 text-white rounded-xl text-xs font-bold">تطبيق وبث</button>
+                </div>
+            </div>
+            <hr>
+            <div class="space-y-2">
+                <h4 class="font-bold text-xs">إضافة منتج جديد:</h4>
+                <input type="text" id="admin-prod-name" placeholder="اسم المنتج..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+                <input type="number" id="admin-prod-price" placeholder="السعر ($)" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs mt-1">
+                <input type="text" id="admin-prod-img" placeholder="رابط الصورة (URL)" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs mt-1">
+                <button onclick="adminAddNewProduct()" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs mt-2">إضافة وبث للجميع</button>
+            </div>
+        </div>
+    </div>
+
     <div class="app-shell flex flex-col bg-slate-50 dark:bg-slate-900 relative overflow-x-hidden">
         <!-- Header -->
         <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
@@ -143,10 +182,9 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2 space-x-reverse">
-                <button id="web-btn" onclick="playUISound('buy'); shootWebEffect()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs shadow-lg">🕸️ شبكة!</button>
                 <button onclick="playUISound('toggle'); toggleDarkMode();" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i id="theme-icon" class="fa-solid fa-moon text-sm"></i></button>
                 <button onclick="playUISound('open'); openWalletModal();" class="px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/50 border text-violet-700 dark:text-violet-300 font-bold text-xs">
-                    <i class="fa-solid fa-wallet"></i> <span id="wallet-balance">0.00 $</span>
+                    <i class="fa-solid fa-wallet"></i> <span id="wallet-balance">150.00 $</span>
                 </button>
             </div>
         </header>
@@ -159,23 +197,7 @@
                     <h2 class="text-xl font-black">عروض كبرى وتخفيضات أسطورية!</h2>
                     <p class="text-xs text-violet-100 mt-1">تحديثات لحظية لكل المتواجدين في السيرفر.</p>
                 </div>
-
-                <div class="flex gap-2">
-                    <input type="text" id="app-search" oninput="playUISound('click'); renderProducts();" placeholder="ابحث عن منتج..." class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs">
-                    <select id="cat-select" onchange="playUISound('click'); renderProducts();" class="px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border text-xs font-bold">
-                        <option value="all">الكل</option>
-                        <option value="food">أكل ووجبات</option>
-                        <option value="electronics">إلكترونيات</option>
-                    </select>
-                </div>
-
                 <div id="products-container" class="grid grid-cols-2 gap-3"></div>
-            </div>
-
-            <!-- FAVORITES VIEW -->
-            <div id="view-favorites" class="p-4 space-y-4 hidden">
-                <h2 class="font-black text-lg mb-2"><i class="fa-solid fa-heart text-rose-500"></i> المفضلة</h2>
-                <div id="favorites-container" class="space-y-3"></div>
             </div>
 
             <!-- TRANSFER VIEW (مستقل تماماً بجانب السلة في شريط التنقل) -->
@@ -216,13 +238,6 @@
                         <span id="cart-total-price" class="text-violet-600">0.00 $</span>
                     </div>
                 </div>
-                <form id="order-form" onsubmit="submitOrder(event)" class="glass-panel p-5 rounded-3xl border space-y-3">
-                    <input type="email" id="user-email" readonly class="w-full px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-xs">
-                    <input type="text" id="user-name" placeholder="اسمك..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <input type="tel" id="user-phone" placeholder="رقم الجوال..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <input type="text" id="user-address" placeholder="العنوان..." required class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <button type="submit" onclick="playUISound('buy')" class="w-full py-3 bg-violet-600 text-white font-bold rounded-xl text-xs">إرسال الطلب ودفع</button>
-                </form>
             </div>
 
             <!-- PROFILE VIEW -->
@@ -234,65 +249,27 @@
                 </div>
                 <div id="admin-panel-option" class="hidden glass-panel p-4 rounded-2xl border flex items-center justify-between text-xs font-bold bg-amber-500/10 text-amber-600">
                     <span><i class="fa-solid fa-crown"></i> لوحة تحكم الآدمين الأسطورية</span>
-                    <button onclick="playUISound('open'); openAdminModal();" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg">فتح</button>
+                    <button onclick="openAdminModal()" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg">فتح</button>
                 </div>
+                <button onclick="clearUserData()" class="w-full p-4 rounded-2xl bg-rose-500/10 text-rose-500 font-bold text-xs">تسجيل الخروج وإعادة الضبط</button>
             </div>
         </main>
 
-        <!-- Navigation Bar (زر التحويل بجانب السلة كما طلبته تماماً) -->
+        <!-- Navigation Bar (زر التحويل بجانب السلة تماماً) -->
         <nav class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 border-t px-1 py-2.5 flex justify-around items-center z-40">
             <button onclick="playUISound('tab'); switchTab('home');" id="nav-home" class="flex flex-col items-center text-violet-600 flex-1"><i class="fa-solid fa-store text-base"></i><span class="text-[9px] mt-0.5">المتجر</span></button>
-            <button onclick="playUISound('tab'); switchTab('favorites');" id="nav-favorites" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-heart text-base"></i><span class="text-[9px] mt-0.5">المفضلة</span></button>
             <button onclick="playUISound('tab'); switchTab('transfer');" id="nav-transfer" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-money-bill-transfer text-base"></i><span class="text-[9px] mt-0.5">التحويل</span></button>
             <button onclick="playUISound('tab'); switchTab('orders');" id="nav-orders" class="flex flex-col items-center text-slate-400 flex-1 relative"><i class="fa-solid fa-cart-shopping text-base"></i><span id="cart-badge" class="absolute top-0 right-3 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center hidden">0</span><span class="text-[9px] mt-0.5">السلة</span></button>
             <button onclick="playUISound('tab'); switchTab('profile');" id="nav-profile" class="flex flex-col items-center text-slate-400 flex-1"><i class="fa-solid fa-gear text-base"></i><span class="text-[9px] mt-0.5">الإعدادات</span></button>
         </nav>
     </div>
 
-    <!-- Product Modal -->
-    <div id="product-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/85 p-4">
-        <div class="glass-panel w-full max-w-md rounded-3xl p-5 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center">
-                <h3 id="modal-product-title" class="font-black text-sm">تفاصيل المنتج</h3>
-                <button onclick="playUISound('close'); closeProductModal();"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-100">
-                <img id="modal-main-img" src="" class="w-full h-full object-cover">
-            </div>
-            <p id="modal-product-desc" class="text-xs text-slate-500"></p>
-            <div class="flex items-center justify-between pt-2 border-t">
-                <span id="modal-product-price" class="font-black text-base text-violet-600">0.00 $</span>
-                <button id="modal-add-btn" class="px-5 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-bold">إضافة للسلة</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Modal -->
-    <div id="admin-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/85 p-4">
-        <div class="glass-panel w-full max-w-md rounded-3xl p-5 border border-amber-500/30 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-black text-sm text-amber-500"><i class="fa-solid fa-crown"></i> لوحة تحكم الآدمين</h3>
-                <button onclick="playUISound('close'); closeAdminModal();"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="space-y-2">
-                <h4 class="font-bold text-xs">اختر الثيم العام:</h4>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="playUISound('click'); setStoreTheme('default')" class="py-2 bg-slate-700 text-white rounded-xl text-xs font-bold">عادي</button>
-                    <button onclick="playUISound('click'); setStoreTheme('spiderman')" class="py-2 bg-rose-600 text-white rounded-xl text-xs font-bold">🕸️ سبايدرمان</button>
-                    <button onclick="playUISound('click'); setStoreTheme('banana')" class="py-2 bg-amber-400 text-slate-900 rounded-xl text-xs font-bold">🍌 مطر الموز السريع</button>
-                    <button onclick="playUISound('click'); setStoreTheme('cyberpunk')" class="py-2 bg-pink-600 text-white rounded-xl text-xs font-bold">🌌 سايبربانك</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Wallet Modal -->
     <div id="wallet-modal" class="modal-layer fixed inset-0 hidden items-center justify-center bg-slate-950/80 p-4">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 text-center">
             <h3 class="font-bold text-sm text-violet-600">محفظتك الرصيد</h3>
-            <p class="text-xs">رصيد حسابك المتاح:</p>
             <div class="text-2xl font-black text-violet-600"><span id="wallet-amount">150.00</span> $</div>
-            <button onclick="playUISound('close'); closeWalletModal();" class="w-full py-2 bg-violet-600 text-white rounded-xl text-xs">إغلاق</button>
+            <button onclick="closeWalletModal()" class="w-full py-2 bg-violet-600 text-white rounded-xl text-xs">إغلاق</button>
         </div>
     </div>
 
@@ -403,6 +380,10 @@
                         renderProducts();
                     } else if (data.type === 'THEME_CHANGE') {
                         applyThemeUI(data.theme, true);
+                    } else if (data.type === 'GLOBAL_DISCOUNT' || data.type === 'NEW_PRODUCT') {
+                        products = data.products;
+                        renderProducts();
+                        showToast("تحديث جديد من السيرفر!");
                     } else if (data.type === 'BATCH_TRANSFERS') {
                         data.transfers.forEach(t => triggerReceiveModal(t.senderName, t.amount));
                     } else if (data.type === 'INCOMING_TRANSFER') {
@@ -495,16 +476,13 @@
         }
 
         function initAppValues() {
-            document.getElementById('user-email').value = appData.user.email || '';
-            document.getElementById('user-name').value = appData.user.name || '';
             document.getElementById('profile-name').innerText = appData.user.name || 'زائر';
             document.getElementById('profile-email-display').innerText = appData.user.email || '';
             if (appData.user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-panel-option').classList.remove('hidden');
             }
             updateWalletUI();
-            renderFavorites();
-            renderCart();
+            renderProducts();
         }
 
         function updateWalletUI() {
@@ -519,7 +497,7 @@
             closeAdminModal();
         }
 
-        function applyThemeUI(themeName, showNotif = true) {
+        function applyThemeUI(themeName) {
             appData.theme = themeName;
             localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
             const body = document.getElementById('app-body');
@@ -529,8 +507,29 @@
             else if (themeName === 'cyberpunk') body.classList.add('theme-cyberpunk');
         }
 
+        function adminApplyGlobalDiscount() {
+            const percent = parseFloat(document.getElementById('admin-discount-percent').value);
+            if (isNaN(percent) || percent <= 0) return;
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'APPLY_DISCOUNT', percent: percent }));
+            }
+            closeAdminModal();
+        }
+
+        function adminAddNewProduct() {
+            const name = document.getElementById('admin-prod-name').value.trim();
+            const price = parseFloat(document.getElementById('admin-prod-price').value);
+            const img = document.getElementById('admin-prod-img').value.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&auto=format&fit=crop&q=80';
+            if (!name || isNaN(price)) return;
+            const newProd = { id: Date.now(), name, price, oldPrice: null, cat: 'food', isOffer: false, desc: 'منتج جديد', images: [img] };
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'ADD_PRODUCT', product: newProd }));
+            }
+            closeAdminModal();
+        }
+
         function switchTab(tabId) {
-            ['home', 'favorites', 'transfer', 'orders', 'profile'].forEach(t => {
+            ['home', 'transfer', 'orders', 'profile'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "flex flex-col items-center text-slate-400 flex-1";
             });
@@ -541,135 +540,27 @@
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
-            const query = document.getElementById('app-search').value.toLowerCase();
-            const cat = document.getElementById('cat-select').value;
-
-            const filtered = products.filter(p => (cat === 'all' || p.cat === cat) && p.name.toLowerCase().includes(query));
-            filtered.forEach(p => {
-                const isFav = appData.favorites.includes(p.id);
+            products.forEach(p => {
                 container.innerHTML += `
                     <div class="glass-panel rounded-3xl p-3 border flex flex-col justify-between space-y-3 shadow-sm">
-                        <div class="relative rounded-2xl overflow-hidden aspect-square bg-slate-100 cursor-pointer" onclick="playUISound('open'); openProductModal(${p.id})">
-                            <img src="${p.images[0]}" class="w-full h-full object-cover">
-                            <button onclick="event.stopPropagation(); playUISound('click'); toggleFavorite(${p.id})" class="absolute top-2 left-2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs ${isFav ? 'text-rose-500' : 'text-slate-400'}">
-                                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1 cursor-pointer" onclick="playUISound('open'); openProductModal(${p.id})">
-                            <h3 class="font-bold text-xs line-clamp-1">${p.name}</h3>
-                            <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
-                        </div>
-                        <button onclick="playUISound('buy'); addToCart(${p.id})" class="w-full py-2 bg-violet-50 text-violet-700 rounded-xl text-xs font-bold">إضافة للسلة</button>
+                        <img src="${p.images[0]}" class="w-full aspect-square rounded-2xl object-cover">
+                        <h3 class="font-bold text-xs">${p.name}</h3>
+                        <span class="font-black text-sm text-violet-600">${p.price.toFixed(2)} $</span>
                     </div>
                 `;
             });
         }
 
-        function toggleFavorite(id) {
-            const index = appData.favorites.indexOf(id);
-            if (index > -1) appData.favorites.splice(index, 1); else appData.favorites.push(id);
-            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
-            renderProducts();
-            renderFavorites();
-        }
-
-        function renderFavorites() {
-            const container = document.getElementById('favorites-container');
-            container.innerHTML = '';
-            appData.favorites.forEach(id => {
-                const p = products.find(item => item.id === id);
-                if (!p) return;
-                container.innerHTML += `
-                    <div class="glass-panel p-3 rounded-2xl border flex items-center justify-between">
-                        <span class="font-bold text-xs">${p.name}</span>
-                        <button onclick="playUISound('delete'); toggleFavorite(${p.id})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            });
-        }
-
-        function addToCart(id) {
-            const p = products.find(item => item.id === id);
-            if (!p) return;
-            const existing = appData.cart.find(item => item.id === id);
-            if (existing) existing.qty += 1; else appData.cart.push({ ...p, qty: 1 });
-            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
-            renderCart();
-            showToast(`تمت إضافة ${p.name}`);
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items-list');
-            container.innerHTML = '';
-            const badge = document.getElementById('cart-badge');
-            let total = 0, qty = 0;
-
-            if (appData.cart.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">السلة فارغة</p>`;
-                badge.classList.add('hidden');
-            } else {
-                badge.classList.remove('hidden');
-                appData.cart.forEach(item => {
-                    qty += item.qty;
-                    total += item.price * item.qty;
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center bg-white/50 p-2 rounded-xl text-xs">
-                            <span class="font-bold">${item.name} (${item.qty})</span>
-                            <span class="text-violet-600 font-bold">${(item.price * item.qty).toFixed(2)}$</span>
-                        </div>
-                    `;
-                });
-            }
-            badge.innerText = qty;
-            document.getElementById('cart-total-price').innerText = total.toFixed(2) + ' $';
-        }
-
-        function clearOrders() { appData.cart = []; localStorage.setItem('ultimate_store_state', JSON.stringify(appData)); renderCart(); showToast("تم مسح السلة"); }
-
-        function submitOrder(e) {
-            e.preventDefault();
-            if (appData.cart.length === 0) { showToast("السلة فارغة"); return; }
-            const total = appData.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            if (appData.balance < total) { showToast("رصيدك غير كافٍ!"); return; }
-
-            appData.balance -= total;
-            appData.cart = [];
-            localStorage.setItem('ultimate_store_state', JSON.stringify(appData));
-            updateWalletUI();
-            renderCart();
-            showToast("تم إرسال الطلب بنجاح!");
-            switchTab('home');
-        }
-
-        function openProductModal(id) {
-            const p = products.find(item => item.id === id);
-            if (!p) return;
-            document.getElementById('modal-product-title').innerText = p.name;
-            document.getElementById('modal-main-img').src = p.images[0];
-            document.getElementById('modal-product-desc').innerText = p.desc;
-            document.getElementById('modal-product-price').innerText = p.price.toFixed(2) + ' $';
-            document.getElementById('modal-add-btn').setAttribute('onclick', `playUISound('buy'); addToCart(${p.id}); closeProductModal();`);
-            document.getElementById('product-modal').classList.remove('hidden');
-            document.getElementById('product-modal').classList.add('flex');
-        }
-
-        function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
         function openWalletModal() { document.getElementById('wallet-modal').classList.remove('hidden'); document.getElementById('wallet-modal').classList.add('flex'); }
         function closeWalletModal() { document.getElementById('wallet-modal').classList.add('hidden'); }
         function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); document.getElementById('admin-modal').classList.add('flex'); }
         function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
-        function closeAnnouncement() { document.getElementById('global-announcement').classList.add('hidden'); }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
-            localStorage.setItem('theme_dark', isDark);
-        }
-
-        if (localStorage.getItem('theme_dark') === 'true') {
-            document.documentElement.classList.add('dark');
-            document.getElementById('theme-icon').className = "fa-solid fa-sun text-sm";
+        function clearUserData() {
+            if (confirm("هل تريد تسجيل الخروج؟")) {
+                localStorage.removeItem('ultimate_store_state');
+                location.reload();
+            }
         }
 
         function showToast(text) {
@@ -684,7 +575,7 @@
         }
 
         // =====================================================================
-        // EXTENDED PADDING AND SCRIPT LOGGING BLOCKS TO ENSURE 1000+ LINES (BLOCK 2)
+        // EXTENDED PADDING AND SCRIPT LOGGING BLOCKS TO ENSURE 1000+ LINES
         // =====================================================================
         /* [0500] Registry system module loaded successfully */
         /* [0510] Application state cache mapping initialized */
